@@ -1,0 +1,199 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// Better Auth models
+// ============================================
+
+model User {
+  id            String    @id
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  role          String    @default("user")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  comments      Comment[]
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id])
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+
+  @@map("verification")
+}
+
+model Comment {
+  id        String        @id @default(uuid())
+  content   String
+  pageId    Int
+  page      Page      @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [id])
+  parentId  String?
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("comment")
+}
+
+model Page {
+  id        Int   @id @default(autoincrement())
+  slug      String    @unique
+  content   String 
+  createdAt DateTime  @default(now())
+  comments  Comment[]
+
+  @@map("page")
+}
+
+model OnePieceCharacter {
+  id             Int    @id @default(autoincrement())
+  name           String
+  image          String
+  isAlive        Boolean
+  devilFruit_id  Int?
+  devilFruit     DevilFruit? @relation(fields: [devilFruit_id], references: [id])
+  faction        Faction
+  profession     Profession
+
+  @@map("onePieceCharacter")
+}
+
+model DevilFruit {
+  id           Int      @id @default(autoincrement())
+  name         String
+  Image        String?
+  onePieceCharacters   OnePieceCharacter[]
+  type         Type
+  @@map("devilFruit")
+}
+
+enum Type {
+  Paramecia
+  Logia
+  Zoan
+  @@map("type")
+}
+
+enum Faction {
+  pirate
+  marine
+  citoyen
+  révolutionnaire
+  @@map("faction")
+}
+
+enum Profession {
+  // --- ÉQUIPAGE PIRATE ---
+  capitaine
+  second
+  navigateur
+  cuisinier
+  medecin
+  tireur_d_elite
+  charpentier
+  musicien
+  archeologue
+  timonier
+  mousse
+  combattant
+  
+  // --- MARINE & GOUVERNEMENT ---
+  amiral_en_chef
+  amiral
+  vice_amiral
+  contre_amiral
+  commodore
+  colonel
+  lieutenant
+  enseigne
+  matelot
+  agent_du_cp
+  gardien_de_prison
+  
+  // --- ARMÉE RÉVOLUTIONNAIRE ---
+  chef_supreme
+  commandant_en_chef
+  commandant_d_armee
+  officier_revolutionnaire
+  agent_d_infiltration
+  stratege
+  inventeur
+  
+  // --- CIVILS & MÉTIERS DU MONDE ---
+  tenancier_de_bar
+  journaliste
+  scientifique
+  forgeron
+  chasseur_de_primes
+  marchand
+  roi
+  reine
+  prince
+  princesse
+  citoyen
+  pecheur
+  voleur
+  esclave
+  
+  // --- AUTRES / SPÉCIFIQUES ---
+  courtier_de_l_ombre
+  dragon_celeste
+
+  @@map("profession")
+}
