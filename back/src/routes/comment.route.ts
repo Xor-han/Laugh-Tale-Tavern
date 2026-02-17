@@ -149,7 +149,6 @@ router.post("/", async (req: Request, res: Response) => {
         }),
       },
     });
-
     res.status(201).json(newComment);
   } catch (error) {
     console.error(error);
@@ -232,7 +231,7 @@ router.patch("/:id", async (req: Request, res: Response) => {
     const updatedComment = await db.comment.update({
       where: { id: id as string },
       data: {
-        ...(content && { content }), 
+        ...(content && { content }),
       },
     });
 
@@ -266,4 +265,5 @@ router.delete("/:id", async (req: Request, res: Response) => {
     res.status(500).json({ message: "Erreur serveur", error });
   }
 });
+
 export default router;

@@ -6,7 +6,7 @@ import { auth } from '@/lib/auth';
 import characterRouter from "@/routes/character.route"
 import commentRouter from "@/routes/comment.route"
 import devilFruitRouter from "@/routes/devilFruit.route"
-
+import pageRouter from "@/routes/page.route"
 const app = express();
 const port = 3000;
 
@@ -28,6 +28,7 @@ app.get("/", (req : Request, res : Response) => {
 app.use("/character", characterRouter);
 app.use("/comment", commentRouter);
 app.use("/devilFruit", devilFruitRouter);
+app.use("/pages", pageRouter);
 
 
 // ========== DÉMARRAGE DU SERVEUR ==========

@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import db from "@/lib/db";
+import { Type } from "@prisma/client";
 
 const router: express.Router = express.Router();
 
@@ -51,41 +52,57 @@ router.put("/:id", async (req, res) => {
 
     res.json(updatedFruit);
   } catch (error) {
-    res.status(500).json({ message: "Erreur lors du remplacement du fruit", error });
+    res.status(500).json({message: "Erreur serveur", error});
   }
 });
 
 router.patch("/:id", async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const { name, image, type } = req.body;
 
-    const fruit = await db.devilFruit.findUnique({
-      where: { id: Number(id) },
+    const { id } = req.params;
+
+    const existing = await db.devilFruit.findUnique({
+      where: {
+        id: Number(id)
+      }
     });
 
-    if (!fruit) {
-      return res.status(404).json({ message: "Fruit non trouvé" });
+    if (!existing) {
+      return res.status(404).json({ message: "Fruit du démon non trouvé" });
     }
 
-    const updateData: any = {};
+    const { name, Image, type } = req.body;
+
+    const data: {
+      name?: string;
+      Image?: string | null;
+      type?: Type;
+    } = {};
 
     if (name !== undefined) {
-      updateData.name = name;
+      data.name = name;
     }
-    if (image !== undefined) {
-      updateData.Image = image; 
+
+    if (Image !== undefined) {
+      data.Image = Image;
     }
+
     if (type !== undefined) {
-      updateData.type = type;
+      data.type = type;
+    }
+
+    if (Object.keys(data).length === 0) {
+      return res.status(400).json({
+        message: "Aucun champs à modifier"
+      });
     }
 
     const updatedFruit = await db.devilFruit.update({
       where: { id: Number(id) },
-      data: updateData
+      data
     });
 
-    res.json(updatedFruit);
+    res.status(200).json(updatedFruit);
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
   }
@@ -101,7 +118,7 @@ router.delete("/:id", async (req, res) => {
 
     res.status(204).send();
   } catch (error) {
-    res.status(500).json({ message: "Impossible de supprimer ce fruit s'il est utilisé", error });
+    res.status(500).json({message: "Erreur serveur", error });
   }
 });
 
