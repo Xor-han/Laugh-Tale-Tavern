@@ -183,7 +183,6 @@ router.put("/:id", async (req: Request, res: Response) => {
       });
     }
 
-    // 2. Mise à jour
     const updatedComment = await db.comment.update({
       where: { id: id as string },
       data: {
