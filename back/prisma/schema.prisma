@@ -101,6 +101,12 @@ model Page {
   @@map("page")
 }
 
+model Arcs {
+    id     Int    @id @default(autoincrement()) 
+    name   String
+    onePieceCharacter OnePieceCharacter[]
+}
+
 model OnePieceCharacter {
   id             Int    @id @default(autoincrement())
   name           String
@@ -108,8 +114,13 @@ model OnePieceCharacter {
   isAlive        Boolean
   devilFruit_id  Int?
   devilFruit     DevilFruit? @relation(fields: [devilFruit_id], references: [id])
-  faction        Faction
+  organisationId Int?
+  organisation   Organisation?  @relation(fields : [organisationId], references: [id])
+  equipageId     Int?
+  equipage       Equipages?  @relation(fields : [equipageId], references:[id])
   profession     Profession
+  arcId          Int?
+  arc            Arcs?       @relation(fields : [arcId], references: [id])
 
   @@map("onePieceCharacter")
 }
@@ -119,27 +130,38 @@ model DevilFruit {
   name         String
   Image        String?
   onePieceCharacters   OnePieceCharacter[]
-  type         Type
+  typeId         Int?
+  type           Type?   @relation(fields: [typeId], references: [id])
   @@map("devilFruit")
 }
 
-enum Type {
-  Paramecia
-  Logia
-  Zoan
+model Type {
+  id           Int      @id @default(autoincrement())
+  name         String
+  devilFruit   DevilFruit[]
   @@map("type")
 }
 
-enum Faction {
-  pirate
-  marine
-  citoyen
-  révolutionnaire
+model Organisation {
+  id             Int    @id @default(autoincrement())
+  name           String
+  onePieceCharacter OnePieceCharacter[]
+  equipageId     Int?
+  equipage       Equipages?  @relation(fields : [equipageId], references:[id])
   @@map("faction")
+}
+
+model Equipages {
+    id             Int    @id @default(autoincrement())
+    name           String
+    onePieceCharacter OnePieceCharacter[]
+    organisation      Organisation[]
 }
 
 enum Profession {
   // --- ÉQUIPAGE PIRATE ---
+  roi_des_pirates
+  empereur
   capitaine
   second
   navigateur
