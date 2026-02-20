@@ -10,4 +10,20 @@ const getUserId = async (req: Request): Promise<string | null> => {
   });
   return session?.user?.id ?? null;
 };
+
+router.get("/", async (req: Request, res: Response) => {
+  try {
+    const data = await db.organisation.findMany({
+      include: {
+        _count: { select: { onePieceCharacter: true } },
+        equipage: true
+      }
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error });
+  }
+});
+
+
 export default router;
