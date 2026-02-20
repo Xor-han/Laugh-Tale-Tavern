@@ -10,7 +10,7 @@ import pageRouter from "@/routes/page.route"
 import organisationRouter from "@/routes/organisation.route"
 import equipageRouter from "@/routes/equipage.route"
 import typeRouter from "@/routes/type.route"
-
+import arcRouter from "@/routes/arc.route"
 
 const app = express();
 const port = 3000;
@@ -37,6 +37,7 @@ app.use("/pages", pageRouter);
 app.use("/organisations", organisationRouter);
 app.use("/equipages", equipageRouter);
 app.use("/types", typeRouter);
+app.use("/arcs",arcRouter);
 
 
 // ========== DÉMARRAGE DU SERVEUR ==========
