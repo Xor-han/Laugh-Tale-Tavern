@@ -7,6 +7,11 @@ import characterRouter from "@/routes/character.route"
 import commentRouter from "@/routes/comment.route"
 import devilFruitRouter from "@/routes/devilFruit.route"
 import pageRouter from "@/routes/page.route"
+import organisationRouter from "@/routes/organisation.route"
+import equipageRouter from "@/routes/equipage.route"
+import typeRouter from "@/routes/type.route"
+
+
 const app = express();
 const port = 3000;
 
@@ -25,10 +30,13 @@ app.get("/", (req : Request, res : Response) => {
 });
 
 
-app.use("/character", characterRouter);
-app.use("/comment", commentRouter);
-app.use("/devilFruit", devilFruitRouter);
+app.use("/personnages", characterRouter);
+app.use("/commentaires", commentRouter);
+app.use("/fruits", devilFruitRouter);
 app.use("/pages", pageRouter);
+app.use("/organisations", organisationRouter);
+app.use("/equipages", equipageRouter);
+app.use("/types", typeRouter);
 
 
 // ========== DÉMARRAGE DU SERVEUR ==========
