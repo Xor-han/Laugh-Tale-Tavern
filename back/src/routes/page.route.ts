@@ -13,10 +13,6 @@ const getUserId = async (req: Request): Promise<string | null> => {
 
 router.get("/", async (req, res) => {
   try {
-    const userId = await getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ message: "Non authentifié" });
-    }
     const pages = await db.page.findMany();
     res.json(pages);
   } catch (error) {
@@ -26,10 +22,6 @@ router.get("/", async (req, res) => {
 
 router.get("/:slug", async (req, res) => {
   try {
-    const userId = await getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ message: "Non authentifié" });
-    }
     const { slug } = req.params;
     const page = await db.page.findUnique({
       where: { slug },

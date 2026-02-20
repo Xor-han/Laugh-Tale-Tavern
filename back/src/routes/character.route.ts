@@ -13,10 +13,6 @@ const getUserId = async (req: Request): Promise<string | null> => {
 };
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const userId = await getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ message: "Non authentifié" });
-    }
     const data = await db.onePieceCharacter.findMany({
       orderBy: { name: "desc" },
       include: {
@@ -35,10 +31,6 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const userId = await getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ message: "Non authentifié" });
-    }
     const { id } = req.params;
     const data = await db.onePieceCharacter.findUnique({
       where: { id: Number(id) },

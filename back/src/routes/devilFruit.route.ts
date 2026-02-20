@@ -12,10 +12,6 @@ const getUserId = async (req: Request): Promise<string | null> => {
 };
 router.get("/", async (req, res) => {
   try {
-    const userId = await getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ message: "Non authentifié" });
-    }
     const data = await db.devilFruit.findMany({
       orderBy: { name: "desc" },
       include: { onePieceCharacters: true },
@@ -29,10 +25,6 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const userId = await getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ message: "Non authentifié" });
-    }
     const { id } = req.params;
     const fruit = await db.devilFruit.findUnique({
       where: { id: Number(id) },

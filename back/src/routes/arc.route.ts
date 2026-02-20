@@ -13,16 +13,10 @@ const getUserId = async (req: Request): Promise<string | null> => {
 };
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const userId = await getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ message: "Non authentifié" });
-    }
     const data = await db.arcs.findMany({
       include: {
         onePieceCharacter: {
-          select: {
-            name: true,
-          },
+          select: { name: true },
         },
       },
     });
@@ -34,10 +28,6 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const userId = await getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ message: "Non authentifié" });
-    }
     const { id } = req.params;
     const data = await db.arcs.findUnique({
       where: { id: Number(id) },
@@ -82,29 +72,24 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.put("/", async (req: Request, res: Response) => {
+// --- PUT (Update complet) ---
+router.put("/:id", async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ message: "Non authentifié" });
-    }
+    if (!userId) return res.status(401).json({ message: "Non authentifié" });
+
     const { id } = req.params;
     const { name, image } = req.body;
 
     if (!name || !image) {
-      return res.status(400).json({
-        message: "Les champs name et faction sont obligatoires",
-      });
+      return res.status(400).json({ message: "Les champs name et image sont obligatoires" });
     }
 
     const data = await db.arcs.update({
       where: { id: Number(id) },
-      data: {
-        name,
-        image,
-      },
+      data: { name, image },
     });
-    res.status(201).json(data);
+    res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ message: "Error server", error });
   }
@@ -150,23 +135,19 @@ router.patch("/:id", async (req: Request, res: Response) => {
   }
 });
 
+// --- DELETE ---
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ message: "Non authentifié" });
-    }
+    if (!userId) return res.status(401).json({ message: "Non authentifié" });
+
     const { id } = req.params;
 
-    const comment = await db.comment.findUnique({
-      where: { id: id as string },
+    const arc = await db.arcs.findUnique({
+      where: { id: Number(id) },
     });
 
-    if (!comment) return res.status(404).json({ message: "Introuvable" });
-
-    if (comment.authorId !== userId) {
-      return res.status(403).json({ message: "Action interdite" });
-    }
+    if (!arc) return res.status(404).json({ message: "Arc introuvable" });
 
     await db.arcs.delete({
       where: { id: Number(id) },
