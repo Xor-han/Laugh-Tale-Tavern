@@ -48,75 +48,93 @@ router.get("/:id", async (req: Request, res: Response) => {
 router.post("/", async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ message: "Non authentifié" });
-    }
+    if (!userId) return res.status(401).json({ message: "Non authentifié" });
+
     const {
       name,
       image,
-      profession,
       isAlive,
       devilFruit_id,
       organisationId,
       equipageId,
+      profession,
+      arcId,
     } = req.body;
+
+    if (!name || !image || isAlive === undefined || !profession) {
+      return res.status(400).json({ message: "Champs obligatoires manquants" });
+    }
 
     const newCharacter = await db.onePieceCharacter.create({
       data: {
         name,
         image,
+        isAlive,
         profession,
-        isAlive: isAlive || false,
-        devilFruit_id: devilFruit_id || null,
-        organisationId: organisationId || null,
-        equipageId: equipageId || null,
+        devilFruit_id: devilFruit_id ? Number(devilFruit_id) : null,
+        organisationId: organisationId ? Number(organisationId) : null,
+        equipageId: equipageId ? Number(equipageId) : null,
+        arcId: arcId ? Number(arcId) : null,
       },
     });
+
     res.status(201).json(newCharacter);
   } catch (error) {
-    res.status(500).json({ message: "Error server", error });
+    res.status(500).json({ message: "Erreur serveur", error });
   }
 });
 
-router.put("/", async (req: Request, res: Response) => {
+router.put("/:id", async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) {
       return res.status(401).json({ message: "Non authentifié" });
     }
+
     const { id } = req.params;
     const {
       name,
       image,
-      profession,
       isAlive,
+      profession,
       devilFruit_id,
       organisationId,
       equipageId,
+      arcId,
     } = req.body;
 
-    if (!name || !image || !profession) {
+    if (!name || !image || isAlive === undefined || !profession) {
       return res.status(400).json({
-        message: "Les champs name, image et profession sont obligatoires",
+        message:
+          "Les champs name, image, isAlive et profession sont obligatoires",
       });
     }
 
-    const data = await db.onePieceCharacter.update({
+    const existing = await db.onePieceCharacter.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!existing) {
+      return res.status(404).json({ message: "Personnage non trouvé" });
+    }
+
+    const updatedCharacter = await db.onePieceCharacter.update({
       where: { id: Number(id) },
       data: {
         name,
         image,
-        devilFruit_id: devilFruit_id || null,
+        isAlive: Boolean(isAlive),
         profession,
-        isAlive: isAlive ?? false,
-        organisationId: organisationId || null,
-        equipageId: equipageId || null,
+        devilFruit_id: devilFruit_id ? Number(devilFruit_id) : null,
+        organisationId: organisationId ? Number(organisationId) : null,
+        equipageId: equipageId ? Number(equipageId) : null,
+        arcId: arcId ? Number(arcId) : null,
       },
     });
 
-    res.status(201).json(data);
+    res.status(200).json(updatedCharacter);
   } catch (error) {
-    res.status(500).json({ message: "Error server", error });
+    res.status(500).json({ message: "Erreur serveur", error });
   }
 });
 
@@ -126,72 +144,73 @@ router.patch("/:id", async (req: Request, res: Response) => {
     if (!userId) {
       return res.status(401).json({ message: "Non authentifié" });
     }
+
     const { id } = req.params;
 
+
     const existing = await db.onePieceCharacter.findUnique({
-      where: {
-        id: Number(id),
-      },
+      where: { id: Number(id) },
     });
+
+    if (!existing) {
+      return res.status(404).json({ message: "Personnage non trouvé" });
+    }
 
     const {
       name,
       image,
-      devilFruit_id,
-      profession,
       isAlive,
+      profession,
+      devilFruit_id,
       organisationId,
       equipageId,
+      arcId,
     } = req.body;
 
     const data: {
       name?: string;
       image?: string;
-      devilFruit_id?: number | null;
-      profession?: Profession;
       isAlive?: boolean;
+      profession?: Profession;
+      devilFruit_id?: number | null;
       organisationId?: number | null;
       equipageId?: number | null;
+      arcId?: number | null;
     } = {};
 
-    if (name !== undefined) {
-      data.name = name;
-    }
+    if (name !== undefined) data.name = name;
+    if (image !== undefined) data.image = image;
+    if (isAlive !== undefined) data.isAlive = isAlive;
+    if (profession !== undefined) data.profession = profession;
 
-    if (image !== undefined) {
-      data.image = image;
-    }
 
     if (devilFruit_id !== undefined) {
-      data.devilFruit_id = devilFruit_id;
-    }
-
-    if (isAlive !== undefined) {
-      data.isAlive = isAlive;
-    }
-
-    if (profession !== undefined) {
-      data.profession = profession;
+      data.devilFruit_id =
+        devilFruit_id !== null ? Number(devilFruit_id) : null;
     }
     if (organisationId !== undefined) {
-      data.organisationId = organisationId;
+      data.organisationId =
+        organisationId !== null ? Number(organisationId) : null;
     }
     if (equipageId !== undefined) {
-      data.equipageId = equipageId;
+      data.equipageId = equipageId !== null ? Number(equipageId) : null;
+    }
+    if (arcId !== undefined) {
+      data.arcId = arcId !== null ? Number(arcId) : null;
     }
 
     if (Object.keys(data).length === 0) {
-      return res.status(400).json({
-        message: "Aucun champs à modifier",
-      });
+      return res.status(400).json({ message: "Aucun champ à modifier" });
     }
 
-    const character = await db.onePieceCharacter.update({
+    const updated = await db.onePieceCharacter.update({
       where: { id: Number(id) },
       data,
     });
-    res.status(200).json(character);
+
+    res.status(200).json(updated);
   } catch (error) {
+    console.error("Erreur PATCH Character:", error);
     res.status(500).json({ message: "Erreur serveur", error });
   }
 });
@@ -199,23 +218,14 @@ router.patch("/:id", async (req: Request, res: Response) => {
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ message: "Non authentifié" });
-    }
-    const { id } = req.params;
-
-    const existing = await db.onePieceCharacter.findUnique({
-      where: {
-        id: Number(id),
-      },
-    });
+    if (!userId) return res.status(401).json({ message: "Non authentifié" });
 
     await db.onePieceCharacter.delete({
-      where: { id: Number(id) },
+      where: { id: Number(req.params.id) },
     });
-    res.status(204).json("Personnage supprimé avec succès");
+    res.status(204).send();
   } catch (error) {
-    res.status(500).json({ message: "Error server", error });
+    res.status(500).json({ message: "Erreur de suppression" });
   }
 });
 
