@@ -3,19 +3,19 @@ import type { OnePieceCharacter, CharacterUpdate, CreateCharacter } from "../int
 const API_URL = "http://localhost:3000";
 
 export const getCharacters = async (): Promise<OnePieceCharacter[]> => {
-    const res = await fetch(`${API_URL}/characters`, { credentials: "include" });
+    const res = await fetch(`${API_URL}/personnages`, { credentials: "include" });
     if (!res.ok) throw new Error("Erreur lors de la récupération des personnages");
     return res.json();
 };
 
 export const getCharacterById = async (id: number): Promise<OnePieceCharacter> => {
-    const res = await fetch(`${API_URL}/characters/${id}`, { credentials: "include" });
+    const res = await fetch(`${API_URL}/personnages/${id}`, { credentials: "include" });
     if (!res.ok) throw new Error("Erreur lors de la récupération du personnage");
     return res.json();
 };
 
 export const createCharacter = async (character: CreateCharacter): Promise<OnePieceCharacter> => {
-    const res = await fetch(`${API_URL}/characters`, {
+    const res = await fetch(`${API_URL}/personnages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -26,7 +26,7 @@ export const createCharacter = async (character: CreateCharacter): Promise<OnePi
 };
 
 export const putCharacter = async (id: number, character: CreateCharacter): Promise<OnePieceCharacter> => {
-    const res = await fetch(`${API_URL}/characters/${id}`, {
+    const res = await fetch(`${API_URL}/personnages/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -42,7 +42,7 @@ export const putCharacter = async (id: number, character: CreateCharacter): Prom
 };
 
 export const updateCharacter = async (id: number, character: CharacterUpdate): Promise<OnePieceCharacter> => {
-    const res = await fetch(`${API_URL}/characters/${id}`, {
+    const res = await fetch(`${API_URL}/personnages/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -53,7 +53,7 @@ export const updateCharacter = async (id: number, character: CharacterUpdate): P
 };
 
 export const deleteCharacter = async (id: number): Promise<void> => {
-    const res = await fetch(`${API_URL}/characters/${id}`, {
+    const res = await fetch(`${API_URL}/personnages/${id}`, {
         method: "DELETE",
         credentials: "include"
     });

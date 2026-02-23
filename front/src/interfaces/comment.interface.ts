@@ -8,5 +8,5 @@ export interface Comment {
   pageId: number;
   parentId?: number | null;
   author: User;
-  replies?: Comment[]; // Pour la récursion des réponses
+  replies?: Comment[];
 }

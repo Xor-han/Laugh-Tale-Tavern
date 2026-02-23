@@ -4,5 +4,18 @@ export interface DevilFruit {
   name: string;
   Image: string;
   typeId: number;
-  type?: Type; // Optionnel selon si tu fais un include
+  type?: Type;
 }
+
+export interface CreateFruit {
+  name: string;
+  Image: string;
+  typeId: number;
+}
+
+export interface FruitUpdate {
+  name?: string;
+  Image?: string;
+  typeId?: number;
+}
+
