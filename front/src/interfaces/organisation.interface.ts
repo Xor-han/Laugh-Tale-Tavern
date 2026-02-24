@@ -7,3 +7,13 @@ export interface Organisation {
   equipageId?: number | null;
   equipage?: Equipage | null;
 }
+
+export interface CreateOrg {
+  name: string;
+  equipageId?: number | null;
+}
+
+export interface OrgUpdate {
+  name?: string;
+  equipageId?: number | null;
+}
