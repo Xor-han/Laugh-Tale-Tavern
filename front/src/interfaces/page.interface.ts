@@ -6,3 +6,13 @@ export interface Page {
   content: string;
   comments?: Comment[];
 }
+
+export interface PageUpdate {
+  slug?: string;
+  content?: string;
+}
+
+export interface CreatePage {
+  slug: string;
+  content: string;
+}
