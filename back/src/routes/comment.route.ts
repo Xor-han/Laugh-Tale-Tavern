@@ -24,16 +24,20 @@ router.get("/", async (req: Request, res: Response) => {
       include: {
         author: {
           select: {
+            id : true,
             name: true,
             image: true,
+            email : true
           },
         },
         replies: {
           include: {
             author: {
               select: {
+                id : true,
                 name: true,
                 image: true,
+                email : true
               },
             },
           },
@@ -60,16 +64,20 @@ router.get("/:id", async (req: Request, res: Response) => {
       include: {
         author: {
           select: {
+            id: true,
             name: true,
             image: true,
+            email: true
           },
         },
         replies: {
           include: {
             author: {
               select: {
+                id : true,
                 name: true,
                 image: true,
+                email : true
               },
             },
           },
@@ -102,6 +110,7 @@ router.get("/:id/replies", async (req: Request, res: Response) => {
             id: true,
             name: true,
             image: true,
+            email : true
           },
         },
       },
@@ -190,7 +199,7 @@ router.put("/:id", async (req: Request, res: Response) => {
       },
       include: {
         author: {
-          select: { name: true, image: true },
+          select: { id : true, name: true, image: true, email : true },
         },
       },
     });

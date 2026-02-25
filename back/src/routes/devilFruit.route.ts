@@ -10,7 +10,7 @@ const getUserId = async (req: Request): Promise<string | null> => {
   });
   return session?.user?.id ?? null;
 };
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     const data = await db.devilFruit.findMany({
       orderBy: { name: "desc" },
@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const fruit = await db.devilFruit.findUnique({
@@ -38,7 +38,36 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.post("/", async (req: Request, res: Response) => {
+  try {
+    const userId = await getUserId(req);
+    if (!userId) return res.status(401).json({ message: "Non authentifié" });
+    const { name, Image, typeId } = req.body;
+    if (!name || !Image || !typeId) {
+      return res.status(400).json({
+        message: "Tous les champs sont obligatoires (name, Image, typeId).",
+      });
+    }
+    const newFruit = await db.devilFruit.create({
+      data: {
+        name: name,
+        Image: Image,
+        type: {
+          connect: { id: Number(typeId) }
+        }
+      },
+      include: {
+        type: true 
+      }
+    });
+
+    res.status(201).json(newFruit);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error });
+  }
+});
+
+router.put("/:id", async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) {
@@ -48,12 +77,10 @@ router.put("/:id", async (req, res) => {
     const { name, image, type } = req.body;
 
     if (!name || !type) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Le nom et le type sont obligatoires pour une mise à jour complète",
-        });
+      return res.status(400).json({
+        message:
+          "Le nom et le type sont obligatoires pour une mise à jour complète",
+      });
     }
 
     const updatedFruit = await db.devilFruit.update({
@@ -126,7 +153,7 @@ router.patch("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) {

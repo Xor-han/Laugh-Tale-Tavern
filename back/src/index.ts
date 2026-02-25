@@ -30,12 +30,12 @@ app.get("/", (req : Request, res : Response) => {
 });
 
 
-app.use("/personnages", characterRouter);
-app.use("/commentaires", commentRouter);
+app.use("/characters", characterRouter);
+app.use("/comments", commentRouter);
 app.use("/fruits", devilFruitRouter);
 app.use("/pages", pageRouter);
 app.use("/organisations", organisationRouter);
-app.use("/equipages", equipageRouter);
+app.use("/crews", equipageRouter);
 app.use("/types", typeRouter);
 app.use("/arcs",arcRouter);
 
