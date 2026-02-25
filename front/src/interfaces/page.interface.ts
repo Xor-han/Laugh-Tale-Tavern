@@ -4,6 +4,7 @@ export interface Page {
   id: number;
   slug: string;
   content: string;
+  createdAt : string;
   comments?: Comment[];
 }
 

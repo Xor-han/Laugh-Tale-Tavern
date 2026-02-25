@@ -1,6 +1,9 @@
+import type { DevilFruit } from "./devilFruit.interface";
+
 export interface Type {
   id: number;
   name: string;
+  devilFruits?: DevilFruit[];
   _count?: { devilFruit: number };
 }
 
