@@ -11,7 +11,7 @@ const getUserId = async (req: Request): Promise<string | null> => {
   return session?.user?.id ?? null;
 };
 
-router.get("/", async (req, res) => {
+router.get("/", async (req : Request, res : Response) => {
   try {
     const pages = await db.page.findMany();
     res.json(pages);
@@ -20,11 +20,11 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:slug", async (req, res) => {
+router.get("/:slug", async (req : Request, res: Response) => {
   try {
     const { slug } = req.params;
     const page = await db.page.findUnique({
-      where: { slug },
+      where: { slug : slug as string},
       include: {
         comments: {
           where: { parentId: null },
@@ -83,7 +83,7 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-router.put("/:id", async (req, res) => { // Correction du path
+router.put("/:id", async (req : Request, res: Response) => { // Correction du path
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
@@ -139,7 +139,7 @@ router.patch("/:id", async (req: Request, res: Response) => { // Correction du p
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req : Request, res : Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
