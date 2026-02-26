@@ -9,7 +9,7 @@ export const getPages = async (): Promise<Page[]> => {
 };
 
 export const getPageBySlug = async (slug: string): Promise<Page> => {
-    const res = await fetch(`${API_URL}/pages/slug/${slug}`, { credentials: "include" });
+    const res = await fetch(`${API_URL}/pages/${slug}`, { credentials: "include" });
     if (!res.ok) throw new Error("Erreur lors de la récupération de la page");
     return res.json();
 };
