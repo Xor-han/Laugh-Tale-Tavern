@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { authClient } from "../lib/auth-client";
+import { X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface Props {
     onAuth: () => void;
@@ -51,7 +53,8 @@ export const AuthPage = ({ onAuth }: Props) => {
                 onSubmit={handleSubmit}
                 className="bg-white rounded-2xl p-10 w-full max-w-sm flex flex-col gap-5 shadow-lg"
             >
-                <h1 className="text-2xl font-bold text-center">Docknotes</h1>
+                <Link to={"/"} className="cursor-pointer text-red-600 hover:text-black w-fit flex self-end"><X className="w-5 h-5"/></Link>
+                <h1 className="text-2xl font-bold text-center">Laugh Tale Tavern</h1>
                 <p className="text-sm text-center text-gray-500">
                     {isSignUp ? "Créer un compte" : "Se connecter"}
                 </p>
