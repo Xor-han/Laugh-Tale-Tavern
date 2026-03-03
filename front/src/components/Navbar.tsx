@@ -10,9 +10,10 @@ interface Props {
 
 export const Navbar = ({ userId, userImage, userName, session }: Props) => {
   return (
-    <nav className="flex px-24 py-7 gap-14 items-center justify-between">
+    <nav className="flex px-24 py-7 items-center justify-between">
+      <div className="flex gap-14">
       <h1 className="text-xl">Laugh Tale Tavern</h1>
-      <ul className="flex gap-8 text-lg">
+      <ul className="flex gap-8 text-sm text-center items-center">
         <li className="hover:text-yellow-400">
           <Link to={"/"}>Arcs</Link>
         </li>
@@ -29,7 +30,8 @@ export const Navbar = ({ userId, userImage, userName, session }: Props) => {
           <Link to={"/"}>Fruits du démon</Link>
         </li>
       </ul>
-      <div className="flex max-w-1/2 w-full justify-self-end gap-10">
+      </div>
+      <div className="flex justify-self-end gap-10 ">
       <SearchBar />
       {
         session?
@@ -42,7 +44,7 @@ export const Navbar = ({ userId, userImage, userName, session }: Props) => {
           <p>{userName}</p>
           </Link>
           :
-          <Link to={"/login"} className="px-4 py-2 bg-black text-white rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-center hover:text-blue-600 ">
+          <Link to={"/login"} className="px-4 py-2 bg-black text-white rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-center hover:text-blue-600 text-sm">
             <p>Se connecter</p>
           </Link>
       }

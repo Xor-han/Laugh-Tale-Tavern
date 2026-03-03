@@ -1,3 +1,4 @@
+import { Header } from "./components/Header";
 import { Navbar } from "./components/Navbar";
 import { authClient } from "./lib/auth-client";
 
@@ -6,6 +7,7 @@ function App() {
   return (
     <>
       <Navbar userId={session?.user.id} userImage={session?.user.image} userName={session?.user.name} session={session ? true : false}/>
+      <Header/>
     </>
   );
 }
