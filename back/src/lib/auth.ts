@@ -9,5 +9,9 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  roles: {
+    admin: {name: "admin"},
+    user: {name: "user"}
+  },
   trustedOrigins: ["http://localhost:5173"],
 });
