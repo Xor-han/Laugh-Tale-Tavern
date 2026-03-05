@@ -6,6 +6,8 @@ import { CharacterPage } from "../pages/CharactersPage"
 import { CrewsPage } from "../pages/CrewsPage"
 import { FruitsPage } from "../pages/Fruits"
 import { OrganisationsPage } from "../pages/OrganisationsPage"
+import { ProtectedRoute } from "../middleware/middleware"
+import { AdminDashboard } from "../pages/AdminDashboard"
 
 export const Router = createBrowserRouter([
     {
@@ -42,5 +44,13 @@ export const Router = createBrowserRouter([
         path: "/organisations",
         element: <OrganisationsPage/>
     },
+
+    {
+        path: "/admin",
+        element:
+        <ProtectedRoute>
+            <AdminDashboard/>
+        </ProtectedRoute>
+    }
 
 ])

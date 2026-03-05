@@ -10,6 +10,7 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { data: session, isPending } = useSession();
+  console.log("Session complète :", session);
 
   if (isPending) {
     return <div>Chargement de la session...</div>;
