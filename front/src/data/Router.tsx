@@ -8,6 +8,7 @@ import { FruitsPage } from "../pages/Fruits"
 import { OrganisationsPage } from "../pages/OrganisationsPage"
 import { ProtectedRoute } from "../middleware/middleware"
 import { AdminDashboard } from "../pages/AdminDashboard"
+import { ProfilePage } from "../pages/ProfilePage"
 
 export const Router = createBrowserRouter([
     {
@@ -51,6 +52,11 @@ export const Router = createBrowserRouter([
         <ProtectedRoute>
             <AdminDashboard/>
         </ProtectedRoute>
+    },
+
+    {
+        path: "/profile/:slug",
+        element: <ProfilePage/>
     }
 
 ])

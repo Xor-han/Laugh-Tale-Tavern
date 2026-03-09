@@ -35,9 +35,9 @@ export const Navbar = ({ userId, userImage, userName, session }: Props) => {
       <SearchBar />
       {
         session?
-        <Link to={`/profile/${userId}`}>
+        <Link to={`/profile/${userId}`} className="flex flex-col justify-center items-center">
           {userImage ? (
-            <img src={userImage} alt="" className="w-8 rounded-full" />
+            <img src={userImage} alt="Profile de l'utilisateur" className="w-8 h-8 rounded-full object-cover border border-gray-200 shadow-sm" />
           ) : (
             <User className="w-5 h-5" />
           )}
