@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { authClient } from "../lib/auth-client";
-import { User, Lock, Mail, LogOut, ShieldCheck, Image as ImageIcon } from "lucide-react";
+import {
+  User,
+  Lock,
+  Mail,
+  LogOut,
+  ShieldCheck,
+  Image as ImageIcon,
+} from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const ProfilePage = () => {
@@ -22,9 +29,9 @@ export const ProfilePage = () => {
 
   const handleUpdateProfile = async () => {
     setIsUpdating(true);
-    await authClient.updateUser({ 
+    await authClient.updateUser({
       name,
-      image 
+      image,
     });
     setIsUpdating(false);
     alert("Profil mis à jour !");
@@ -51,9 +58,15 @@ export const ProfilePage = () => {
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-6">
           <div className="h-20 w-20 bg-black rounded-2xl flex items-center justify-center overflow-hidden shadow-inner">
             {session?.user?.image || image ? (
-              <img src={image || session?.user?.image || undefined} alt="Avatar" className="h-full w-full object-cover" />
+              <img
+                src={image || session?.user?.image || undefined}
+                alt="Avatar"
+                className="h-full w-full object-cover"
+              />
             ) : (
-              <span className="text-white text-2xl font-bold">{session?.user?.name?.charAt(0) || "U"}</span>
+              <span className="text-white text-2xl font-bold">
+                {session?.user?.name?.charAt(0) || "U"}
+              </span>
             )}
           </div>
           <div>
@@ -88,11 +101,10 @@ export const ProfilePage = () => {
                 <ShieldCheck size={20} className="text-blue-500" /> Informations
               </h2>
               <div className="space-y-4">
-                {/* Champ Nom */}
                 <div>
-                  <label className="text-xs font-bold text-gray-400 uppercase ml-1">
+                  <p className="text-xs font-bold text-gray-400 uppercase ml-1">
                     Nom d'affichage
-                  </label>
+                  </p>
                   <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -100,11 +112,10 @@ export const ProfilePage = () => {
                   />
                 </div>
 
-                {/* Champ Image URL */}
                 <div>
-                  <label className="text-xs font-bold text-gray-400 uppercase ml-1 flex items-center gap-1">
+                  <p className="text-xs font-bold text-gray-400 uppercase ml-1 flex items-center gap-1">
                     <ImageIcon size={12} /> URL de l'image
-                  </label>
+                  </p>
                   <input
                     value={image}
                     onChange={(e) => setImage(e.target.value)}

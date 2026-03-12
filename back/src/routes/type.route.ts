@@ -16,15 +16,14 @@ router.get("/", async (req: Request, res: Response) => {
   try {
     const data = await db.type.findMany({
       include: {
-        _count: { select: { devilFruit: true } } 
-      }
+        _count: { select: { devilFruit: true } },
+      },
     });
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
   }
 });
-
 
 router.get("/:id", async (req: Request, res: Response) => {
   try {
@@ -37,10 +36,10 @@ router.get("/:id", async (req: Request, res: Response) => {
           select: {
             id: true,
             name: true,
-            Image: true
-          }
-        }
-      }
+            image: true,
+          },
+        },
+      },
     });
 
     if (!data) {
@@ -53,16 +52,17 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/", isAdmin,async (req: Request, res: Response) => {
+router.post("/", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
 
     const { name } = req.body;
-    if (!name) return res.status(400).json({ message: "Le nom du type est requis" });
+    if (!name)
+      return res.status(400).json({ message: "Le nom du type est requis" });
 
     const newType = await db.type.create({
-      data: { name }
+      data: { name },
     });
     res.status(201).json(newType);
   } catch (error) {
@@ -70,7 +70,7 @@ router.post("/", isAdmin,async (req: Request, res: Response) => {
   }
 });
 
-router.put("/:id", isAdmin,async (req: Request, res: Response) => {
+router.put("/:id", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
@@ -78,11 +78,12 @@ router.put("/:id", isAdmin,async (req: Request, res: Response) => {
     const { id } = req.params;
     const { name } = req.body;
 
-    if (!name) return res.status(400).json({ message: "Le nom est obligatoire" });
+    if (!name)
+      return res.status(400).json({ message: "Le nom est obligatoire" });
 
     const updatedType = await db.type.update({
       where: { id: Number(id) },
-      data: { name }
+      data: { name },
     });
     res.status(200).json(updatedType);
   } catch (error) {
@@ -90,7 +91,7 @@ router.put("/:id", isAdmin,async (req: Request, res: Response) => {
   }
 });
 
-router.patch("/:id", isAdmin,async (req: Request, res: Response) => {
+router.patch("/:id", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
@@ -113,7 +114,7 @@ router.patch("/:id", isAdmin,async (req: Request, res: Response) => {
 
     const updated = await db.type.update({
       where: { id: Number(id) },
-      data
+      data,
     });
     res.status(200).json(updated);
   } catch (error) {
@@ -121,7 +122,7 @@ router.patch("/:id", isAdmin,async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/:id", isAdmin,async (req: Request, res: Response) => {
+router.delete("/:id", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
@@ -129,14 +130,15 @@ router.delete("/:id", isAdmin,async (req: Request, res: Response) => {
     const { id } = req.params;
 
     await db.type.delete({
-      where: { id: Number(id) }
+      where: { id: Number(id) },
     });
 
     res.status(204).send();
   } catch (error) {
-    res.status(500).json({ 
-      message: "Erreur : Vérifiez que ce type n'est pas utilisé par des fruits du démon avant de le supprimer", 
-      error 
+    res.status(500).json({
+      message:
+        "Erreur : Vérifiez que ce type n'est pas utilisé par des fruits du démon avant de le supprimer",
+      error,
     });
   }
 });

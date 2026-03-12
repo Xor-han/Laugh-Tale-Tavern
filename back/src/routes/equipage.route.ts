@@ -71,7 +71,7 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
   }
 });
 
-router.put("/:id",isAdmin, async (req: Request, res: Response) => {
+router.put("/:id", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) {
@@ -108,7 +108,7 @@ router.put("/:id",isAdmin, async (req: Request, res: Response) => {
   }
 });
 
-router.patch("/:id",isAdmin, async (req: Request, res: Response) => {
+router.patch("/:id", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) {
@@ -150,7 +150,7 @@ router.patch("/:id",isAdmin, async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/:id",isAdmin, async (req: Request, res: Response) => {
+router.delete("/:id", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) {

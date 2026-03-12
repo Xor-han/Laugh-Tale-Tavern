@@ -6,7 +6,7 @@ export interface Comment {
   createdAt: string;
   authorId: string;
   pageId: number;
-  parentId?: string | null;
+  parentId?: string;
   updatedAt: string;
   author: User;
   replies?: Comment[];
@@ -15,7 +15,7 @@ export interface Comment {
 export interface CreateComment {
   content: string;
   pageId: number;
-  parentId?: string | null; 
+  parentId?: string; 
 }
 
 export interface CommentUpdate {

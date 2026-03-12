@@ -12,7 +12,7 @@ const getUserId = async (req: Request): Promise<string | null> => {
   return session?.user?.id ?? null;
 };
 
-router.get("/", async (req : Request, res : Response) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     const pages = await db.page.findMany();
     res.json(pages);
@@ -21,19 +21,19 @@ router.get("/", async (req : Request, res : Response) => {
   }
 });
 
-router.get("/:slug", async (req : Request, res: Response) => {
+router.get("/:slug", async (req: Request, res: Response) => {
   try {
     const { slug } = req.params;
     const page = await db.page.findUnique({
-      where: { slug : slug as string},
+      where: { slug: slug as string },
       include: {
         comments: {
           where: { parentId: null },
           include: {
             author: true,
-            replies: { 
-              include: { author: true }
-            }
+            replies: {
+              include: { author: true },
+            },
           },
         },
       },
@@ -46,7 +46,7 @@ router.get("/:slug", async (req : Request, res: Response) => {
   }
 });
 
-router.post("/",isAdmin, async (req: Request, res: Response) => {
+router.post("/", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) {
@@ -73,18 +73,20 @@ router.post("/",isAdmin, async (req: Request, res: Response) => {
 
     const newPage = await db.page.create({
       data: {
-        slug: slug.toLowerCase().trim().replace(/\s+/g, '-'),
+        slug: slug.toLowerCase().trim().replace(/\s+/g, "-"),
         content: content,
       },
     });
 
     res.status(201).json(newPage);
   } catch (error) {
-    res.status(500).json({ message: "Erreur serveur lors de la création", error });
+    res
+      .status(500)
+      .json({ message: "Erreur serveur lors de la création", error });
   }
 });
 
-router.put("/:id",isAdmin, async (req : Request, res: Response) => { // Correction du path
+router.put("/:id", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
@@ -93,7 +95,9 @@ router.put("/:id",isAdmin, async (req : Request, res: Response) => { // Correcti
     const { slug, content } = req.body;
 
     if (!slug || !content) {
-      return res.status(400).json({ message: "Slug et Content sont obligatoires pour un PUT" });
+      return res
+        .status(400)
+        .json({ message: "Slug et Content sont obligatoires pour un PUT" });
     }
 
     const updatedPage = await db.page.update({
@@ -106,7 +110,7 @@ router.put("/:id",isAdmin, async (req : Request, res: Response) => { // Correcti
   }
 });
 
-router.patch("/:id",isAdmin, async (req: Request, res: Response) => { // Correction du path
+router.patch("/:id", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
@@ -120,7 +124,7 @@ router.patch("/:id",isAdmin, async (req: Request, res: Response) => { // Correct
     if (!existing) return res.status(404).json({ message: "Page not found" });
 
     const { slug, content } = req.body;
-    const data: { slug?: string; content?: string; } = {};
+    const data: { slug?: string; content?: string } = {};
 
     if (slug !== undefined) data.slug = slug;
     if (content !== undefined) data.content = content;
@@ -140,7 +144,7 @@ router.patch("/:id",isAdmin, async (req: Request, res: Response) => { // Correct
   }
 });
 
-router.delete("/:id",isAdmin, async (req : Request, res : Response) => {
+router.delete("/:id", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });

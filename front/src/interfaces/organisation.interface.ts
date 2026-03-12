@@ -9,16 +9,16 @@ export interface Organisation {
   _count?: {
     onePieceCharacter : number;
   }
-  equipageId?: number | null;
-  equipage?: Equipage | null;
+  equipageId?: number;
+  equipage?: Equipage;
 }
 
 export interface CreateOrg {
   name: string;
-  equipageId?: number | null;
+  equipageId?: number;
 }
 
 export interface OrgUpdate {
   name?: string;
-  equipageId?: number | null;
+  equipageId?: number;
 }

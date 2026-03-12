@@ -9,7 +9,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-user: {
+  user: {
     additionalFields: {
       role: {
         type: "string",

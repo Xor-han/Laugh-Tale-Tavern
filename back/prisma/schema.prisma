@@ -102,37 +102,43 @@ model Page {
 }
 
 model Arcs {
-    id     Int    @id @default(autoincrement()) 
-    name   String
-    image  String
-    onePieceCharacter OnePieceCharacter[]
+  id                Int                 @id @default(autoincrement())
+  name              String
+  imageId           String?             @unique 
+  image             Image?              @relation(fields: [imageId], references: [id], onDelete: SetNull)
+  onePieceCharacter OnePieceCharacter[]
+
+  @@map("arcs")
 }
 
 model OnePieceCharacter {
-  id             Int    @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
   name           String
-  image          String
+  imageId        String?       @unique
+  image          Image?        @relation(fields: [imageId], references: [id], onDelete: SetNull)
   isAlive        Boolean
   devilFruit_id  Int?
-  devilFruit     DevilFruit? @relation(fields: [devilFruit_id], references: [id])
+  devilFruit     DevilFruit?   @relation(fields: [devilFruit_id], references: [id])
   organisationId Int?
-  organisation   Organisation?  @relation(fields : [organisationId], references: [id])
+  organisation   Organisation? @relation(fields: [organisationId], references: [id])
   equipageId     Int?
-  equipage       Equipages?  @relation(fields : [equipageId], references:[id])
+  equipage       Equipages?    @relation(fields: [equipageId], references: [id])
   profession     Profession
   arcId          Int?
-  arc            Arcs?       @relation(fields : [arcId], references: [id])
+  arc            Arcs?         @relation(fields: [arcId], references: [id])
 
   @@map("onePieceCharacter")
 }
 
 model DevilFruit {
-  id           Int      @id @default(autoincrement())
-  name         String
-  Image        String?
-  onePieceCharacters   OnePieceCharacter[]
-  typeId         Int?
-  type           Type?   @relation(fields: [typeId], references: [id])
+  id                 Int                 @id @default(autoincrement())
+  name               String
+  imageId            String?             @unique 
+  image              Image?              @relation(fields: [imageId], references: [id], onDelete: SetNull)
+  onePieceCharacters OnePieceCharacter[]
+  typeId             Int?
+  type               Type?               @relation(fields: [typeId], references: [id])
+
   @@map("devilFruit")
 }
 
@@ -157,6 +163,18 @@ model Equipages {
     name           String
     onePieceCharacter OnePieceCharacter[]
     organisation      Organisation[]
+}
+
+model Image {
+  id        String   @id @default(uuid())
+  url       String
+  publicId  String   @unique
+  createdAt DateTime @default(now())
+  character   OnePieceCharacter?
+  arc         Arcs?
+  devilFruit  DevilFruit?
+
+  @@map("image")
 }
 
 enum Profession {

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { auth } from "../lib/auth"; // Ton instance Better Auth
 
-
 export interface AuthRequest extends Request {
   session?: any;
 }

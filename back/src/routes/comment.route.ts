@@ -3,7 +3,6 @@ import db from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { fromNodeHeaders } from "better-auth/node";
 
-
 const router: express.Router = express.Router();
 
 const getUserId = async (req: Request): Promise<string | null> => {
@@ -24,20 +23,20 @@ router.get("/", async (req: Request, res: Response) => {
       include: {
         author: {
           select: {
-            id : true,
+            id: true,
             name: true,
             image: true,
-            email : true
+            email: true,
           },
         },
         replies: {
           include: {
             author: {
               select: {
-                id : true,
+                id: true,
                 name: true,
                 image: true,
-                email : true
+                email: true,
               },
             },
           },
@@ -67,17 +66,17 @@ router.get("/:id", async (req: Request, res: Response) => {
             id: true,
             name: true,
             image: true,
-            email: true
+            email: true,
           },
         },
         replies: {
           include: {
             author: {
               select: {
-                id : true,
+                id: true,
                 name: true,
                 image: true,
-                email : true
+                email: true,
               },
             },
           },
@@ -110,7 +109,7 @@ router.get("/:id/replies", async (req: Request, res: Response) => {
             id: true,
             name: true,
             image: true,
-            email : true
+            email: true,
           },
         },
       },
@@ -199,7 +198,7 @@ router.put("/:id", async (req: Request, res: Response) => {
       },
       include: {
         author: {
-          select: { id : true, name: true, image: true, email : true },
+          select: { id: true, name: true, image: true, email: true },
         },
       },
     });
@@ -235,7 +234,6 @@ router.patch("/:id", async (req: Request, res: Response) => {
         .json({ message: "Action interdite : vous n'êtes pas l'auteur" });
     }
 
-  
     const updatedComment = await db.comment.update({
       where: { id: id as string },
       data: {

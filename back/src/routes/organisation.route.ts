@@ -17,8 +17,8 @@ router.get("/", async (req: Request, res: Response) => {
     const data = await db.organisation.findMany({
       include: {
         _count: { select: { onePieceCharacter: true } },
-        equipage: true
-      }
+        equipage: true,
+      },
     });
     res.status(200).json(data);
   } catch (error) {
@@ -33,29 +33,31 @@ router.get("/:id", async (req: Request, res: Response) => {
       where: { id: Number(id) },
       include: {
         onePieceCharacter: true,
-        equipage: true
-      }
+        equipage: true,
+      },
     });
-    if (!data) return res.status(404).json({ message: "Organisation non trouvée" });
+    if (!data)
+      return res.status(404).json({ message: "Organisation non trouvée" });
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
   }
 });
 
-router.post("/",isAdmin, async (req: Request, res: Response) => {
+router.post("/", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
 
     const { name, equipageId } = req.body;
-    if (!name) return res.status(400).json({ message: "Le nom est obligatoire" });
+    if (!name)
+      return res.status(400).json({ message: "Le nom est obligatoire" });
 
     const newOrg = await db.organisation.create({
       data: {
         name,
-        equipageId: equipageId ? Number(equipageId) : null
-      }
+        equipageId: equipageId ? Number(equipageId) : null,
+      },
     });
     res.status(201).json(newOrg);
   } catch (error) {
@@ -63,7 +65,7 @@ router.post("/",isAdmin, async (req: Request, res: Response) => {
   }
 });
 
-router.put("/:id",isAdmin, async (req: Request, res: Response) => {
+router.put("/:id", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
@@ -79,8 +81,8 @@ router.put("/:id",isAdmin, async (req: Request, res: Response) => {
       where: { id: Number(id) },
       data: {
         name,
-        equipageId: equipageId ? Number(equipageId) : null
-      }
+        equipageId: equipageId ? Number(equipageId) : null,
+      },
     });
     res.status(200).json(updated);
   } catch (error) {
@@ -88,7 +90,7 @@ router.put("/:id",isAdmin, async (req: Request, res: Response) => {
   }
 });
 
-router.patch("/:id", isAdmin,async (req: Request, res: Response) => {
+router.patch("/:id", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
@@ -96,9 +98,10 @@ router.patch("/:id", isAdmin,async (req: Request, res: Response) => {
     const { id } = req.params;
 
     const existing = await db.organisation.findUnique({
-      where: { id: Number(id) }
+      where: { id: Number(id) },
     });
-    if (!existing) return res.status(404).json({ message: "Organisation non trouvée" });
+    if (!existing)
+      return res.status(404).json({ message: "Organisation non trouvée" });
 
     const { name, equipageId } = req.body;
     const data: { name?: string; equipageId?: number | null } = {};
@@ -117,7 +120,7 @@ router.patch("/:id", isAdmin,async (req: Request, res: Response) => {
 
     const updated = await db.organisation.update({
       where: { id: Number(id) },
-      data
+      data,
     });
     res.status(200).json(updated);
   } catch (error) {
@@ -125,7 +128,7 @@ router.patch("/:id", isAdmin,async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/:id",isAdmin, async (req: Request, res: Response) => {
+router.delete("/:id", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
@@ -133,12 +136,13 @@ router.delete("/:id",isAdmin, async (req: Request, res: Response) => {
     const { id } = req.params;
 
     const existing = await db.organisation.findUnique({
-      where: { id: Number(id) }
+      where: { id: Number(id) },
     });
-    if (!existing) return res.status(404).json({ message: "Organisation non trouvée" });
+    if (!existing)
+      return res.status(404).json({ message: "Organisation non trouvée" });
 
     await db.organisation.delete({
-      where: { id: Number(id) }
+      where: { id: Number(id) },
     });
 
     res.status(204).send();

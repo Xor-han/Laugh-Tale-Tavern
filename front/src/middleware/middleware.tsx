@@ -15,8 +15,8 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   if (isPending) {
     return <div>Chargement de la session...</div>;
   }
-const user = session?.user as SessionUser | undefined;
-const isAdmin = user?.role === "admin";
+  const user = session?.user as SessionUser | undefined;
+  const isAdmin = user?.role === "admin";
 
   if (!isAdmin) {
     return <Navigate to="/login" replace />;
