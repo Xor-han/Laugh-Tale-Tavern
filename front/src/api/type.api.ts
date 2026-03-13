@@ -7,7 +7,7 @@ import type {
 const API_URL = "http://localhost:3000";
 
 export const getTypes = async (): Promise<Type[]> => {
-  const res = await fetch(`${API_URL}/types`, { credentials: "include" });
+  const res = await fetch(`${API_URL}/types`);
   if (!res.ok)
     throw new Error("Erreur lors de la récupération des types de fruits");
   return res.json();

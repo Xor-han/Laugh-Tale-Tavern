@@ -1,11 +1,5 @@
 -- CreateEnum
-CREATE TYPE "type" AS ENUM ('Paramecia', 'Logia', 'Zoan');
-
--- CreateEnum
-CREATE TYPE "faction" AS ENUM ('pirate', 'marine', 'citoyen', 'révolutionnaire');
-
--- CreateEnum
-CREATE TYPE "profession" AS ENUM ('capitaine', 'second', 'navigateur', 'cuisinier', 'medecin', 'tireur_d_elite', 'charpentier', 'musicien', 'archeologue', 'timonier', 'mousse', 'combattant', 'amiral_en_chef', 'amiral', 'vice_amiral', 'contre_amiral', 'commodore', 'colonel', 'lieutenant', 'enseigne', 'matelot', 'agent_du_cp', 'gardien_de_prison', 'chef_supreme', 'commandant_en_chef', 'commandant_d_armee', 'officier_revolutionnaire', 'agent_d_infiltration', 'stratege', 'inventeur', 'tenancier_de_bar', 'journaliste', 'scientifique', 'forgeron', 'chasseur_de_primes', 'marchand', 'roi', 'reine', 'prince', 'princesse', 'citoyen', 'pecheur', 'voleur', 'esclave', 'courtier_de_l_ombre', 'dragon_celeste');
+CREATE TYPE "profession" AS ENUM ('roi_des_pirates', 'empereur', 'capitaine', 'second', 'navigateur', 'cuisinier', 'medecin', 'tireur_d_elite', 'charpentier', 'musicien', 'archeologue', 'timonier', 'mousse', 'combattant', 'amiral_en_chef', 'amiral', 'vice_amiral', 'contre_amiral', 'commodore', 'colonel', 'lieutenant', 'enseigne', 'matelot', 'agent_du_cp', 'gardien_de_prison', 'chef_supreme', 'commandant_en_chef', 'commandant_d_armee', 'officier_revolutionnaire', 'agent_d_infiltration', 'stratege', 'inventeur', 'tenancier_de_bar', 'journaliste', 'scientifique', 'forgeron', 'chasseur_de_primes', 'marchand', 'roi', 'reine', 'prince', 'princesse', 'citoyen', 'pecheur', 'voleur', 'esclave', 'courtier_de_l_ombre', 'dragon_celeste');
 
 -- CreateTable
 CREATE TABLE "user" (
@@ -90,14 +84,23 @@ CREATE TABLE "page" (
 );
 
 -- CreateTable
+CREATE TABLE "arcs" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "arcs_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "onePieceCharacter" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "image" TEXT NOT NULL,
     "isAlive" BOOLEAN NOT NULL,
     "devilFruit_id" INTEGER,
-    "faction" "faction" NOT NULL,
+    "organisationId" INTEGER,
+    "equipageId" INTEGER,
     "profession" "profession" NOT NULL,
+    "arcId" INTEGER,
 
     CONSTRAINT "onePieceCharacter_pkey" PRIMARY KEY ("id")
 );
@@ -106,10 +109,47 @@ CREATE TABLE "onePieceCharacter" (
 CREATE TABLE "devilFruit" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "Image" TEXT,
-    "type" "type" NOT NULL,
+    "typeId" INTEGER,
 
     CONSTRAINT "devilFruit_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "type" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "type_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "faction" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "equipageId" INTEGER,
+
+    CONSTRAINT "faction_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Equipages" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "Equipages_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "images" (
+    "id" SERIAL NOT NULL,
+    "url" TEXT NOT NULL,
+    "publicId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "devilFruitId" INTEGER,
+    "onePieceCharacterId" INTEGER,
+    "arcId" INTEGER,
+
+    CONSTRAINT "images_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -138,3 +178,27 @@ ALTER TABLE "comment" ADD CONSTRAINT "comment_parentId_fkey" FOREIGN KEY ("paren
 
 -- AddForeignKey
 ALTER TABLE "onePieceCharacter" ADD CONSTRAINT "onePieceCharacter_devilFruit_id_fkey" FOREIGN KEY ("devilFruit_id") REFERENCES "devilFruit"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "onePieceCharacter" ADD CONSTRAINT "onePieceCharacter_organisationId_fkey" FOREIGN KEY ("organisationId") REFERENCES "faction"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "onePieceCharacter" ADD CONSTRAINT "onePieceCharacter_equipageId_fkey" FOREIGN KEY ("equipageId") REFERENCES "Equipages"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "onePieceCharacter" ADD CONSTRAINT "onePieceCharacter_arcId_fkey" FOREIGN KEY ("arcId") REFERENCES "arcs"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "devilFruit" ADD CONSTRAINT "devilFruit_typeId_fkey" FOREIGN KEY ("typeId") REFERENCES "type"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "faction" ADD CONSTRAINT "faction_equipageId_fkey" FOREIGN KEY ("equipageId") REFERENCES "Equipages"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "images" ADD CONSTRAINT "images_devilFruitId_fkey" FOREIGN KEY ("devilFruitId") REFERENCES "devilFruit"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "images" ADD CONSTRAINT "images_onePieceCharacterId_fkey" FOREIGN KEY ("onePieceCharacterId") REFERENCES "onePieceCharacter"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "images" ADD CONSTRAINT "images_arcId_fkey" FOREIGN KEY ("arcId") REFERENCES "arcs"("id") ON DELETE SET NULL ON UPDATE CASCADE;

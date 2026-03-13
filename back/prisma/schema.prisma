@@ -104,8 +104,7 @@ model Page {
 model Arcs {
   id                Int                 @id @default(autoincrement())
   name              String
-  imageId           String?             @unique 
-  image             Image?              @relation(fields: [imageId], references: [id], onDelete: SetNull)
+  image             Image[]
   onePieceCharacter OnePieceCharacter[]
 
   @@map("arcs")
@@ -114,8 +113,7 @@ model Arcs {
 model OnePieceCharacter {
   id             Int           @id @default(autoincrement())
   name           String
-  imageId        String?       @unique
-  image          Image?        @relation(fields: [imageId], references: [id], onDelete: SetNull)
+  image          Image[]
   isAlive        Boolean
   devilFruit_id  Int?
   devilFruit     DevilFruit?   @relation(fields: [devilFruit_id], references: [id])
@@ -133,8 +131,7 @@ model OnePieceCharacter {
 model DevilFruit {
   id                 Int                 @id @default(autoincrement())
   name               String
-  imageId            String?             @unique 
-  image              Image?              @relation(fields: [imageId], references: [id], onDelete: SetNull)
+  image              Image[]
   onePieceCharacters OnePieceCharacter[]
   typeId             Int?
   type               Type?               @relation(fields: [typeId], references: [id])
@@ -166,15 +163,17 @@ model Equipages {
 }
 
 model Image {
-  id        String   @id @default(uuid())
-  url       String
-  publicId  String   @unique
+  id Int @id @default(autoincrement())
+  url String
+  publicId String
   createdAt DateTime @default(now())
-  character   OnePieceCharacter?
-  arc         Arcs?
-  devilFruit  DevilFruit?
-
-  @@map("image")
+  devilFruitId Int?
+  fruit DevilFruit? @relation(fields: [ devilFruitId], references: [id])
+  onePieceCharacterId Int?
+  onePieceCharacter OnePieceCharacter? @relation(fields: [onePieceCharacterId], references: [id])
+  arcId          Int?
+  arc            Arcs?         @relation(fields: [arcId], references: [id])
+  @@map("images")
 }
 
 enum Profession {

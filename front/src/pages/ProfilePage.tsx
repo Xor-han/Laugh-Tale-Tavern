@@ -8,7 +8,8 @@ import {
   ShieldCheck,
   Image as ImageIcon,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import type { SessionUser } from "../middleware/middleware";
 
 export const ProfilePage = () => {
   const navigate = useNavigate();
@@ -26,7 +27,8 @@ export const ProfilePage = () => {
       </div>
     );
   }
-
+  const user = session?.user as unknown as SessionUser;
+  const isAdmin = user?.role === "admin";
   const handleUpdateProfile = async () => {
     setIsUpdating(true);
     await authClient.updateUser({
@@ -34,7 +36,6 @@ export const ProfilePage = () => {
       image,
     });
     setIsUpdating(false);
-    alert("Profil mis à jour !");
   };
 
   const handleChangePassword = async (e: React.FormEvent) => {
@@ -47,14 +48,14 @@ export const ProfilePage = () => {
 
     if (error) alert(error.message);
     else {
-      alert("Mot de passe modifié avec succès !");
       setPasswords({ current: "", new: "" });
     }
   };
 
   return (
     <div className="min-h-screen bg-[#f8f9fa] py-12 px-4">
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="max-w-3xl mx-auto space-y-6 flex gap-5 flex-col">
+      <Link to="/" className="text-2xl font-bold text-gray-900">Laugh Tale Taverne</Link>
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-6">
           <div className="h-20 w-20 bg-black rounded-2xl flex items-center justify-center overflow-hidden shadow-inner">
             {session?.user?.image || image ? (
@@ -84,6 +85,14 @@ export const ProfilePage = () => {
             <button className="w-full flex items-center gap-3 px-4 py-3 bg-white text-black font-medium rounded-xl shadow-sm border border-gray-100">
               <User size={18} /> Général
             </button>
+            {isAdmin ? (
+              <Link
+                to="/admin"
+                className="w-full flex items-center gap-3 px-4 py-3 bg-white text-black font-medium rounded-xl shadow-sm border border-gray-100"
+              >
+                Dashboard
+              </Link>
+            ) : null}
             <button
               onClick={async () => {
                 await authClient.signOut();

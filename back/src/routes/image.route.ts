@@ -24,6 +24,18 @@ const getUserId = async (req: Request): Promise<string | null> => {
   });
   return session?.user?.id ?? null;
 };
+router.get("/", async (req: Request, res: Response) => {
+  try {
+    const images = await db.image.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+
+    res.json(images);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+
 router.post(
   "/",
   isAdmin,

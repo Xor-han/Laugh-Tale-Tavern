@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useSession } from "../lib/auth-client"; // Vérifie bien que ce chemin est juste
 // 1. Définis l'interface de ce que tu attends de la session
-interface SessionUser {
+export interface SessionUser {
   role: string;
 }
 interface ProtectedRouteProps {
@@ -18,8 +18,12 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const user = session?.user as SessionUser | undefined;
   const isAdmin = user?.role === "admin";
 
-  if (!isAdmin) {
-    return <Navigate to="/login" replace />;
+  if (!isAdmin && session) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (!isAdmin && !session) {
+    return <Navigate to="/login" replace/>
   }
 
   return children;

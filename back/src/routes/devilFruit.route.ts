@@ -16,7 +16,7 @@ router.get("/", async (req: Request, res: Response) => {
   try {
     const data = await db.devilFruit.findMany({
       orderBy: { name: "desc" },
-      include: { onePieceCharacters: true, image: true },
+      include: { onePieceCharacters: true, image: true, type: true},
     });
 
     res.status(200).json(data);
@@ -30,7 +30,7 @@ router.get("/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
     const fruit = await db.devilFruit.findUnique({
       where: { id: Number(id) },
-      include: { onePieceCharacters: true, image: true },
+      include: { onePieceCharacters: true, image: true, type: true},
     });
 
     if (!fruit) return res.status(404).json({ message: "Fruit non trouvé" });
@@ -44,25 +44,25 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
-    const { name, imageUrl, imagePublicId, typeId } = req.body;
-    if (!name || !imageUrl || !imagePublicId || !typeId) {
+    const { name, imageId, typeId } = req.body;
+    if (!name || !typeId) {
       return res.status(400).json({
-        message:
-          "Tous les champs sont obligatoires (name, imageUrl,imagePublicId et typeId).",
+        message: "Tous les champs sont obligatoires (name et typeId).",
       });
     }
     const newFruit = await db.devilFruit.create({
       data: {
         name: name,
-        image: {
-          create: { url: imageUrl, publicId: imagePublicId },
-        },
         type: {
           connect: { id: Number(typeId) },
+        },
+        image: {
+          connect: { id: imageId },
         },
       },
       include: {
         type: true,
+        image : true
       },
     });
 
@@ -79,7 +79,7 @@ router.put("/:id", isAdmin, async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Non authentifié" });
     }
     const { id } = req.params;
-    const { name, imageUrl, imagePublicId, typeId } = req.body;
+    const { name, typeId } = req.body;
 
     if (!name || !typeId) {
       return res.status(400).json({
@@ -92,12 +92,6 @@ router.put("/:id", isAdmin, async (req: Request, res: Response) => {
       where: { id: Number(id) },
       data: {
         name: name,
-        image: {
-          upsert: {
-            create: { url: imageUrl, publicId: imagePublicId },
-            update: { url: imageUrl, publicId: imagePublicId },
-          },
-        },
         typeId: typeId,
       },
     });
@@ -126,7 +120,7 @@ router.patch("/:id", isAdmin, async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Fruit du démon non trouvé" });
     }
 
-    const { name, imageUrl, imagePublicId, typeId } = req.body;
+    const { name, typeId } = req.body;
 
     const data: {
       name?: string;
@@ -136,15 +130,6 @@ router.patch("/:id", isAdmin, async (req: Request, res: Response) => {
 
     if (name !== undefined) {
       data.name = name;
-    }
-
-    if (imageUrl !== undefined && imagePublicId !== undefined) {
-      data.image = {
-        upsert: {
-          create: { url: imageUrl, publicId: imagePublicId },
-          update: { url: imageUrl, publicId: imagePublicId },
-        },
-      };
     }
 
     if (typeId !== undefined) {

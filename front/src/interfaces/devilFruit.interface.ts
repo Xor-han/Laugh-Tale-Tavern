@@ -1,31 +1,26 @@
 import type { OnePieceCharacter } from "./onePieceCharacter.interface";
-import type { Type } from "./type.interface";
-import type {Image} from "./image.interface"
 export interface DevilFruit {
   id: number;
   name: string;
-  image?: Image ;
-  imageId?: string;
-  typeId?: number;
-  type?: Type;
+  image?: {
+    url: string;
+  }[];
+    imageId?: number | null;
+  typeId?: number | null;
+  type?: {
+    name: string;
+  };
   onePieceCharacters?: OnePieceCharacter[];
 }
 
 export interface CreateFruit {
   name: string;
-  imageId?: string;
-  typeId?: number;
+  typeId?: number | null;
+  imageId?: number | null;
 }
 
 export interface FruitUpdate {
   name?: string;
-  imageId?: string;
-  typeId?: number;
-}
-
-export interface FruitFormData {
-  name: string;
-  typeId: number;
-  imageUrl: string;
-  imagePublicId: string;
+  typeId?: number | null;
+  imageId?: number | null;
 }

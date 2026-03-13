@@ -2,7 +2,13 @@ import type { Image } from "../interfaces/image.interface";
 
 const API_URL = "http://localhost:3000";
 
-export const uploadImage = async (file: File): Promise<Image> => {
+export const getImages = async () : Promise<Image[]> => {
+    const res = await fetch(`${API_URL}/images`, {credentials: "include"});
+    if(!res.ok) throw new Error("Erreur lors de la récupération des images");
+    return res.json();
+}
+
+export const uploadImage = async (file: File): Promise<Image[]> => {
   const formData = new FormData();
   formData.append("image", file);
 
