@@ -2,72 +2,30 @@ import { useEffect, useState } from "react";
 import { Plus, Trash2, Apple, X, Upload } from "lucide-react";
 
 // APIs
-import {
-  getFruits,
-  createFruit,
-  deleteFruit,
-  updateFruit,
-} from "../api/devilFruits.api";
+import { getCharacters, deleteCharacter, createCharacter } from "../api/onePieceCharacter.api";
+import type { CreateCharacter, OnePieceCharacter } from "../interfaces/onePieceCharacter.interface";
 
-// Interfaces
-import type {
-  DevilFruit,
-  CreateFruit,
-} from "../interfaces/devilFruit.interface";
-import { FruitForm } from "../components/form/FruitForm";
-import { getTypes } from "../api/type.api";
-import type { Type } from "../interfaces/type.interface";
-import { EditFruitForm } from "./editForm/EditFruitForm";
-
-export const DevilFruitDB = () => {
-  const [fruits, setFruits] = useState<DevilFruit[]>([]);
-  const [types, setTypes] = useState<Type[]>([]);
+export const CharacterDB = () => {
+  const [characters, setCharacters] = useState<OnePieceCharacter[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalEditOpen, setIsModalEditOpen] = useState(false)
-  const [editingFruit, setEditingFruit] = useState<DevilFruit | null>(null);
 
-  const fetchFruits = async () => {
-    const data = await getFruits();
-    setFruits(data);
+  const fetchCharacters = async () => {
+    const data = await getCharacters();
+    setCharacters(data);
     console.log(data);
   };
 
-  useEffect(() => {
-    const loadData = async () => {
-      const typeData = await getTypes();
-      setTypes(typeData);
-
-      await fetchFruits();
-    };
-
-    loadData();
-  }, []);
-
   // --- HANDLERS ---
-  const handleCreateFruit = async (data: CreateFruit) => {
-    await createFruit(data);
+  const handleCreateCharacter = async (data: CreateCharacter) => {
+    await createCharacter(data);
     setIsModalOpen(false);
-    await fetchFruits();
+    await fetchCharacters();
   };
 
-  const handleDeleteFruit = async (id: number) => {
-    if (!confirm("Supprimer ce fruit du démon ?")) return;
-    await deleteFruit(id);
-    await fetchFruits();
-  };
-
-  const handleUpdateFruit = async (id: number, data: { name: string }) => {
-    await updateFruit(id, data);
-    await fetchFruits();
-  };
-
-  const handleEditFruit = async (
-    id: number,
-    data: { name: string; typeId: number | null; imageId: number | null },
-  ) => {
-    await updateFruit(id, { ...data });
-    setEditingFruit(null);
-    await fetchFruits();
+  const handleDeleteCharacter = async (id: number) => {
+    if (!confirm("Supprimer ce personnage ?")) return;
+    await deleteCharacter(id);
+    await fetchCharacters();
   };
 
   return (
@@ -89,23 +47,23 @@ export const DevilFruitDB = () => {
           </button>
         </div>
         <div className="grid gap-4">
-          {fruits.length === 0 ? (
+          {characters.length === 0 ? (
             <div className="bg-white p-10 rounded-4xl text-center border border-dashed border-gray-300 text-gray-400 font-bold">
-              Aucun fruit trouvé.
+              Aucun Personnages trouvé.
             </div>
           ) : (
-            fruits.map((fruit) => (
+            characters.map((character) => (
               <div
-                key={fruit.id}
+                key={character.id}
                 className="flex items-center justify-between bg-white p-4 rounded-4xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-5">
                   <div className="h-16 w-16 rounded-2xl bg-purple-50 flex items-center justify-center border border-purple-100 overflow-hidden">
-                    {fruit.image && fruit.image.length > 0 ? (
+                    {character.image && character.image.length > 0 ? (
                       <img
-                        src={fruit.image[0].url}
+                        src={character.image[0].url}
                         className="h-full w-full object-cover"
-                        alt={fruit.name}
+                        alt={character.name}
                       />
                     ) : (
                       <Apple className="text-purple-300" />
@@ -113,22 +71,22 @@ export const DevilFruitDB = () => {
                   </div>
                   <div>
                     <h3 className="font-black italic uppercase text-lg">
-                      {fruit.name}
+                      {character.name}
                     </h3>
                     <span className="text-[10px] bg-purple-100 text-purple-600 px-2 py-0.5 rounded-md font-black uppercase">
-                      {fruit.type?.name || "Inconnu"}
+                      {character.type?.name || "Inconnu"}
                     </span>
                   </div>
                 </div>
                 <div className="flex gap-2">
                 <button
-                  onClick={() => setIsModalEditOpen(true)}
+                  onClick={() => {}}
                   className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-blue-500 hover:text-white transition-all"
                   >
                   <Upload size={20} />
                 </button>
                 <button
-                  onClick={() => handleDeleteFruit(fruit.id)}
+                  onClick={() => handleDeleteCharacter(character.id)}
                   className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all"
                   >
                   <Trash2 size={20} />
@@ -143,7 +101,7 @@ export const DevilFruitDB = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-black italic">NOUVEAU FRUIT</h2>
+              <h2 className="text-2xl font-black italic">NOUVEAU PERSONNAGE</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="p-2 bg-gray-100 rounded-full hover:bg-red-50 transition-colors"
@@ -151,15 +109,14 @@ export const DevilFruitDB = () => {
                 <X size={20} />
               </button>
             </div>
-            <FruitForm
-              types={types}
-              onSubmit={handleCreateFruit}
+            <CharacterForm
+              onSubmit={handleCreateCharacter}
               onCancel={() => setIsModalOpen(false)}
             />
           </div>
         </div>
       )}
-      {isModalEditOpen && editingFruit && (
+      {/* {isModalEditOpen && editingFruit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center mb-6">
@@ -179,7 +136,7 @@ export const DevilFruitDB = () => {
             />
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
