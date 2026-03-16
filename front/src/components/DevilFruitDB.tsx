@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Plus, Trash2, Apple, X } from "lucide-react";
 
 // APIs
-import { getFruits, createFruit, deleteFruit } from "../api/devilFruits.api";
+import { getFruits, createFruit, deleteFruit, updateFruit } from "../api/devilFruits.api";
 
 // Interfaces
 import type {
@@ -17,6 +17,7 @@ export const DevilFruitDB = () => {
   const [fruits, setFruits] = useState<DevilFruit[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingFruit, setEditingFruit] = useState<DevilFruit | null>(null)
 
   const fetchFruits = async () => {
     const data = await getFruits();
@@ -47,6 +48,17 @@ export const DevilFruitDB = () => {
     await deleteFruit(id);
     await fetchFruits();
   };
+
+    const handleUpdateFruit = async (id: number, data: {name : string}) => {
+    await updateFruit(id, data);
+    await fetchFruits();
+  };
+
+    const handleEditNote = async (id: number, data : {name : string, typeId: number | null, imageId: number | null}) => {
+    await updateFruit(id, {...data})
+    setEditingFruit(null)
+    await fetchFruits()
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 md:p-12">

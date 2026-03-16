@@ -164,9 +164,9 @@ router.delete("/:id", isAdmin, async (req: Request, res: Response) => {
       where: { id: Number(id) },
       include: { image: true },
     });
-    if (fruit?.image?.publicId) {
-      await cloudinary.uploader.destroy(fruit.image.publicId);
-      await db.image.delete({ where: { id: fruit.imageId! } });
+    if (fruit?.image[0]?.id) {
+      await cloudinary.uploader.destroy(fruit.image[0].publicId);
+      await db.image.delete({ where: { id: fruit.image[0].id! } });
     }
     await db.devilFruit.delete({
       where: { id: Number(id) },

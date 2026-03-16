@@ -99,14 +99,14 @@ router.delete("/:id", isAdmin, async (req: Request, res: Response) => {
 
     const { id } = req.params;
 
-    const existing = await db.image.findUnique({ where: { id: String(id) } });
+    const existing = await db.image.findUnique({ where: { id: Number(id) } });
     if (!existing) {
       res.status(404).json({ message: "Image not found" });
       return;
     }
 
     await cloudinary.uploader.destroy(existing.publicId);
-    await db.image.delete({ where: { id: String(id) } });
+    await db.image.delete({ where: { id: Number(id) } });
 
     res.status(204).send();
   } catch (error: any) {
