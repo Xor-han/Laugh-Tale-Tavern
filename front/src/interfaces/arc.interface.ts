@@ -1,19 +1,20 @@
 import type { OnePieceCharacter } from "./onePieceCharacter.interface";
-import type { Image } from "./image.interface";
 export interface Arc {
   id: number;
   name: string;
-  image?: Image;
-  imageId?: string;
+  image?: {
+    url: string;
+  }[];
+  imageId?: number | null;
   OnePieceCharacter?: OnePieceCharacter[];
 }
 
 export interface CreateArc {
   name: string;
-  imageId?: string;
+  imageId?: number | null;
 }
 
 export interface ArcUpdate {
   name?: string;
-  imageId?: string;
+  imageId?: number | null;
 }

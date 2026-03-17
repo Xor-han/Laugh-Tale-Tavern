@@ -85,7 +85,6 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
         devilFruit_id: devilFruit_id || null,
         organisationId: organisationId || null,
         equipageId: equipageId || null,
-        // Ton nouveau code de création
         arcs: {
           connect: arcIds.map((id: number) => ({ id })),
         },

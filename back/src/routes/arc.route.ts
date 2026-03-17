@@ -52,8 +52,8 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
 
-    const { name, imageUrl, imagePublicId } = req.body;
-    if (!name || !imageUrl || !imagePublicId) {
+    const { name, imageId } = req.body;
+    if (!name || !imageId) {
       return res
         .status(400)
         .json({
@@ -66,7 +66,7 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
       data: {
         name,
         image: {
-          create: { url: imageUrl, publicId: imagePublicId },
+          connect: { id: imageId },
         },
       },
     });
@@ -82,9 +82,9 @@ router.put("/:id", isAdmin, async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
 
     const { id } = req.params;
-    const { name, imageUrl, imagePublicId } = req.body;
+    const { name, imageId} = req.body;
 
-    if (!name || !imageUrl || !imagePublicId) {
+    if (!name || !imageId) {
       return res
         .status(400)
         .json({
@@ -97,13 +97,7 @@ router.put("/:id", isAdmin, async (req: Request, res: Response) => {
       where: { id: Number(id) },
       data: {
         name,
-        image: {
-          upsert: {
-            create: { url: imageUrl, publicId: imagePublicId },
-            update: { url: imageUrl, publicId: imagePublicId },
-          },
         },
-      },
     });
     res.status(200).json(data);
   } catch (error) {
@@ -161,9 +155,9 @@ router.delete("/:id", isAdmin, async (req: Request, res: Response) => {
 
     if (!arc) return res.status(404).json({ message: "Arc introuvable" });
 
-    if (arc.image?.publicId) {
-      await cloudinary.uploader.destroy(arc.image.publicId);
-      await db.image.delete({ where: { id: arc.imageId! } });
+    if (arc.image[0]?.publicId) {
+      await cloudinary.uploader.destroy(arc.image[0].publicId);
+      await db.image.delete({ where: { id: arc.image[0].id! } });
     }
 
     await db.arcs.delete({ where: { id: Number(id) } });

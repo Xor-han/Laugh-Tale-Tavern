@@ -3,6 +3,7 @@ import db from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { fromNodeHeaders } from "better-auth/node";
 import { isAdmin } from "@/middleware/isAdmin";
+import cloudinary from "@/lib/cloudinary";
 
 const router: express.Router = express.Router();
 const getUserId = async (req: Request): Promise<string | null> => {
@@ -17,8 +18,9 @@ router.get("/", async (req: Request, res: Response) => {
     const data = await db.equipages.findMany({
       include: {
         _count: {
-          select: { onePieceCharacter: true },
+          select: { onePieceCharacter: true,},
         },
+        image: true
       },
     });
     res.status(200).json(data);
@@ -36,6 +38,7 @@ router.get("/:id", async (req, res) => {
         _count: {
           select: { onePieceCharacter: true },
         },
+        image: true
       },
     });
 
@@ -53,7 +56,7 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Non authentifié" });
     }
 
-    const { name } = req.body;
+    const { name , organisationId, imageId} = req.body;
 
     if (!name) {
       return res
@@ -62,7 +65,15 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
     }
 
     const newEquipage = await db.equipages.create({
-      data: { name },
+      data: { 
+        name,
+        organisation:{
+          connect: {id: organisationId }
+        },
+        image: {
+          connect: { id: imageId },
+        },
+       },
     });
 
     res.status(201).json(newEquipage);
@@ -156,16 +167,22 @@ router.delete("/:id", isAdmin, async (req: Request, res: Response) => {
     if (!userId) {
       return res.status(401).json({ message: "Non authentifié" });
     }
-
     const { id } = req.params;
-
+    const equipage = await db.equipages.findUnique({
+      where: { id: Number(id) },
+      include: { image: true },
+    });
+    if (equipage?.image[0]?.id) {
+      await cloudinary.uploader.destroy(equipage.image[0].publicId);
+      await db.image.delete({ where: { id: equipage.image[0].id! } });
+    }
     await db.equipages.delete({
       where: { id: Number(id) },
     });
 
     res.status(204).send();
   } catch (error) {
-    res.status(500).json({ message: "Erreur de suppression" });
+    res.status(500).json({ message: "Erreur serveur", error });
   }
 });
 

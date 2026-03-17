@@ -3,6 +3,7 @@ import db from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { fromNodeHeaders } from "better-auth/node";
 import { isAdmin } from "@/middleware/isAdmin";
+import cloudinary from "@/lib/cloudinary";
 
 const router: express.Router = express.Router();
 const getUserId = async (req: Request): Promise<string | null> => {
@@ -17,7 +18,8 @@ router.get("/", async (req: Request, res: Response) => {
     const data = await db.organisation.findMany({
       include: {
         _count: { select: { onePieceCharacter: true } },
-        equipage: true,
+        equipage: { select: { name: true } },
+        image: true,
       },
     });
     res.status(200).json(data);
@@ -34,6 +36,7 @@ router.get("/:id", async (req: Request, res: Response) => {
       include: {
         onePieceCharacter: true,
         equipage: true,
+        image: true,
       },
     });
     if (!data)
@@ -49,14 +52,19 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
 
-    const { name, equipageId } = req.body;
+    const { name, equipageIds, imageId } = req.body;
     if (!name)
       return res.status(400).json({ message: "Le nom est obligatoire" });
 
     const newOrg = await db.organisation.create({
       data: {
         name,
-        equipageId: equipageId ? Number(equipageId) : null,
+        equipage: {
+          connect: equipageIds.map((id: number) => ({ id })),
+        },
+        image: {
+          connect: { id: imageId },
+        },
       },
     });
     res.status(201).json(newOrg);
@@ -71,7 +79,7 @@ router.put("/:id", isAdmin, async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
 
     const { id } = req.params;
-    const { name, equipageId } = req.body;
+    const { name, equipageIds, imageId } = req.body;
 
     if (!name) {
       return res.status(400).json({ message: "Le champ name est obligatoire" });
@@ -81,7 +89,12 @@ router.put("/:id", isAdmin, async (req: Request, res: Response) => {
       where: { id: Number(id) },
       data: {
         name,
-        equipageId: equipageId ? Number(equipageId) : null,
+        equipage: {
+          connect: equipageIds.map((id: number) => ({ id })),
+        },
+        image: {
+          connect: { id: imageId },
+        },
       },
     });
     res.status(200).json(updated);
@@ -131,16 +144,18 @@ router.patch("/:id", isAdmin, async (req: Request, res: Response) => {
 router.delete("/:id", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
-    if (!userId) return res.status(401).json({ message: "Non authentifié" });
-
+    if (!userId) {
+      return res.status(401).json({ message: "Non authentifié" });
+    }
     const { id } = req.params;
-
-    const existing = await db.organisation.findUnique({
+    const organisation = await db.organisation.findUnique({
       where: { id: Number(id) },
+      include: { image: true },
     });
-    if (!existing)
-      return res.status(404).json({ message: "Organisation non trouvée" });
-
+    if (organisation?.image[0]?.id) {
+      await cloudinary.uploader.destroy(organisation.image[0].publicId);
+      await db.image.delete({ where: { id: organisation.image[0].id! } });
+    }
     await db.organisation.delete({
       where: { id: Number(id) },
     });

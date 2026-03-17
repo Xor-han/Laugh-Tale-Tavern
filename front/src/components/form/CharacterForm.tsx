@@ -133,7 +133,7 @@ export const CharacterForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6 ">
       <div className="flex flex-col gap-4">
         <div>
           <label className="text-xs font-black uppercase text-gray-400">
@@ -212,7 +212,7 @@ export const CharacterForm = ({
               <Loader2 className="animate-spin text-gray-300" />
             </div>
           ) : (
-            <div className="grid grid-cols-3 ...">
+            <div className="grid grid-cols-2">
               {images.map((img) => (
                 <div
                   key={img.id}

@@ -1,24 +1,28 @@
 import type { Equipage } from "./equipage.interface";
 import type { OnePieceCharacter } from "./onePieceCharacter.interface";
 
-
 export interface Organisation {
   id: number;
   name: string;
   onePieceCharacters?: OnePieceCharacter[];
   _count?: {
-    onePieceCharacter : number;
-  }
-  equipageId?: number;
-  equipage?: Equipage;
+    onePieceCharacter: number;
+  };
+  image?: {
+    url: string;
+  }[];
+  imageId?: number | null;
+  equipage?: Equipage[];
 }
 
 export interface CreateOrg {
   name: string;
-  equipageId?: number;
+  equipageIds?: number[];
+  imageId?: number | null;
 }
 
 export interface OrgUpdate {
   name?: string;
-  equipageId?: number;
+  equipageIds?: number[];
+  imageId?: number | null;
 }

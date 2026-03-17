@@ -138,6 +138,7 @@ export const CharacterDB = () => {
                 <X size={20} />
               </button>
             </div>
+            <div className="max-h-150 overflow-y-auto custom-scrollbar">
             <CharacterForm
               onSubmit={handleCreateCharacter}
               onCancel={() => setIsModalOpen(false)} 
@@ -146,6 +147,7 @@ export const CharacterDB = () => {
               equipage={equipage} 
               devilFruit={fruits}            
               />
+              </div>
           </div>
         </div>
       )}

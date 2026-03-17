@@ -28,6 +28,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   comments      Comment[]
+
   @@map("user")
 }
 
@@ -76,7 +77,7 @@ model Verification {
 }
 
 model Comment {
-  id        String        @id @default(uuid())
+  id        String    @id @default(uuid())
   content   String
   pageId    Int
   page      Page      @relation(fields: [pageId], references: [id], onDelete: Cascade)
@@ -92,9 +93,9 @@ model Comment {
 }
 
 model Page {
-  id        Int   @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   slug      String    @unique
-  content   String 
+  content   String
   createdAt DateTime  @default(now())
   comments  Comment[]
 
@@ -122,7 +123,7 @@ model OnePieceCharacter {
   equipageId     Int?
   equipage       Equipages?    @relation(fields: [equipageId], references: [id])
   profession     Profession
-  arcs            Arcs[]        
+  arcs           Arcs[]
 
   @@map("onePieceCharacter")
 }
@@ -139,39 +140,47 @@ model DevilFruit {
 }
 
 model Type {
-  id           Int      @id @default(autoincrement())
-  name         String
-  devilFruit   DevilFruit[]
+  id         Int          @id @default(autoincrement())
+  name       String
+  devilFruit DevilFruit[]
+
   @@map("type")
 }
 
 model Organisation {
-  id             Int    @id @default(autoincrement())
-  name           String
+  id                Int                 @id @default(autoincrement())
+  name              String
   onePieceCharacter OnePieceCharacter[]
-  equipageId     Int?
-  equipage       Equipages?  @relation(fields : [equipageId], references:[id])
+  equipage          Equipages[]
+  image             Image[]
+
   @@map("faction")
 }
 
 model Equipages {
-    id             Int    @id @default(autoincrement())
-    name           String
-    onePieceCharacter OnePieceCharacter[]
-    organisation      Organisation[]
+  id                Int                 @id @default(autoincrement())
+  name              String
+  onePieceCharacter OnePieceCharacter[]
+  organisation      Organisation[]
+  image             Image[]
 }
 
 model Image {
-  id Int @id @default(autoincrement())
-  url String
-  publicId String
-  createdAt DateTime @default(now())
-  devilFruitId Int?
-  fruit DevilFruit? @relation(fields: [ devilFruitId], references: [id])
+  id                  Int                @id @default(autoincrement())
+  url                 String
+  publicId            String
+  createdAt           DateTime           @default(now())
+  devilFruitId        Int?
+  fruit               DevilFruit?        @relation(fields: [devilFruitId], references: [id])
   onePieceCharacterId Int?
-  onePieceCharacter OnePieceCharacter? @relation(fields: [onePieceCharacterId], references: [id])
-  arcId          Int?
-  arc            Arcs?         @relation(fields: [arcId], references: [id])
+  onePieceCharacter   OnePieceCharacter? @relation(fields: [onePieceCharacterId], references: [id])
+  arcId               Int?
+  arc                 Arcs?              @relation(fields: [arcId], references: [id])
+  organisationId      Int?
+  organisation        Organisation?      @relation(fields: [organisationId], references: [id])
+  equipageId          Int?
+  equipage            Equipages?         @relation(fields: [equipageId], references: [id])
+
   @@map("images")
 }
 
@@ -191,7 +200,7 @@ enum Profession {
   timonier
   mousse
   combattant
-  
+
   // --- MARINE & GOUVERNEMENT ---
   amiral_en_chef
   amiral
@@ -204,7 +213,7 @@ enum Profession {
   matelot
   agent_du_cp
   gardien_de_prison
-  
+
   // --- ARMÉE RÉVOLUTIONNAIRE ---
   chef_supreme
   commandant_en_chef
@@ -213,7 +222,7 @@ enum Profession {
   agent_d_infiltration
   stratege
   inventeur
-  
+
   // --- CIVILS & MÉTIERS DU MONDE ---
   tenancier_de_bar
   journaliste
@@ -229,7 +238,7 @@ enum Profession {
   pecheur
   voleur
   esclave
-  
+
   // --- AUTRES / SPÉCIFIQUES ---
   courtier_de_l_ombre
   dragon_celeste
