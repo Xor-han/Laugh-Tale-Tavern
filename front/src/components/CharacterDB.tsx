@@ -4,16 +4,45 @@ import { Plus, Trash2, Apple, X, Upload } from "lucide-react";
 // APIs
 import { getCharacters, deleteCharacter, createCharacter } from "../api/onePieceCharacter.api";
 import type { CreateCharacter, OnePieceCharacter } from "../interfaces/onePieceCharacter.interface";
+import { CharacterForm } from "./form/CharacterForm";
+import { getFruits } from "../api/devilFruits.api";
+import { getOrganisations } from "../api/organisation.api";
+import { getEquipages } from "../api/equipage.api";
+import { getArcs } from "../api/arc.api";
+import type { DevilFruit } from "../interfaces/devilFruit.interface";
+import type { Organisation } from "../interfaces/organisation.interface";
+import type { Arc } from "../interfaces/arc.interface";
+import type { Equipage } from "../interfaces/equipage.interface";
 
 export const CharacterDB = () => {
   const [characters, setCharacters] = useState<OnePieceCharacter[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fruits, setFruits] = useState<DevilFruit[]>([]);
+  const [organisation, setOrganisation] = useState<Organisation[]>([]);
+  const [arcs, setArcs] = useState<Arc[]>([]);
+  const [equipage, setEquipage] = useState<Equipage[]>([]);
 
   const fetchCharacters = async () => {
     const data = await getCharacters();
     setCharacters(data);
     console.log(data);
   };
+    useEffect(() => {
+      const loadData = async () => {
+        const fruitData = await getFruits();
+        setFruits(fruitData);
+        const organisationData = await getOrganisations();
+        setOrganisation(organisationData);
+        const arcData = await getArcs();
+        setArcs(arcData);
+        const equipageData = await getEquipages();
+        setEquipage(equipageData);
+  
+        await fetchCharacters();
+      };
+  
+      loadData();
+    }, [])
 
   // --- HANDLERS ---
   const handleCreateCharacter = async (data: CreateCharacter) => {
@@ -35,7 +64,7 @@ export const CharacterDB = () => {
         <div className="flex justify-between items-center mb-10">
           <div>
             <h1 className="text-4xl font-black italic uppercase">
-              Fruits du Démon
+              Personnages
             </h1>
           </div>
 
@@ -74,7 +103,7 @@ export const CharacterDB = () => {
                       {character.name}
                     </h3>
                     <span className="text-[10px] bg-purple-100 text-purple-600 px-2 py-0.5 rounded-md font-black uppercase">
-                      {character.type?.name || "Inconnu"}
+                      {character.profession || "Inconnu"}
                     </span>
                   </div>
                 </div>
@@ -111,8 +140,12 @@ export const CharacterDB = () => {
             </div>
             <CharacterForm
               onSubmit={handleCreateCharacter}
-              onCancel={() => setIsModalOpen(false)}
-            />
+              onCancel={() => setIsModalOpen(false)} 
+              organisation={organisation} 
+              arcs={arcs} 
+              equipage={equipage} 
+              devilFruit={fruits}            
+              />
           </div>
         </div>
       )}

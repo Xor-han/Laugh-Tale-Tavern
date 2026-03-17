@@ -1,3 +1,4 @@
+import { CharacterDB } from "../components/CharacterDB";
 import { DevilFruitDB } from "../components/DevilFruitDB";
 
 export const AdminDashboard = () => {
@@ -15,6 +16,7 @@ export const AdminDashboard = () => {
             </p>
           </div>
         </div>
+            <CharacterDB/>
             <DevilFruitDB/>
       </div>
     </div>

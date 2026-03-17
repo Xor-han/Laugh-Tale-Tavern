@@ -2,7 +2,6 @@ import type { Arc } from "./arc.interface";
 import type { DevilFruit } from "./devilFruit.interface";
 import type { Equipage } from "./equipage.interface";
 import type { Organisation } from "./organisation.interface";
-import type { ProfessionType } from "./profession.interface";
 
 export interface OnePieceCharacter {
   id: number;
@@ -12,34 +11,33 @@ export interface OnePieceCharacter {
   }[];
   imageId?: number | null;
   isAlive: boolean;
-  profession: ProfessionType;
+  profession: string;
   devilFruit_id?: number | null;
   organisationId?: number | null;
   equipageId?: number | null;
-  arcId?: number | null;
   devilFruit?: DevilFruit;
   organisation?: Organisation;
   equipage?: Equipage;
-  arc?: Arc;
+  arcs?: Arc[];
 }
 
 export interface CreateCharacter {
   name: string;
   isAlive: boolean;
-  profession: ProfessionType;
+  profession: string;
   imageId?: number | null;
   devilFruit_id?: number | null;
   organisationId?: number | null;
   equipageId?: number | null;
-  arcId?: number | null;
+  arcIds?: number[];
 }
 export interface CharacterUpdate {
   name?: string;
   isAlive?: boolean;
-  profession?: ProfessionType;
+  profession?: string;
   imageId?: number | null;
   devilFruit_id?: number | null;
   organisationId?: number | null;
   equipageId?: number | null;
-  arcId?: number | null;
+  arcIds?: number[];
 }

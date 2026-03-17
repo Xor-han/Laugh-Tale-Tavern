@@ -23,7 +23,7 @@ router.get("/", async (req: Request, res: Response) => {
         devilFruit: { select: { name: true } },
         organisation: { select: { name: true } },
         equipage: { select: { name: true } },
-        arc: { select: { name: true } },
+        arcs: { select: { name: true } },
       },
     });
     res.status(200).json(data);
@@ -42,7 +42,7 @@ router.get("/:id", async (req: Request, res: Response) => {
         devilFruit: true,
         organisation: true,
         equipage: true,
-        arc: true,
+        arcs: true,
       },
     });
     if (!data)
@@ -61,23 +61,16 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
     }
     const {
       name,
-      imageUrl,
-      imagePublicId,
+      imageId,
       isAlive,
       profession,
       devilFruit_id,
       organisationId,
       equipageId,
-      arcId,
+      arcIds,
     } = req.body;
 
-    if (
-      !name ||
-      !imageUrl ||
-      !imagePublicId ||
-      isAlive === undefined ||
-      !profession
-    ) {
+    if (!name || !imageId || isAlive === undefined || !profession) {
       return res.status(400).json({ message: "Champs obligatoires manquants" });
     }
 
@@ -87,12 +80,15 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
         isAlive: isAlive,
         profession: profession as Profession,
         image: {
-          create: { url: imageUrl, publicId: imagePublicId },
+          connect: { id: imageId },
         },
         devilFruit_id: devilFruit_id || null,
         organisationId: organisationId || null,
         equipageId: equipageId || null,
-        arcId: arcId || null,
+        // Ton nouveau code de création
+        arcs: {
+          connect: arcIds.map((id: number) => ({ id })),
+        },
       },
     });
     res.status(201).json(data);
@@ -110,14 +106,13 @@ router.put("/:id", isAdmin, async (req: Request, res: Response) => {
     const { id } = req.params;
     const {
       name,
-      imageUrl,
-      imagePublicId,
       isAlive,
       profession,
       devilFruit_id,
       organisationId,
       equipageId,
-      arcId,
+      arcIds,
+      imageId,
     } = req.body;
 
     const data = await db.onePieceCharacter.update({
@@ -126,16 +121,15 @@ router.put("/:id", isAdmin, async (req: Request, res: Response) => {
         name,
         isAlive: isAlive ?? null,
         profession: profession as Profession,
-        image: {
-          upsert: {
-            create: { url: imageUrl, publicId: imagePublicId },
-            update: { url: imageUrl, publicId: imagePublicId },
-          },
-        },
         devilFruit_id: devilFruit_id || null,
         organisationId: organisationId || null,
         equipageId: equipageId || null,
-        arcId: arcId || null,
+        image: {
+          connect: { id: imageId },
+        },
+        arcs: {
+          connect: arcIds.map((id: number) => ({ id })),
+        },
       },
     });
     res.status(200).json(data);
@@ -224,9 +218,9 @@ router.delete("/:id", isAdmin, async (req: Request, res: Response) => {
       include: { image: true },
     });
 
-    if (character?.image?.publicId) {
-      await cloudinary.uploader.destroy(character.image.publicId);
-      await db.image.delete({ where: { id: character.imageId! } });
+    if (character?.image[0]?.publicId) {
+      await cloudinary.uploader.destroy(character.image[0].publicId);
+      await db.image.delete({ where: { id: character.image[0].id! } });
     }
 
     await db.onePieceCharacter.delete({ where: { id: Number(req.params.id) } });

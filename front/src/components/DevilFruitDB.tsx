@@ -56,10 +56,10 @@ export const DevilFruitDB = () => {
     await fetchFruits();
   };
 
-  const handleUpdateFruit = async (id: number, data: { name: string }) => {
-    await updateFruit(id, data);
-    await fetchFruits();
-  };
+  // const handleUpdateFruit = async (id: number, data: { name: string }) => {
+  //   await updateFruit(id, data);
+  //   await fetchFruits();
+  // };
 
   const handleEditFruit = async (
     id: number,

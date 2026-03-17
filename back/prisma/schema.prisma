@@ -122,8 +122,7 @@ model OnePieceCharacter {
   equipageId     Int?
   equipage       Equipages?    @relation(fields: [equipageId], references: [id])
   profession     Profession
-  arcId          Int?
-  arc            Arcs?         @relation(fields: [arcId], references: [id])
+  arcs            Arcs[]        
 
   @@map("onePieceCharacter")
 }
