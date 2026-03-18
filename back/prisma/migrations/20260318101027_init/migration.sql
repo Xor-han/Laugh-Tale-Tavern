@@ -87,6 +87,7 @@ CREATE TABLE "page" (
 CREATE TABLE "arcs" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
+    "description" TEXT[],
 
     CONSTRAINT "arcs_pkey" PRIMARY KEY ("id")
 );
@@ -100,7 +101,7 @@ CREATE TABLE "onePieceCharacter" (
     "organisationId" INTEGER,
     "equipageId" INTEGER,
     "profession" "profession" NOT NULL,
-    "arcId" INTEGER,
+    "description" TEXT[],
 
     CONSTRAINT "onePieceCharacter_pkey" PRIMARY KEY ("id")
 );
@@ -110,6 +111,7 @@ CREATE TABLE "devilFruit" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "typeId" INTEGER,
+    "description" TEXT[],
 
     CONSTRAINT "devilFruit_pkey" PRIMARY KEY ("id")
 );
@@ -126,7 +128,7 @@ CREATE TABLE "type" (
 CREATE TABLE "faction" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "equipageId" INTEGER,
+    "description" TEXT[],
 
     CONSTRAINT "faction_pkey" PRIMARY KEY ("id")
 );
@@ -135,6 +137,7 @@ CREATE TABLE "faction" (
 CREATE TABLE "Equipages" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
+    "description" TEXT[],
 
     CONSTRAINT "Equipages_pkey" PRIMARY KEY ("id")
 );
@@ -148,8 +151,26 @@ CREATE TABLE "images" (
     "devilFruitId" INTEGER,
     "onePieceCharacterId" INTEGER,
     "arcId" INTEGER,
+    "organisationId" INTEGER,
+    "equipageId" INTEGER,
 
     CONSTRAINT "images_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "_ArcsToOnePieceCharacter" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL,
+
+    CONSTRAINT "_ArcsToOnePieceCharacter_AB_pkey" PRIMARY KEY ("A","B")
+);
+
+-- CreateTable
+CREATE TABLE "_EquipagesToOrganisation" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL,
+
+    CONSTRAINT "_EquipagesToOrganisation_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateIndex
@@ -160,6 +181,12 @@ CREATE UNIQUE INDEX "session_token_key" ON "session"("token");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "page_slug_key" ON "page"("slug");
+
+-- CreateIndex
+CREATE INDEX "_ArcsToOnePieceCharacter_B_index" ON "_ArcsToOnePieceCharacter"("B");
+
+-- CreateIndex
+CREATE INDEX "_EquipagesToOrganisation_B_index" ON "_EquipagesToOrganisation"("B");
 
 -- AddForeignKey
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -186,13 +213,7 @@ ALTER TABLE "onePieceCharacter" ADD CONSTRAINT "onePieceCharacter_organisationId
 ALTER TABLE "onePieceCharacter" ADD CONSTRAINT "onePieceCharacter_equipageId_fkey" FOREIGN KEY ("equipageId") REFERENCES "Equipages"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "onePieceCharacter" ADD CONSTRAINT "onePieceCharacter_arcId_fkey" FOREIGN KEY ("arcId") REFERENCES "arcs"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "devilFruit" ADD CONSTRAINT "devilFruit_typeId_fkey" FOREIGN KEY ("typeId") REFERENCES "type"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "faction" ADD CONSTRAINT "faction_equipageId_fkey" FOREIGN KEY ("equipageId") REFERENCES "Equipages"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "images" ADD CONSTRAINT "images_devilFruitId_fkey" FOREIGN KEY ("devilFruitId") REFERENCES "devilFruit"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -202,3 +223,21 @@ ALTER TABLE "images" ADD CONSTRAINT "images_onePieceCharacterId_fkey" FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE "images" ADD CONSTRAINT "images_arcId_fkey" FOREIGN KEY ("arcId") REFERENCES "arcs"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "images" ADD CONSTRAINT "images_organisationId_fkey" FOREIGN KEY ("organisationId") REFERENCES "faction"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "images" ADD CONSTRAINT "images_equipageId_fkey" FOREIGN KEY ("equipageId") REFERENCES "Equipages"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_ArcsToOnePieceCharacter" ADD CONSTRAINT "_ArcsToOnePieceCharacter_A_fkey" FOREIGN KEY ("A") REFERENCES "arcs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_ArcsToOnePieceCharacter" ADD CONSTRAINT "_ArcsToOnePieceCharacter_B_fkey" FOREIGN KEY ("B") REFERENCES "onePieceCharacter"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_EquipagesToOrganisation" ADD CONSTRAINT "_EquipagesToOrganisation_A_fkey" FOREIGN KEY ("A") REFERENCES "Equipages"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_EquipagesToOrganisation" ADD CONSTRAINT "_EquipagesToOrganisation_B_fkey" FOREIGN KEY ("B") REFERENCES "faction"("id") ON DELETE CASCADE ON UPDATE CASCADE;

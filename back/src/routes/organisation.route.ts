@@ -52,7 +52,7 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
 
-    const { name, equipageIds, imageId } = req.body;
+    const { name, equipageIds, imageId} = req.body;
     if (!name)
       return res.status(400).json({ message: "Le nom est obligatoire" });
 

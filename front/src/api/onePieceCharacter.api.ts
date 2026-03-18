@@ -7,7 +7,7 @@ import type {
 const API_URL = "http://localhost:3000";
 
 export const getCharacters = async (): Promise<OnePieceCharacter[]> => {
-  const res = await fetch(`${API_URL}/personnages`, { credentials: "include" });
+  const res = await fetch(`${API_URL}/characters`, { credentials: "include" });
   if (!res.ok)
     throw new Error("Erreur lors de la récupération des personnages");
   return res.json();
@@ -16,7 +16,7 @@ export const getCharacters = async (): Promise<OnePieceCharacter[]> => {
 export const getCharacterById = async (
   id: number,
 ): Promise<OnePieceCharacter> => {
-  const res = await fetch(`${API_URL}/personnages/${id}`, {
+  const res = await fetch(`${API_URL}/characters/${id}`, {
     credentials: "include",
   });
   if (!res.ok) throw new Error("Erreur lors de la récupération du personnage");

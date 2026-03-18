@@ -49,40 +49,32 @@ router.get("/:slug", async (req: Request, res: Response) => {
 router.post("/", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
-    if (!userId) {
-      return res.status(401).json({ message: "Non authentifié" });
+    if (!userId) return res.status(401).json({ message: "Non authentifié" });
+
+    const { slug, title, content, entityId, entityType } = req.body;
+
+    if (!slug || !content || !title) {
+      return res.status(400).json({ message: "Champs obligatoires manquants" });
     }
 
-    const { slug, content } = req.body;
-
-    if (!slug || !content) {
-      return res.status(400).json({
-        message: "Les champs slug et content sont obligatoires",
-      });
-    }
-
-    const existingPage = await db.page.findUnique({
-      where: { slug },
+    const existingLink = await db.page.findFirst({
+      where: { entityId: Number(entityId), entityType }
     });
-
-    if (existingPage) {
-      return res.status(400).json({
-        message: "Une page avec ce slug existe déjà",
-      });
-    }
+    if (existingLink) return res.status(400).json({ message: "Une page existe déjà pour cette entité" });
 
     const newPage = await db.page.create({
       data: {
         slug: slug.toLowerCase().trim().replace(/\s+/g, "-"),
-        content: content,
+        title,
+        content,
+        entityId: Number(entityId),
+        entityType
       },
     });
 
     res.status(201).json(newPage);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Erreur serveur lors de la création", error });
+    res.status(500).json({ message: "Erreur serveur", error });
   }
 });
 

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { SearchBar } from "./ui/SearchBar";
 import { User } from "lucide-react";
+import { Nav } from "./Nav";
 interface Props {
   userName?: string;
   userId?: string;
@@ -13,23 +14,7 @@ export const Navbar = ({ userId, userImage, userName, session }: Props) => {
     <nav className="flex px-24 py-7 items-center justify-between bg-[#1D293D] text-white">
       <div className="flex gap-14">
         <h1 className="text-xl">Laugh Tale Tavern</h1>
-        <ul className="flex gap-8 text-sm text-center items-center">
-          <li className="hover:text-yellow-400">
-            <Link to={"/"}>Arcs</Link>
-          </li>
-          <li className="hover:text-red-400">
-            <Link to={"/"}>Personnages</Link>
-          </li>
-          <li className="hover:text-blue-400">
-            <Link to={"/"}>Equipages Pirates</Link>
-          </li>
-          <li className="hover:text-slate-400">
-            <Link to={"/"}>Organisations</Link>
-          </li>
-          <li className="hover:text-purple-400">
-            <Link to={"/"}>Fruits du démon</Link>
-          </li>
-        </ul>
+          <Nav/>
       </div>
       <div className="flex justify-self-end gap-10 ">
         <SearchBar />

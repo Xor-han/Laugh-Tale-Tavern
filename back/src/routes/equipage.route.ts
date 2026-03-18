@@ -18,9 +18,10 @@ router.get("/", async (req: Request, res: Response) => {
     const data = await db.equipages.findMany({
       include: {
         _count: {
-          select: { onePieceCharacter: true,},
+          select: { onePieceCharacter: true },
         },
-        image: true
+        organisation: { select: { name: true } },
+        image: true,
       },
     });
     res.status(200).json(data);
@@ -38,7 +39,8 @@ router.get("/:id", async (req, res) => {
         _count: {
           select: { onePieceCharacter: true },
         },
-        image: true
+        organisation: { select: { name: true } },
+        image: true,
       },
     });
 
@@ -56,7 +58,7 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Non authentifié" });
     }
 
-    const { name , organisationId, imageId} = req.body;
+    const { name, organisationIds, imageId} = req.body;
 
     if (!name) {
       return res
@@ -65,15 +67,15 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
     }
 
     const newEquipage = await db.equipages.create({
-      data: { 
+      data: {
         name,
-        organisation:{
-          connect: {id: organisationId }
+        organisation: {
+          connect: organisationIds.map((id: number) => ({ id })),
         },
         image: {
           connect: { id: imageId },
         },
-       },
+      },
     });
 
     res.status(201).json(newEquipage);
@@ -90,7 +92,7 @@ router.put("/:id", isAdmin, async (req: Request, res: Response) => {
     }
 
     const { id } = req.params;
-    const { name } = req.body;
+    const { name, organisationIds, imageId } = req.body;
 
     if (!name) {
       return res.status(400).json({
@@ -110,6 +112,12 @@ router.put("/:id", isAdmin, async (req: Request, res: Response) => {
       where: { id: Number(id) },
       data: {
         name: name,
+        organisation: {
+          connect: organisationIds.map((id: number) => ({ id })),
+        },
+        image: {
+          connect: { id: imageId },
+        },
       },
     });
 
@@ -136,7 +144,7 @@ router.patch("/:id", isAdmin, async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Équipage non trouvé" });
     }
 
-    const { name } = req.body;
+    const { name, organisationIds, imageId } = req.body;
 
     const data: {
       name?: string;

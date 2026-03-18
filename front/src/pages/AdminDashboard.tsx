@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { ArcDB } from "../components/ArcDB";
 import { CharacterDB } from "../components/CharacterDB";
 import { DevilFruitDB } from "../components/DevilFruitDB";
+import { OrganisationDB } from "../components/OrganisationDB";
+import { EquipageDB } from "../components/EquipageDB";
 
 export const AdminDashboard = () => {
 
@@ -22,6 +24,8 @@ export const AdminDashboard = () => {
             <CharacterDB/>
             <DevilFruitDB/>
             <ArcDB/>
+            <OrganisationDB/>
+            <EquipageDB/>
       </div>
     </div>
   );

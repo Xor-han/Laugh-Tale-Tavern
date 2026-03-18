@@ -2,41 +2,52 @@ import { useEffect, useState } from "react";
 import { Plus, Trash2, Apple, X, Upload } from "lucide-react";
 
 // APIs
-import { getArcs, createArc, deleteArc } from "../api/arc.api";
+import {
+  getOrganisations,
+  createOrganisation,
+  deleteOrganisation,
+} from "../api/organisation.api";
+import { getEquipages } from "../api/equipage.api";
 
 // Interfaces
-import type { Arc, CreateArc } from "../interfaces/arc.interface";
+import type {
+  Organisation,
+  CreateOrg,
+} from "../interfaces/organisation.interface";
 import { OrganisationForm } from "./form/OrganisationForm";
+import type { Equipage } from "../interfaces/equipage.interface";
 
-export const ArcDB = () => {
-  const [arcs, setArcs] = useState<Arc[]>([]);
+export const OrganisationDB = () => {
+  const [organisation, setOrganisation] = useState<Organisation[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const fetchArcs = async () => {
-    const data = await getArcs();
-    setArcs(data);
+  const [equipage, setEquipage] = useState<Equipage[]>([]);
+  const fetchOrganisation = async () => {
+    const data = await getOrganisations();
+    setOrganisation(data);
     console.log(data);
   };
 
   useEffect(() => {
     const loadData = async () => {
-      await fetchArcs();
+      const equipageData = await getEquipages();
+      setEquipage(equipageData);
+      await fetchOrganisation();
     };
 
     loadData();
   }, []);
 
   // --- HANDLERS ---
-  const handleCreateArc = async (data: CreateArc) => {
-    await createArc(data);
+  const handleCreateOrganisation = async (data: CreateOrg) => {
+    await createOrganisation(data);
     setIsModalOpen(false);
-    await fetchArcs();
+    await fetchOrganisation();
   };
 
-  const handleDeleteArc = async (id: number) => {
-    if (!confirm("Supprimer cet Arc ?")) return;
-    await deleteArc(id);
-    await fetchArcs();
+  const handleDeleteOrganisation = async (id: number) => {
+    if (!confirm("Supprimer cette Organisation ?")) return;
+    await deleteOrganisation(id);
+    await fetchOrganisation();
   };
 
   return (
@@ -46,7 +57,7 @@ export const ArcDB = () => {
         <div className="flex justify-between items-center mb-10">
           <div>
             <h1 className="text-4xl font-black italic uppercase">
-              Les Arcs
+              Les Organisations
             </h1>
           </div>
 
@@ -58,23 +69,23 @@ export const ArcDB = () => {
           </button>
         </div>
         <div className="grid gap-4">
-          {arcs.length === 0 ? (
+          {organisation.length === 0 ? (
             <div className="bg-white p-10 rounded-4xl text-center border border-dashed border-gray-300 text-gray-400 font-bold">
-              Aucun arc trouvé.
+              Aucune organisation trouvé.
             </div>
           ) : (
-            arcs.map((arc) => (
+            organisation.map((o) => (
               <div
-                key={arc.id}
+                key={o.id}
                 className="flex items-center justify-between bg-white p-4 rounded-4xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-5">
                   <div className="h-16 w-16 rounded-2xl bg-purple-50 flex items-center justify-center border border-purple-100 overflow-hidden">
-                    {arc.image && arc.image.length > 0 ? (
+                    {o.image && o.image.length > 0 ? (
                       <img
-                        src={arc.image[0].url}
+                        src={o.image[0].url}
                         className="h-full w-full object-cover"
-                        alt={arc.name}
+                        alt={o.name}
                       />
                     ) : (
                       <Apple className="text-purple-300" />
@@ -82,7 +93,7 @@ export const ArcDB = () => {
                   </div>
                   <div>
                     <h3 className="font-black italic uppercase text-lg">
-                      {arc.name}
+                      {o.name}
                     </h3>
                   </div>
                 </div>
@@ -94,7 +105,7 @@ export const ArcDB = () => {
                     <Upload size={20} />
                   </button>
                   <button
-                    onClick={() => handleDeleteArc(arc.id)}
+                    onClick={() => handleDeleteOrganisation(o.id)}
                     className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all"
                   >
                     <Trash2 size={20} />
@@ -118,9 +129,10 @@ export const ArcDB = () => {
               </button>
             </div>
             <OrganisationForm
-                          onSubmit={handleCreateArc}
-                          onCancel={() => setIsModalOpen(false)} 
-                          equipages={[]}            />
+              onSubmit={handleCreateOrganisation}
+              onCancel={() => setIsModalOpen(false)}
+              equipages={equipage}
+            />
           </div>
         </div>
       )}

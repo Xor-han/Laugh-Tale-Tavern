@@ -37,7 +37,7 @@ app.use("/comments", commentRouter);
 app.use("/fruits", devilFruitRouter);
 app.use("/pages", pageRouter);
 app.use("/organisations", organisationRouter);
-app.use("/crews", equipageRouter);
+app.use("/equipages", equipageRouter);
 app.use("/types", typeRouter);
 app.use("/arcs", arcRouter);
 app.use("/images", imageRouter);

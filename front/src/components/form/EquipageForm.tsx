@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { Upload, Trash2, Loader2, CheckCircle2 } from "lucide-react";
+import { Upload, Trash2, Loader2, CheckCircle2, X } from "lucide-react";
 import { getImages, uploadImage, deleteImage } from "../../api/image.api";
 import type { Image } from "../../interfaces/image.interface";
 import type { Organisation } from "../../interfaces/organisation.interface";
 
 interface Props {
   organisations: Organisation[];
-  onSubmit: (data: { name: string; imageId: number; organisationId?: number }) => void;
+  onSubmit: (data: { name: string; imageId: number; organisationIds?: number[] }) => void;
   onCancel: () => void;
 }
 
@@ -15,7 +15,7 @@ export const EquipageForm = ({ organisations, onSubmit, onCancel }: Props) => {
 
   // --- ÉTATS ---
   const [name, setName] = useState("");
-  const [selectedOrgId, setSelectedOrgId] = useState<number | "">("");
+  const [selectedOrgIds, setSelectedOrgIds] = useState<number[]>([]);
   const [images, setImages] = useState<Image[]>([]);
   const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
 
@@ -73,6 +73,12 @@ export const EquipageForm = ({ organisations, onSubmit, onCancel }: Props) => {
     }
   };
 
+    const handleAddOrganisations = (id: number) => {
+    if (id && !selectedOrgIds.includes(id)) {
+      setSelectedOrgIds([...selectedOrgIds, id]);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !selectedImageId) {
@@ -82,7 +88,7 @@ export const EquipageForm = ({ organisations, onSubmit, onCancel }: Props) => {
     onSubmit({ 
       name: name.trim(), 
       imageId: selectedImageId,
-      organisationId: selectedOrgId === "" ? undefined : Number(selectedOrgId)
+      organisationIds: selectedOrgIds
     });
   };
 
@@ -103,23 +109,44 @@ export const EquipageForm = ({ organisations, onSubmit, onCancel }: Props) => {
           />
         </div>
 
-        <div>
-          <label className="text-xs font-black uppercase text-gray-400">
-            Organisation Parente (Optionnel)
-          </label>
-          <select
-            value={selectedOrgId}
-            onChange={(e) => setSelectedOrgId(e.target.value === "" ? "" : Number(e.target.value))}
-            className="w-full p-3 border-2 border-gray-100 rounded-xl bg-white outline-none focus:border-black transition-all"
-          >
-            <option value="">Aucune organisation spécifique</option>
-            {organisations.map((org) => (
-              <option key={org.id} value={org.id}>
-                {org.name}
+            {/* Organisations (Multi-Select) */}
+      <div className="flex flex-col gap-3">
+        <label className="text-xs font-black uppercase text-gray-400">
+          L'organisation ou les organisations de l'équipage
+        </label>
+        <select
+          value=""
+          onChange={(e) => handleAddOrganisations(Number(e.target.value))}
+          className="w-full p-3 border-2 border-gray-100 rounded-xl bg-white outline-none focus:border-black transition-all"
+        >
+          <option value="">Sélectionner une ou plusieurs organisations...</option>
+          {organisations
+            .filter((o) => !selectedOrgIds.includes(o.id))
+            .map((o) => (
+              <option key={o.id} value={o.id}>
+                {o.name}
               </option>
             ))}
-          </select>
+        </select>
+
+        <div className="flex flex-wrap gap-2">
+          {selectedOrgIds.map((id) => (
+            <span
+              key={id}
+              className="flex items-center gap-2 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold border border-gray-200"
+            >
+              {organisations.find((o) => o.id === id)?.name}
+              <button
+                type="button"
+                onClick={() => setSelectedOrgIds(selectedOrgIds.filter((oId) => oId !== id))}
+                className="hover:text-red-500"
+              >
+                <X size={14} />
+              </button>
+            </span>
+          ))}
         </div>
+      </div>
       </div>
 
       {/* GALERIE D'IMAGES */}

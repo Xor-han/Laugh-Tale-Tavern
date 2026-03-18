@@ -117,8 +117,8 @@ export const CharacterForm = ({
       equipageId: equipageId,
     });
   };
-  const selectedOrg = organisation.find((o) => o.id === organisationId);
-  const isPirate = selectedOrg?.name.toLowerCase().includes("pirate");
+  // const selectedOrg = organisation.find((o) => o.id === organisationId);
+  // const isPirate = selectedOrg?.name.toLowerCase().includes("pirate");
 
   const handleAddArc = (id: number) => {
     if (!id) return;
@@ -289,7 +289,6 @@ export const CharacterForm = ({
           ))}
         </select>
       </div>
-      {isPirate && (
         <div>
           <label className="text-xs font-black uppercase text-gray-400">
             Equipage du personnage
@@ -307,7 +306,7 @@ export const CharacterForm = ({
             ))}
           </select>
         </div>
-      )}
+
       <div>
         <label className="text-xs font-black uppercase text-gray-400">
           Arcs d'apparition

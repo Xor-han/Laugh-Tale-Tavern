@@ -16,7 +16,7 @@ import type {
 import { EquipageForm } from "./form/EquipageForm";
 import type { Organisation } from "../interfaces/organisation.interface";
 
-export const ArcDB = () => {
+export const EquipageDB = () => {
   const [equipages, setEquipages] = useState<Equipage[]>([]);
   const [organisation, setOrganisation] = useState<Organisation[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
