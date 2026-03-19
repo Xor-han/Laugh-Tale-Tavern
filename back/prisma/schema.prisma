@@ -93,17 +93,17 @@ model Comment {
 }
 
 model Page {
-  id          Int          @id @default(autoincrement())
-  slug        String       @unique
-  title       String
-  content     String       @db.Text
-  entityType  String       
-  entityId    Int          
-  comments    Comment[]   
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id         Int                @id @default(autoincrement())
+  slug       String             @unique
+  title      String
+  content    String             @db.Text
+  entityType String
+  entityId   Int                @unique
+  comments   Comment[]
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
 
-  @@unique([entityType, entityId])
+@@unique([entityType, entityId])
 }
 
 model Arcs {

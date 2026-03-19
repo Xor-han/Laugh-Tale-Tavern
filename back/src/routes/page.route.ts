@@ -38,9 +38,17 @@ router.get("/:slug", async (req: Request, res: Response) => {
         },
       },
     });
-
     if (!page) return res.status(404).json({ message: "Page non trouvée" });
-    res.json(page);
+    const character = await db.onePieceCharacter.findUnique({
+      where: { id: page.entityId },
+      include: {image: true , devilFruit: true}
+    });
+
+    // 3. On envoie les deux au frontend dans un seul objet
+    res.json({
+      ...page,
+      character, // Toutes les infos (image, organisation, etc.) sont là !
+    });
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
   }
@@ -58,9 +66,12 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
     }
 
     const existingLink = await db.page.findFirst({
-      where: { entityId: Number(entityId), entityType }
+      where: { entityId: Number(entityId), entityType },
     });
-    if (existingLink) return res.status(400).json({ message: "Une page existe déjà pour cette entité" });
+    if (existingLink)
+      return res
+        .status(400)
+        .json({ message: "Une page existe déjà pour cette entité" });
 
     const newPage = await db.page.create({
       data: {
@@ -68,7 +79,7 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
         title,
         content,
         entityId: Number(entityId),
-        entityType
+        entityType,
       },
     });
 

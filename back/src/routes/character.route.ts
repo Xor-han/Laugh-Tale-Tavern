@@ -26,7 +26,18 @@ router.get("/", async (req: Request, res: Response) => {
         arcs: { select: { name: true } },
       },
     });
-    res.status(200).json(data);
+    const pages = await db.page.findMany({
+      where: { entityType: "CHARACTER" },
+      select: { entityId: true },
+    });
+
+    const characterIdsWithPage = new Set(pages.map((p) => p.entityId));
+
+    const results = data.map((char) => ({
+      ...char,
+      hasPage: characterIdsWithPage.has(char.id),
+    }));
+    res.status(200).json(results);
   } catch (error) {
     res.status(500).json({ message: "Erreur server", error });
   }

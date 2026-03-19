@@ -1,9 +1,18 @@
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Apple, X, Upload } from "lucide-react";
+import { PageForm } from "./form/PageForm";
 
 // APIs
-import { getCharacters, deleteCharacter, createCharacter } from "../api/onePieceCharacter.api";
-import type { CreateCharacter, OnePieceCharacter } from "../interfaces/onePieceCharacter.interface";
+import { createPage } from "../api/page.api";
+import {
+  getCharacters,
+  deleteCharacter,
+  createCharacter,
+} from "../api/onePieceCharacter.api";
+import type {
+  CreateCharacter,
+  OnePieceCharacter,
+} from "../interfaces/onePieceCharacter.interface";
 import { CharacterForm } from "./form/CharacterForm";
 import { getFruits } from "../api/devilFruits.api";
 import { getOrganisations } from "../api/organisation.api";
@@ -21,28 +30,33 @@ export const CharacterDB = () => {
   const [organisation, setOrganisation] = useState<Organisation[]>([]);
   const [arcs, setArcs] = useState<Arc[]>([]);
   const [equipage, setEquipage] = useState<Equipage[]>([]);
+  const [isModalPageOpen, setIsModalPageOpen] = useState(false);
+  const [selectedEntity, setSelectedEntity] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
 
   const fetchCharacters = async () => {
     const data = await getCharacters();
     setCharacters(data);
     console.log(data);
   };
-    useEffect(() => {
-      const loadData = async () => {
-        const fruitData = await getFruits();
-        setFruits(fruitData);
-        const organisationData = await getOrganisations();
-        setOrganisation(organisationData);
-        const arcData = await getArcs();
-        setArcs(arcData);
-        const equipageData = await getEquipages();
-        setEquipage(equipageData);
-  
-        await fetchCharacters();
-      };
-  
-      loadData();
-    }, [])
+  useEffect(() => {
+    const loadData = async () => {
+      const fruitData = await getFruits();
+      setFruits(fruitData);
+      const organisationData = await getOrganisations();
+      setOrganisation(organisationData);
+      const arcData = await getArcs();
+      setArcs(arcData);
+      const equipageData = await getEquipages();
+      setEquipage(equipageData);
+
+      await fetchCharacters();
+    };
+
+    loadData();
+  }, []);
 
   // --- HANDLERS ---
   const handleCreateCharacter = async (data: CreateCharacter) => {
@@ -55,6 +69,20 @@ export const CharacterDB = () => {
     if (!confirm("Supprimer ce personnage ?")) return;
     await deleteCharacter(id);
     await fetchCharacters();
+  };
+  const handleOpenPageModal = (char: any) => {
+    setSelectedEntity({ id: char.id, name: char.name });
+    setIsModalPageOpen(true);
+  };
+  const handleFinalSubmit = async (formData: any) => {
+    try {
+      await createPage(formData);
+      alert("L'article One Piece a été publié !");
+      setIsModalOpen(false);
+      fetchCharacters();
+    } catch (error) {
+      alert("Erreur : " + error);
+    }
   };
 
   return (
@@ -108,19 +136,27 @@ export const CharacterDB = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                <button
-                  onClick={() => {}}
-                  className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-blue-500 hover:text-white transition-all"
+                  <button
+                    onClick={() => handleOpenPageModal(character)}
+                    className={
+                      character.hasPage ? "text-green-500" : "text-blue-500"
+                    }
                   >
-                  <Upload size={20} />
-                </button>
-                <button
-                  onClick={() => handleDeleteCharacter(character.id)}
-                  className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all"
+                    {character.hasPage ? "Modifier" : "Rédiger"}
+                  </button>
+                  <button
+                    onClick={() => {}}
+                    className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-blue-500 hover:text-white transition-all"
                   >
-                  <Trash2 size={20} />
-                </button>
-                  </div>
+                    <Upload size={20} />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteCharacter(character.id)}
+                    className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all"
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                </div>
               </div>
             ))
           )}
@@ -139,39 +175,48 @@ export const CharacterDB = () => {
               </button>
             </div>
             <div className="max-h-150 overflow-y-auto custom-scrollbar">
-            <CharacterForm
-              onSubmit={handleCreateCharacter}
-              onCancel={() => setIsModalOpen(false)} 
-              organisation={organisation} 
-              arcs={arcs} 
-              equipage={equipage} 
-              devilFruit={fruits}            
+              <CharacterForm
+                onSubmit={handleCreateCharacter}
+                onCancel={() => setIsModalOpen(false)}
+                organisation={organisation}
+                arcs={arcs}
+                equipage={equipage}
+                devilFruit={fruits}
               />
-              </div>
+            </div>
           </div>
         </div>
       )}
-      {/* {isModalEditOpen && editingFruit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+      {isModalPageOpen && selectedEntity && (
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+          {/* L'arrière-plan sombre (Overlay) */}
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
+            onClick={() => setIsModalOpen(false)} 
+          />
+          
+          {/* La boîte de la modale */}
+          <div className="relative bg-white w-full max-w-2xl rounded-4xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-black italic">Modification</h2>
-              <button
-                onClick={() => setIsModalEditOpen(false)}
-                className="p-2 bg-gray-100 rounded-full hover:bg-red-50 transition-colors"
-              >
-                <X size={20} />
+              <h2 className="text-xl font-black uppercase tracking-tight">
+                Nouvel article : <span className="text-blue-600">{selectedEntity.name}</span>
+              </h2>
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-black">
+                Fermer
               </button>
             </div>
-            <EditFruitForm
-              devilFruit={editingFruit}
-              types={types}
-              onSubmit={handleEditFruit}
-              onClose={() => setEditingFruit(null)}
+
+            {/* Ton composant PageForm qu'on a fait ensemble */}
+            <PageForm 
+              entityId={selectedEntity.id}
+              entityType="CHARACTER"
+              initialTitle={selectedEntity.name}
+              onSubmit={handleFinalSubmit} // La fonction qui appelle createPage
+              onCancel={() => setIsModalPageOpen(false)}
             />
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

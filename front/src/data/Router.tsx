@@ -9,6 +9,7 @@ import { OrganisationsPage } from "../pages/OrganisationsPage";
 import { ProtectedRoute } from "../middleware/middleware";
 import { AdminDashboard } from "../pages/AdminDashboard";
 import { ProfilePage } from "../pages/ProfilePage";
+import { DynamiquePage } from "../pages/DynamiquePage";
 
 export const Router = createBrowserRouter([
   {
@@ -59,4 +60,9 @@ export const Router = createBrowserRouter([
     path: "/profile/:slug",
     element: <ProfilePage />,
   },
+
+  {
+    path: "/:slug",
+    element: <DynamiquePage/>
+  }
 ]);
