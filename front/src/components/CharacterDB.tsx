@@ -205,13 +205,11 @@ export const CharacterDB = () => {
                 Fermer
               </button>
             </div>
-
-            {/* Ton composant PageForm qu'on a fait ensemble */}
             <PageForm 
               entityId={selectedEntity.id}
               entityType="CHARACTER"
               initialTitle={selectedEntity.name}
-              onSubmit={handleFinalSubmit} // La fonction qui appelle createPage
+              onSubmit={handleFinalSubmit}
               onCancel={() => setIsModalPageOpen(false)}
             />
           </div>

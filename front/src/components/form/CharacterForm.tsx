@@ -100,8 +100,7 @@ export const CharacterForm = ({
       !profession ||
       !selectedImageId ||
       !selectedArcIds ||
-      !organisationId ||
-      !devilFruitId
+      !organisationId
     ) {
       setError("Tous les champs sont obligatoires");
       return;

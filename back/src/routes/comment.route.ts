@@ -19,7 +19,7 @@ router.get("/", async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Non authentifié" });
     }
     const data = await db.comment.findMany({
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: "desc" },
       include: {
         author: {
           select: {

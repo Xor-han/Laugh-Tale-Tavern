@@ -1,4 +1,8 @@
+import type { Arc } from "./arc.interface";
 import type { Comment } from "./comment.interface";
+import type { DevilFruit } from "./devilFruit.interface";
+import type { OnePieceCharacter } from "./onePieceCharacter.interface";
+import type { Organisation } from "./organisation.interface";
 
 export interface Page {
   id: number;
@@ -25,3 +29,10 @@ export interface CreatePage {
   entityId?: number;
   entityType?: string;
 }
+
+export type DynamicPageData = Page & {
+  character?: OnePieceCharacter; // Remplace any par ton interface Character
+  fruit?: DevilFruit;
+  arc?: Arc;
+  organistaion?: Organisation 
+};

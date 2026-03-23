@@ -13,7 +13,9 @@ export const Navbar = ({ userId, userImage, userName, session }: Props) => {
   return (
     <nav className="flex px-24 py-7 items-center justify-between bg-[#1D293D] text-white">
       <div className="flex gap-14">
+        <Link to= "/">
         <h1 className="text-xl">Laugh Tale Tavern</h1>
+        </Link>
           <Nav/>
       </div>
       <div className="flex justify-self-end gap-10 ">

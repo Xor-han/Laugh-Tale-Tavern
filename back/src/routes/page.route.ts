@@ -14,8 +14,47 @@ const getUserId = async (req: Request): Promise<string | null> => {
 
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const pages = await db.page.findMany();
-    res.json(pages);
+    const pages = await db.page.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    const pagesWithData = await Promise.all(
+      pages.map(async (page) => {
+        let entityData: any = null;
+
+        switch (page.entityType) {
+          case "CHARACTER":
+            entityData = await db.onePieceCharacter.findUnique({
+              where: { id: page.entityId },
+              include: { image: true },
+            });
+            break;
+          case "ARC":
+            entityData = await db.arcs.findUnique({
+              where: { id: page.entityId },
+              include: { image: true },
+            });
+            break;
+          case "FRUIT":
+            entityData = await db.devilFruit.findUnique({
+              where: { id: page.entityId },
+              include: { image: true },
+            });
+            break;
+          case "ORGANISATION":
+            entityData = await db.organisation.findUnique({
+              where: { id: page.entityId },
+              include: { image: true },
+            });
+            break;
+        }
+
+        return {
+          ...page,
+          entityData,
+        };
+      }),
+    );
+    res.json(pagesWithData);
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
   }
@@ -29,6 +68,7 @@ router.get("/:slug", async (req: Request, res: Response) => {
       include: {
         comments: {
           where: { parentId: null },
+          orderBy: {createdAt: "desc"},
           include: {
             author: true,
             replies: {
@@ -41,13 +81,13 @@ router.get("/:slug", async (req: Request, res: Response) => {
     if (!page) return res.status(404).json({ message: "Page non trouvée" });
     const character = await db.onePieceCharacter.findUnique({
       where: { id: page.entityId },
-      include: {image: true , devilFruit: true}
+      include: { image: true, devilFruit: true, equipage: true, organisation: true },
     });
 
-    // 3. On envoie les deux au frontend dans un seul objet
+
     res.json({
       ...page,
-      character, // Toutes les infos (image, organisation, etc.) sont là !
+      character,
     });
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });

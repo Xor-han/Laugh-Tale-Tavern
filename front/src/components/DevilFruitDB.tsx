@@ -180,6 +180,30 @@ export const DevilFruitDB = () => {
           </div>
         </div>
       )}
+       {/* {isModalPageOpen && selectedEntity && (
+              <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+                {/* L'arrière-plan sombre (Overlay) */}
+                {/* <div 
+                  className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
+                  onClick={() => setIsModalOpen(false)}  */}
+                
+                {/* La boîte de la modale */}
+                {/* <div className="relative bg-white w-full max-w-2xl rounded-4xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-black uppercase tracking-tight">
+                      Nouvel article : <span className="text-blue-600">{selectedEntity.name}</span>
+                    </h2>
+                    <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-black">
+                      Fermer
+                    </button>
+                  </div> */}
+                  {/* <PageForm 
+                    entityId={selectedEntity.id}
+                    entityType="CHARACTER"
+                    initialTitle={selectedEntity.name}
+                    onSubmit={handleFinalSubmit}
+                    onCancel={() => setIsModalPageOpen(false)}
+                  /> */}
     </div>
   );
 };
