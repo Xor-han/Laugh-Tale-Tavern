@@ -15,7 +15,7 @@ export const RecentPageCard = () => {
     })
     return (
         <PagesContainer
-        pages={pages}
+        pages={pages} title="Pages Récentes"
         />
     )
 }

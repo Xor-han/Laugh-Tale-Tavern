@@ -2,6 +2,7 @@ import type { Equipage } from "./equipage.interface";
 import type { OnePieceCharacter } from "./onePieceCharacter.interface";
 
 export interface Organisation {
+  hasPage: any;
   id: number;
   name: string;
   onePieceCharacters?: OnePieceCharacter[];

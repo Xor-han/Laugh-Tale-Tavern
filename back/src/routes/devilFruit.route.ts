@@ -16,10 +16,21 @@ router.get("/", async (req: Request, res: Response) => {
   try {
     const data = await db.devilFruit.findMany({
       orderBy: { name: "desc" },
-      include: { onePieceCharacters: true, image: true, type: true},
+      include: { onePieceCharacters: true, image: true, type: true },
+    });
+    const pages = await db.page.findMany({
+      where: { entityType: "FRUIT" },
+      select: { entityId: true },
     });
 
-    res.status(200).json(data);
+    const fruitIdsWithPage = new Set(pages.map((p) => p.entityId));
+
+    const results = data.map((fruit) => ({
+      ...fruit,
+      hasPage: fruitIdsWithPage.has(fruit.id),
+    }));
+
+    res.status(200).json(results);
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
   }
@@ -30,7 +41,7 @@ router.get("/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
     const fruit = await db.devilFruit.findUnique({
       where: { id: Number(id) },
-      include: { onePieceCharacters: true, image: true, type: true},
+      include: { onePieceCharacters: true, image: true, type: true },
     });
 
     if (!fruit) return res.status(404).json({ message: "Fruit non trouvé" });
@@ -44,7 +55,7 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
-    const { name, imageId, typeId} = req.body;
+    const { name, imageId, typeId } = req.body;
     if (!name || !typeId) {
       return res.status(400).json({
         message: "Tous les champs sont obligatoires (name et typeId).",
@@ -62,7 +73,7 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
       },
       include: {
         type: true,
-        image : true
+        image: true,
       },
     });
 

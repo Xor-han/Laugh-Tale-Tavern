@@ -10,43 +10,56 @@ import { ProtectedRoute } from "../middleware/middleware";
 import { AdminDashboard } from "../pages/AdminDashboard";
 import { ProfilePage } from "../pages/ProfilePage";
 import { DynamiquePage } from "../pages/DynamiquePage";
+import { Layout } from "../Layout";
 
 export const Router = createBrowserRouter([
   {
-    path: "/",
-    element: <App />,
-  },
+    element: <Layout />,
+    children : [
+      {
+        path: "/",
+        element: <App />,
+      },
 
+      {
+        path: "/arcs",
+        element: <ArcsPage />,
+      },
+
+      {
+        path: "/personnages",
+        element: <CharacterPage />,
+      },
+
+      {
+        path: "/équipages-pirates",
+        element: <CrewsPage />,
+      },
+
+      {
+        path: "/fruits-du-démon",
+        element: <FruitsPage />,
+      },
+
+      {
+        path: "/organisations",
+        element: <OrganisationsPage />,
+      },
+      {
+        path: "/:slug",
+        element: <DynamiquePage />,
+      },
+    ],
+  },
   {
     path: "/login",
     element: <AuthPage onAuth={() => {}} />,
   },
 
   {
-    path: "/arcs",
-    element: <ArcsPage />,
+    path: "/profile/:slug",
+    element: <ProfilePage />,
   },
-
-  {
-    path: "/personnages",
-    element: <CharacterPage />,
-  },
-
-  {
-    path: "/équipages-pirates",
-    element: <CrewsPage />,
-  },
-
-  {
-    path: "/fruits-du-démon",
-    element: <FruitsPage />,
-  },
-
-  {
-    path: "/organisations",
-    element: <OrganisationsPage />,
-  },
-
   {
     path: "/admin",
     element: (
@@ -55,14 +68,4 @@ export const Router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-
-  {
-    path: "/profile/:slug",
-    element: <ProfilePage />,
-  },
-
-  {
-    path: "/:slug",
-    element: <DynamiquePage/>
-  }
 ]);

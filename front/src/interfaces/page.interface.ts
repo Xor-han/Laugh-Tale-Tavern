@@ -31,8 +31,8 @@ export interface CreatePage {
 }
 
 export type DynamicPageData = Page & {
-  character?: OnePieceCharacter; // Remplace any par ton interface Character
-  fruit?: DevilFruit;
+  character?: OnePieceCharacter;
+  devilFruit?: DevilFruit;
   arc?: Arc;
   organistaion?: Organisation 
 };

@@ -46,6 +46,11 @@ router.get("/", async (req: Request, res: Response) => {
               include: { image: true },
             });
             break;
+          case "EQUIPAGE":
+            entityData = await db.equipages.findUnique({
+              where: { id: page.entityId },
+              include: { image: true },
+            });
         }
 
         return {
@@ -68,7 +73,7 @@ router.get("/:slug", async (req: Request, res: Response) => {
       include: {
         comments: {
           where: { parentId: null },
-          orderBy: {createdAt: "desc"},
+          orderBy: { createdAt: "desc" },
           include: {
             author: true,
             replies: {
@@ -81,13 +86,37 @@ router.get("/:slug", async (req: Request, res: Response) => {
     if (!page) return res.status(404).json({ message: "Page non trouvée" });
     const character = await db.onePieceCharacter.findUnique({
       where: { id: page.entityId },
-      include: { image: true, devilFruit: true, equipage: true, organisation: true },
+      include: {
+        image: true,
+        devilFruit: true,
+        equipage: true,
+        organisation: true,
+      },
     });
-
+    const devilFruit = await db.devilFruit.findUnique({
+      where: { id: page.entityId },
+      include: { image: true, onePieceCharacters: true, type: true },
+    });
+    const equipage = await db.equipages.findUnique({
+      where: { id: page.entityId },
+      include: { image: true, onePieceCharacter: true, organisation: true },
+    });
+    const organisation = await db.organisation.findUnique({
+      where: { id: page.entityId },
+      include: { image: true, onePieceCharacter: true, equipage: true },
+    });
+    const arc = await db.arcs.findUnique({
+      where: { id: page.entityId },
+      include: { image: true, onePieceCharacter: true },
+    });
 
     res.json({
       ...page,
       character,
+      devilFruit,
+      equipage,
+      organisation,
+      arc,
     });
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });

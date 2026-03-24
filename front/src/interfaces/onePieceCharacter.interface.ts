@@ -4,6 +4,7 @@ import type { Equipage } from "./equipage.interface";
 import type { Organisation } from "./organisation.interface";
 
 export interface OnePieceCharacter {
+  hasPage: any;
   id: number;
   name: string;
   image?: {

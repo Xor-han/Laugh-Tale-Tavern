@@ -1,7 +1,6 @@
 import { getPageBySlug } from "../api/page.api";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Navbar } from "../components/Navbar";
 import { authClient } from "../lib/auth-client";
 import { createComment } from "../api/comment.api";
 import type { Comment, CreateComment } from "../interfaces/comment.interface";
@@ -90,14 +89,9 @@ export const DynamiquePage = () => {
   if (loading) return <div>Chargement...</div>;
   if (!page) return <div>404 - Cette page n'existe pas dans Grand Line.</div>;
   const haveDevilFruit = page.character?.devilFruit?.name;
+  console.log(page)
   return (
     <>
-      <Navbar
-        userId={session?.user.id}
-        userImage={session?.user.image}
-        userName={session?.user.name}
-        session={session ? true : false}
-      />
       <main className="mx-24 my-10 flex flex-col gap-5">
         <div className="flex gap-10">
           <div className="w-4/5 ">
@@ -106,28 +100,84 @@ export const DynamiquePage = () => {
               {page.content}
             </div>
           </div>
-          <div className="w-1/2 flex flex-col items-center">
-            {page?.character?.image?.[0] ? (
-              <img
-                src={page.character.image[0].url}
-                alt={page.character.name}
-                className="rounded-2xl "
-              />
-            ) : (
-              <div className="bg-gray-200 h-64 w-full rounded-2xl" />
-            )}
-            <div className="w-full">
-              <p>Nom: {page.character?.name}</p>
-              {haveDevilFruit ? (
-                <p>Fruit du démon: {page.character?.devilFruit?.name}</p>
+          {page.entityType === "CHARACTER" && (
+            <div className="w-1/2 flex flex-col items-center">
+              {page?.character?.image?.[0] ? (
+                <img
+                  src={page.character.image[0].url}
+                  alt={page.character.name}
+                  className="rounded-2xl "
+                />
               ) : (
-                <p>Fruit du démon: Aucun Fruit</p>
+                <div className="bg-gray-200 h-64 w-full rounded-2xl" />
               )}
-              <p>Equipage: {page.character?.equipage?.name}</p>
-              <p>Profession: {page.character?.profession}</p>
-              <p>Organisation: {page.character?.organisation?.name}</p>
+              <div className="w-full">
+                <p>Nom: {page.character?.name}</p>
+                {haveDevilFruit ? (
+                  <p>Fruit du démon: {page.character?.devilFruit?.name}</p>
+                ) : (
+                  <p>Fruit du démon: Aucun Fruit</p>
+                )}
+                <p>Equipage: {page.character?.equipage?.name}</p>
+                <p>Profession: {page.character?.profession}</p>
+                <p>Organisation: {page.character?.organisation?.name}</p>
+              </div>
             </div>
-          </div>
+          )}
+          {page.entityType === "FRUIT" && (
+            <div className="w-1/2 flex flex-col items-center">
+              {page?.devilFruit?.image?.[0] ? (
+                <img
+                  src={page.devilFruit.image[0].url}
+                  alt={page.devilFruit.name}
+                  className="rounded-2xl "
+                />
+              ) : (
+                <div className="bg-gray-200 h-64 w-full rounded-2xl" />
+              )}
+              <p>Type: {page.devilFruit?.type?.name}</p>
+              <p>Détenteur du fruit: {page.devilFruit?.onePieceCharacters?.[0].name}</p>
+            </div>
+          )}
+          {page.entityType === "EQUIPAGE" && (
+            <div className="w-1/2 flex flex-col items-center">
+              {page?.character?.image?.[0] ? (
+                <img
+                  src={page.character.image[0].url}
+                  alt={page.character.name}
+                  className="rounded-2xl "
+                />
+              ) : (
+                <div className="bg-gray-200 h-64 w-full rounded-2xl" />
+              )}
+            </div>
+          )}
+          {page.entityType === "ARC" && (
+            <div className="w-1/2 flex flex-col items-center">
+              {page?.character?.image?.[0] ? (
+                <img
+                  src={page.character.image[0].url}
+                  alt={page.character.name}
+                  className="rounded-2xl "
+                />
+              ) : (
+                <div className="bg-gray-200 h-64 w-full rounded-2xl" />
+              )}
+            </div>
+          )}
+          {page.entityType === "ORGANISATION" && (
+            <div className="w-1/2 flex flex-col items-center">
+              {page?.character?.image?.[0] ? (
+                <img
+                  src={page.character.image[0].url}
+                  alt={page.character.name}
+                  className="rounded-2xl "
+                />
+              ) : (
+                <div className="bg-gray-200 h-64 w-full rounded-2xl" />
+              )}
+            </div>
+          )}
         </div>
         <div className="space-y-6">
           <h3 className="text-xl font-black uppercase">

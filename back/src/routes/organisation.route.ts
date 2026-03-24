@@ -22,6 +22,19 @@ router.get("/", async (req: Request, res: Response) => {
         image: true,
       },
     });
+    const pages = await db.page.findMany({
+      where: { entityType: "ORGANISATION" },
+      select: { entityId: true },
+    });
+
+    const organisationIdsWithPage = new Set(pages.map((p) => p.entityId));
+
+    const results = data.map((organisation) => ({
+      ...organisation,
+      hasPage: organisationIdsWithPage.has(organisation.id),
+    }));
+
+    res.status(200).json(results);
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
@@ -52,7 +65,7 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
     const userId = await getUserId(req);
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
 
-    const { name, equipageIds, imageId} = req.body;
+    const { name, equipageIds, imageId } = req.body;
     if (!name)
       return res.status(400).json({ message: "Le nom est obligatoire" });
 

@@ -1,5 +1,6 @@
 import type { OnePieceCharacter } from "./onePieceCharacter.interface";
 export interface DevilFruit {
+  hasPage: any;
   id: number;
   name: string;
   image?: {
