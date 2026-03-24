@@ -34,5 +34,5 @@ export type DynamicPageData = Page & {
   character?: OnePieceCharacter;
   devilFruit?: DevilFruit;
   arc?: Arc;
-  organistaion?: Organisation 
+  organisation?: Organisation 
 };

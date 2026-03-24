@@ -167,10 +167,10 @@ export const DynamiquePage = () => {
           )}
           {page.entityType === "ORGANISATION" && (
             <div className="w-1/2 flex flex-col items-center">
-              {page?.character?.image?.[0] ? (
+              {page?.organisation?.image?.[0] ? (
                 <img
-                  src={page.character.image[0].url}
-                  alt={page.character.name}
+                  src={page.organisation.image[0].url}
+                  alt={page.organisation.name}
                   className="rounded-2xl "
                 />
               ) : (
