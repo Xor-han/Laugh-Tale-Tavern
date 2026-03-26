@@ -3,7 +3,7 @@ import db from "@/lib/db";
 import { Profession } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { fromNodeHeaders } from "better-auth/node";
-import { isAdmin } from "@/middleware/isAdmin";
+import { isAdmin } from "@/middleware/isAdmin.middleware";
 import cloudinary from "@/lib/cloudinary";
 
 const router: express.Router = express.Router();
@@ -227,10 +227,16 @@ router.delete("/:id", isAdmin, async (req: Request, res: Response) => {
       where: { id: Number(req.params.id) },
       include: { image: true },
     });
+    const page = await db.page.findUnique({
+      where: {entityId: character?.id}
+    })
 
     if (character?.image[0]?.publicId) {
       await cloudinary.uploader.destroy(character.image[0].publicId);
       await db.image.delete({ where: { id: character.image[0].id! } });
+    }
+    if (page?.entityId){
+      await db.page.delete({where : page})
     }
 
     await db.onePieceCharacter.delete({ where: { id: Number(req.params.id) } });

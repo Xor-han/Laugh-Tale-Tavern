@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import cloudinary from "@/lib/cloudinary";
 import db from "@/lib/db";
-import { isAdmin } from "@/middleware/isAdmin";
+import { isAdmin } from "@/middleware/isAdmin.middleware";
 import { fromNodeHeaders } from "better-auth/node";
 import express, { NextFunction, Request, Response } from "express";
 import multer from "multer";

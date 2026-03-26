@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Apple, X, Upload } from "lucide-react";
+import { Plus, Trash2, Apple, X} from "lucide-react";
 
 // APIs
 import {
@@ -143,13 +143,7 @@ export const DevilFruitDB = () => {
                       fruit.hasPage ? "text-green-500" : "text-blue-500"
                     }
                   >
-                    {fruit.hasPage ? "Modifier" : "Rédiger"}
-                  </button>
-                  <button
-                    onClick={() => {}}
-                    className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-blue-500 hover:text-white transition-all"
-                  >
-                    <Upload size={20} />
+                    {fruit.hasPage ? "Ce fruit du démon à déjà une page" : "Rédiger"}
                   </button>
                   <button
                     onClick={() => handleDeleteFruit(fruit.id)}

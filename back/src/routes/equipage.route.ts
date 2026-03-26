@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import db from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { fromNodeHeaders } from "better-auth/node";
-import { isAdmin } from "@/middleware/isAdmin";
+import { isAdmin } from "@/middleware/isAdmin.middleware";
 import cloudinary from "@/lib/cloudinary";
 
 const router: express.Router = express.Router();
@@ -24,7 +24,18 @@ router.get("/", async (req: Request, res: Response) => {
         image: true,
       },
     });
-    res.status(200).json(data);
+    const pages = await db.page.findMany({
+      where: { entityType: "EQUIPAGE" },
+      select: { entityId: true },
+    });
+
+    const equipageIdsWithPage = new Set(pages.map((p) => p.entityId));
+
+    const results = data.map((equipage) => ({
+      ...equipage,
+      hasPage: equipageIdsWithPage.has(equipage.id),
+    }));
+    res.status(200).json(results);
   } catch (error) {
     res.status(500).json({ message: "Erreur server", error });
   }
@@ -58,7 +69,7 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Non authentifié" });
     }
 
-    const { name, organisationIds, imageId} = req.body;
+    const { name, organisationIds, imageId } = req.body;
 
     if (!name) {
       return res

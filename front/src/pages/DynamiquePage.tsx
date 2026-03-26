@@ -141,10 +141,10 @@ export const DynamiquePage = () => {
           )}
           {page.entityType === "EQUIPAGE" && (
             <div className="w-1/2 flex flex-col items-center">
-              {page?.character?.image?.[0] ? (
+              {page?.equipage?.image?.[0] ? (
                 <img
-                  src={page.character.image[0].url}
-                  alt={page.character.name}
+                  src={page.equipage.image[0].url}
+                  alt={page.equipage.name}
                   className="rounded-2xl "
                 />
               ) : (
@@ -154,10 +154,10 @@ export const DynamiquePage = () => {
           )}
           {page.entityType === "ARC" && (
             <div className="w-1/2 flex flex-col items-center">
-              {page?.character?.image?.[0] ? (
+              {page?.arc?.image?.[0] ? (
                 <img
-                  src={page.character.image[0].url}
-                  alt={page.character.name}
+                  src={page.arc.image[0].url}
+                  alt={page.arc.name}
                   className="rounded-2xl "
                 />
               ) : (

@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import db from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { fromNodeHeaders } from "better-auth/node";
-import { isAdmin } from "@/middleware/isAdmin";
+import { isAdmin } from "@/middleware/isAdmin.middleware";
 import cloudinary from "@/lib/cloudinary";
 
 const router: express.Router = express.Router();
@@ -22,7 +22,18 @@ router.get("/", async (req: Request, res: Response) => {
         image: true,
       },
     });
-    res.status(200).json(data);
+    const pages = await db.page.findMany({
+      where: { entityType: "ARC" },
+      select: { entityId: true },
+    });
+
+    const arcIdsWithPage = new Set(pages.map((p) => p.entityId));
+
+    const results = data.map((arc) => ({
+      ...arc,
+      hasPage: arcIdsWithPage.has(arc.id),
+    }));
+    res.status(200).json(results);
   } catch (error) {
     res.status(500).json({ message: "Erreur server", error });
   }
@@ -54,12 +65,9 @@ router.post("/", isAdmin, async (req: Request, res: Response) => {
 
     const { name, imageId } = req.body;
     if (!name || !imageId) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Les champs name, imageUrl et imagePublicId sont obligatoires",
-        });
+      return res.status(400).json({
+        message: "Les champs name, imageUrl et imagePublicId sont obligatoires",
+      });
     }
 
     const data = await db.arcs.create({
@@ -82,22 +90,19 @@ router.put("/:id", isAdmin, async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ message: "Non authentifié" });
 
     const { id } = req.params;
-    const { name, imageId} = req.body;
+    const { name, imageId } = req.body;
 
     if (!name || !imageId) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Les champs name, imageUrl et imagePublicId sont obligatoires",
-        });
+      return res.status(400).json({
+        message: "Les champs name, imageUrl et imagePublicId sont obligatoires",
+      });
     }
 
     const data = await db.arcs.update({
       where: { id: Number(id) },
       data: {
         name,
-        },
+      },
     });
     res.status(200).json(data);
   } catch (error) {

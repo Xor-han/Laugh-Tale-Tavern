@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import db from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { fromNodeHeaders } from "better-auth/node";
-import { isAdmin } from "@/middleware/isAdmin";
+import { isAdmin } from "@/middleware/isAdmin.middleware";
 
 const router: express.Router = express.Router();
 const getUserId = async (req: Request): Promise<string | null> => {

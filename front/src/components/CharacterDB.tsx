@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Apple, X, Upload } from "lucide-react";
+import { Plus, Trash2, Apple, X} from "lucide-react";
 import { PageForm } from "./form/PageForm";
 
 // APIs
-import { createPage } from "../api/page.api";
+import { createPage} from "../api/page.api";
 import {
   getCharacters,
   deleteCharacter,
@@ -142,13 +142,7 @@ export const CharacterDB = () => {
                       character.hasPage ? "text-green-500" : "text-blue-500"
                     }
                   >
-                    {character.hasPage ? "Modifier" : "Rédiger"}
-                  </button>
-                  <button
-                    onClick={() => {}}
-                    className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-blue-500 hover:text-white transition-all"
-                  >
-                    <Upload size={20} />
+                    {character.hasPage ? "Ce personnage à déjà une page" : "Rédiger"}
                   </button>
                   <button
                     onClick={() => handleDeleteCharacter(character.id)}
@@ -192,7 +186,7 @@ export const CharacterDB = () => {
           {/* L'arrière-plan sombre (Overlay) */}
           <div 
             className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
-            onClick={() => setIsModalOpen(false)} 
+            onClick={() => setIsModalPageOpen(false)} 
           />
           
           {/* La boîte de la modale */}
@@ -201,7 +195,7 @@ export const CharacterDB = () => {
               <h2 className="text-xl font-black uppercase tracking-tight">
                 Nouvel article : <span className="text-blue-600">{selectedEntity.name}</span>
               </h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-black">
+              <button onClick={() => setIsModalPageOpen(false)} className="text-gray-400 hover:text-black">
                 Fermer
               </button>
             </div>

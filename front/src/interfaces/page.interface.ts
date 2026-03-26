@@ -1,6 +1,7 @@
 import type { Arc } from "./arc.interface";
 import type { Comment } from "./comment.interface";
 import type { DevilFruit } from "./devilFruit.interface";
+import type { Equipage } from "./equipage.interface";
 import type { OnePieceCharacter } from "./onePieceCharacter.interface";
 import type { Organisation } from "./organisation.interface";
 
@@ -34,5 +35,6 @@ export type DynamicPageData = Page & {
   character?: OnePieceCharacter;
   devilFruit?: DevilFruit;
   arc?: Arc;
-  organisation?: Organisation 
+  organisation?: Organisation;
+  equipage?: Equipage
 };
