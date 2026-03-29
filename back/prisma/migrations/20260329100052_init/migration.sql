@@ -64,7 +64,11 @@ CREATE TABLE "verification" (
 CREATE TABLE "comment" (
     "id" TEXT NOT NULL,
     "content" TEXT NOT NULL,
-    "pageId" INTEGER NOT NULL,
+    "onePieceCharacterId" INTEGER,
+    "devilFruitId" INTEGER,
+    "organisationId" INTEGER,
+    "equipageId" INTEGER,
+    "arcId" INTEGER,
     "authorId" TEXT NOT NULL,
     "parentId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -74,20 +78,10 @@ CREATE TABLE "comment" (
 );
 
 -- CreateTable
-CREATE TABLE "page" (
-    "id" SERIAL NOT NULL,
-    "slug" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "page_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "arcs" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "description" TEXT[],
+    "content" TEXT NOT NULL,
 
     CONSTRAINT "arcs_pkey" PRIMARY KEY ("id")
 );
@@ -101,7 +95,7 @@ CREATE TABLE "onePieceCharacter" (
     "organisationId" INTEGER,
     "equipageId" INTEGER,
     "profession" "profession" NOT NULL,
-    "description" TEXT[],
+    "content" TEXT NOT NULL,
 
     CONSTRAINT "onePieceCharacter_pkey" PRIMARY KEY ("id")
 );
@@ -111,7 +105,7 @@ CREATE TABLE "devilFruit" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "typeId" INTEGER,
-    "description" TEXT[],
+    "content" TEXT NOT NULL,
 
     CONSTRAINT "devilFruit_pkey" PRIMARY KEY ("id")
 );
@@ -128,7 +122,7 @@ CREATE TABLE "type" (
 CREATE TABLE "faction" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "description" TEXT[],
+    "content" TEXT NOT NULL,
 
     CONSTRAINT "faction_pkey" PRIMARY KEY ("id")
 );
@@ -137,7 +131,7 @@ CREATE TABLE "faction" (
 CREATE TABLE "Equipages" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "description" TEXT[],
+    "content" TEXT NOT NULL,
 
     CONSTRAINT "Equipages_pkey" PRIMARY KEY ("id")
 );
@@ -180,9 +174,6 @@ CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 CREATE UNIQUE INDEX "session_token_key" ON "session"("token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "page_slug_key" ON "page"("slug");
-
--- CreateIndex
 CREATE INDEX "_ArcsToOnePieceCharacter_B_index" ON "_ArcsToOnePieceCharacter"("B");
 
 -- CreateIndex
@@ -195,7 +186,19 @@ ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "comment" ADD CONSTRAINT "comment_pageId_fkey" FOREIGN KEY ("pageId") REFERENCES "page"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "comment" ADD CONSTRAINT "comment_onePieceCharacterId_fkey" FOREIGN KEY ("onePieceCharacterId") REFERENCES "onePieceCharacter"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "comment" ADD CONSTRAINT "comment_devilFruitId_fkey" FOREIGN KEY ("devilFruitId") REFERENCES "devilFruit"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "comment" ADD CONSTRAINT "comment_organisationId_fkey" FOREIGN KEY ("organisationId") REFERENCES "faction"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "comment" ADD CONSTRAINT "comment_equipageId_fkey" FOREIGN KEY ("equipageId") REFERENCES "Equipages"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "comment" ADD CONSTRAINT "comment_arcId_fkey" FOREIGN KEY ("arcId") REFERENCES "arcs"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "comment" ADD CONSTRAINT "comment_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -6,6 +6,7 @@ declare global {
     namespace Express{
         interface Request {
             userId?: string;
+            userRole?: string;
         }
     }
 };
@@ -22,6 +23,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         }
 
         req.userId = session.user.id;
+        req.userRole = (session.user as { role?: string }).role;
         next()
     } catch (error) {
         res.status(401).json({message : "Non authentifié"})

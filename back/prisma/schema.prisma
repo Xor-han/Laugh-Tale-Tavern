@@ -79,8 +79,16 @@ model Verification {
 model Comment {
   id        String    @id @default(uuid())
   content   String
-  pageId    Int
-  page      Page      @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  onePieceCharacterId Int?
+  character   OnePieceCharacter? @relation(fields: [onePieceCharacterId], references: [id])
+  devilFruitId    Int?
+  devilFruit     DevilFruit?  @relation(fields: [devilFruitId], references: [id])
+  organisationId    Int?
+  organisation    Organisation? @relation(fields: [organisationId], references: [id])
+  equipageId    Int?
+  equipage     Equipages?   @relation(fields: [equipageId], references: [id])
+  arcId     Int?
+  arc      Arcs?      @relation(fields: [arcId],  references: [id])
   authorId  String
   author    User      @relation(fields: [authorId], references: [id])
   parentId  String?
@@ -92,25 +100,13 @@ model Comment {
   @@map("comment")
 }
 
-model Page {
-  id         Int                @id @default(autoincrement())
-  slug       String             @unique
-  title      String
-  content    String             @db.Text
-  entityType String
-  entityId   Int                @unique
-  comments   Comment[]
-  createdAt  DateTime           @default(now())
-  updatedAt  DateTime           @updatedAt
-
-@@unique([entityType, entityId])
-}
-
 model Arcs {
   id                Int                 @id @default(autoincrement())
   name              String
   image             Image[]
   onePieceCharacter OnePieceCharacter[]
+  comment         Comment[]
+  content       String     
 
   @@map("arcs")
 }
@@ -128,6 +124,8 @@ model OnePieceCharacter {
   equipage       Equipages?    @relation(fields: [equipageId], references: [id])
   profession     Profession
   arcs           Arcs[]
+  comment         Comment[]
+  content       String   
 
   @@map("onePieceCharacter")
 }
@@ -139,6 +137,8 @@ model DevilFruit {
   onePieceCharacters OnePieceCharacter[]
   typeId             Int?
   type               Type?               @relation(fields: [typeId], references: [id])
+  comment         Comment[]
+  content       String   
 
   @@map("devilFruit")
 }
@@ -157,6 +157,8 @@ model Organisation {
   onePieceCharacter OnePieceCharacter[]
   equipage          Equipages[]
   image             Image[]
+  comment         Comment[]
+  content       String   
 
   @@map("faction")
 }
@@ -167,6 +169,8 @@ model Equipages {
   onePieceCharacter OnePieceCharacter[]
   organisation      Organisation[]
   image             Image[]
+  comment         Comment[]
+  content       String   
 }
 
 model Image {

@@ -1,10 +1,13 @@
 import { auth } from "@/lib/auth";
 import cloudinary from "@/lib/cloudinary";
 import db from "@/lib/db";
-import { isAdmin } from "@/middleware/isAdmin.middleware";
+import { adminMiddleware } from "@/middleware/admin.middleware";
 import { fromNodeHeaders } from "better-auth/node";
 import express, { NextFunction, Request, Response } from "express";
 import multer from "multer";
+
+
+
 
 const router: express.Router = express.Router();
 
@@ -38,7 +41,7 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.post(
   "/",
-  isAdmin,
+  adminMiddleware,
   upload.single("image"),
   async (req: Request, res: Response) => {
     try {
@@ -89,7 +92,7 @@ router.post(
   },
 );
 
-router.delete("/:id", isAdmin, async (req: Request, res: Response) => {
+router.delete("/:id", adminMiddleware, async (req: Request, res: Response) => {
   try {
     const userId = await getUserId(req);
     if (!userId) {
