@@ -9,11 +9,12 @@ export const createCharacterShema = z.object({
     .string()
     .min(1, "Le contenu est obligatoire")
     .max(500, "le contenu doit contenir maximum 500 caractères"),
+  slug: z.string().optional(),
   profession: z.string().min(1).max(50),
   imageId: z.number().int().positive().nullable().optional(),
-  devilFruit_id: z.number().int().positive().nullable().optional(),
+  devilFruitId: z.number().int().positive().nullable().optional(),
   organisationId: z.number().int().positive().nullable().optional(),
-  equipageId: z.number().int().positive().nullable().optional(),
+  crewId: z.number().int().positive().nullable().optional(),
   arcIds: z.array(z.number()).optional(),
 });
 export const updateCharacterShema = z.object({
@@ -28,9 +29,9 @@ export const updateCharacterShema = z.object({
   isAlive: z.boolean().optional(),
   profession: z.string().min(1).max(50),
   imageId: z.number().int().positive().nullable().optional(),
-  devilFruit_id: z.number().int().positive().nullable().optional(),
+  devilFruitId: z.number().int().positive().nullable().optional(),
   organisationId: z.number().int().positive().nullable().optional(),
-  equipageId: z.number().int().positive().nullable().optional(),
+  crewId: z.number().int().positive().nullable().optional(),
   arcIds: z.array(z.number()).optional(),
 });
 export const patchCharacterShema = z.object({
@@ -45,9 +46,9 @@ export const patchCharacterShema = z.object({
   isAlive: z.boolean().optional(),
   profession: z.string().min(1).max(50),
   imageId: z.number().int().positive().nullable().optional(),
-  devilFruit_id: z.number().int().positive().nullable().optional(),
+  devilFruitId: z.number().int().positive().nullable().optional(),
   organisationId: z.number().int().positive().nullable().optional(),
-  equipageId: z.number().int().positive().nullable().optional(),
+  crewId: z.number().int().positive().nullable().optional(),
   arcIds: z.array(z.number()).optional(),
 });
 

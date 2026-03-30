@@ -1,12 +1,14 @@
 import db from "@/lib/db";
 import type { CreateDevilFruitDto, UpdateDevilFruitDto, PatchDevilFruitDto } from "@/dtos/devilFruit.dto";
 import cloudinary from "@/lib/cloudinary";
+import { slugify } from "@/utils/slugify";
 
 export const getAllDevilFruit = async (search?: string) => {
   return db.devilFruit.findMany({
     include: {
       image: true,
       onePieceCharacters: true,
+      type: true,
       comment: {
         where: { parentId: null },
         include: {
@@ -20,12 +22,13 @@ export const getAllDevilFruit = async (search?: string) => {
   });
 };
 
-export const getDevilFruitById = async (id: number) => {
+export const getDevilFruitById = async (slug: string) => {
   const devilFruit = await db.devilFruit.findUnique({
-    where: { id },
+    where: { slug },
     include: {
       image: true,
       onePieceCharacters: true,
+      type: true,
       comment: {
         where: { parentId: null },
         include: {
@@ -46,9 +49,11 @@ export const createDevilFruit = async (data: CreateDevilFruitDto) => {
     data: {
       name: data.name,
       content: data.content,
+      slug: slugify(data.name),
       image: {
         connect: { id: data.imageId! },
       },
+      typeId: data.typeId
     },
   });
 };
@@ -65,6 +70,7 @@ export const updateDevilFruit = async (id: number, data: UpdateDevilFruitDto) =>
       image: {
         connect: { id: data.imageId! },
       },
+      typeId: data.typeId
     },
   });
 };
@@ -80,6 +86,7 @@ export const PatchDevilFruit = async (id: number, data: PatchDevilFruitDto) => {
       image: {
         connect: { id: data.imageId! },
       },
+      typeId: data.typeId
     },
   });
 };

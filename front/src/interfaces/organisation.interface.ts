@@ -1,8 +1,7 @@
-import type { Equipage } from "./equipage.interface";
+import type { Crew } from "./equipage.interface";
 import type { OnePieceCharacter } from "./onePieceCharacter.interface";
 
 export interface Organisation {
-  hasPage: any;
   id: number;
   name: string;
   onePieceCharacters?: OnePieceCharacter[];
@@ -13,17 +12,20 @@ export interface Organisation {
     url: string;
   }[];
   imageId?: number | null;
-  equipage?: Equipage[];
+  crew?: Crew[];
+  content: string;
 }
 
 export interface CreateOrg {
   name: string;
-  equipageIds?: number[];
+  crewIds?: number[];
   imageId?: number | null;
+  content: string;
 }
 
 export interface OrgUpdate {
   name?: string;
-  equipageIds?: number[];
+  crewIds?: number[];
   imageId?: number | null;
+  content?: string;
 }

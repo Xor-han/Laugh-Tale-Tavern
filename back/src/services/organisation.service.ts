@@ -1,14 +1,14 @@
 import db from "@/lib/db";
-import type { CreateCrewDto, UpdateCrewDto, PatchCrewDto } from "@/dtos/crew.dto";
+import type { CreateOrganisationDto, UpdateOrganisationDto, PatchOrganisationDto } from "@/dtos/organisation.dto";
 import cloudinary from "@/lib/cloudinary";
 import { slugify } from "@/utils/slugify";
 
-export const getAllCrew = async (search?: string) => {
-  return db.crews.findMany({
+export const getAllOrganisation = async (search?: string) => {
+  return db.organisation.findMany({
     include: {
       image: true,
       onePieceCharacter: true,
-      organisation: true,
+      crew: true,
       comment: {
         where: { parentId: null },
         include: {
@@ -22,13 +22,13 @@ export const getAllCrew = async (search?: string) => {
   });
 };
 
-export const getCrewById = async (slug: string) => {
-  const crew = await db.crews.findUnique({
+export const getOrganisationById = async (slug: string) => {
+  const organisation = await db.organisation.findUnique({
     where: { slug },
     include: {
       image: true,
       onePieceCharacter: true,
-      organisation: true,
+      crew: true,
       comment: {
         where: { parentId: null },
         include: {
@@ -40,28 +40,28 @@ export const getCrewById = async (slug: string) => {
       },
     },
   });
-  if (!crew) return null;
-  return crew;
+  if (!organisation) return null;
+  return organisation;
 };
 
-export const createCrew = async (data: CreateCrewDto) => {
-  return db.crews.create({
+export const createOrganisation = async (data: CreateOrganisationDto) => {
+  return db.organisation.create({
     data: {
       name: data.name,
       content: data.content,
       image: {
         connect: { id: data.imageId! },
       },
-      slug: slugify(data.name),
+      slug: slugify(data.name)
     },
   });
 };
 
-export const updateCrew = async (id: number, data: UpdateCrewDto) => {
-  const existing = await db.crews.findUnique({ where: { id } });
+export const updateOrganisation = async (id: number, data: UpdateOrganisationDto) => {
+  const existing = await db.arcs.findUnique({ where: { id } });
   if (!existing) return null;
 
-  return db.crews.update({
+  return db.organisation.update({
     where: { id },
     data: {
       name: data.name,
@@ -73,11 +73,11 @@ export const updateCrew = async (id: number, data: UpdateCrewDto) => {
   });
 };
 
-export const PatchCrew = async (id: number, data: PatchCrewDto) => {
-  const existing = await db.crews.findUnique({ where: { id } });
+export const PatchOrganisation = async (id: number, data: PatchOrganisationDto) => {
+  const existing = await db.arcs.findUnique({ where: { id } });
   if (!existing) return null;
 
-  return db.crews.update({
+  return db.organisation.update({
     where: { id },
     data: {
       name: data.name,
@@ -88,8 +88,8 @@ export const PatchCrew = async (id: number, data: PatchCrewDto) => {
   });
 };
 
-export const deleteCrew = async (id: number) => {
-  const existing = await db.crews.findUnique({
+export const deleteOrganisation = async (id: number) => {
+  const existing = await db.organisation.findUnique({
     where: { id },
     include: { image: true },
   });
@@ -100,6 +100,6 @@ export const deleteCrew = async (id: number) => {
     await db.image.delete({ where: { id: existing.image[0].id! } });
   }
 
-  await db.crews.delete({ where: { id } });
+  await db.organisation.delete({ where: { id } });
   return true;
 };

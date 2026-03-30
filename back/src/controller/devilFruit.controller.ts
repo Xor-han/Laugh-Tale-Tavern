@@ -20,7 +20,7 @@ export const getAll = async (req: Request, res: Response) => {
 export const getById = async (req: Request, res: Response) => {
   try {
     const devilFruit = await devilFruitService.getDevilFruitById(
-      Number(req.params.id),
+      String(req.params.slug),
     );
     if (!devilFruit) {
       return res.status(400).json({ message: "Devil Fruit not found" });

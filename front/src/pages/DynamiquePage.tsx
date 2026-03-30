@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { authClient } from "../lib/auth-client";
 import { createComment } from "../api/comment.api";
 import type { Comment, CreateComment } from "../interfaces/comment.interface";
-import type { DynamicPageData } from "../interfaces/page.interface";
 import { User } from "lucide-react";
 
 export const DynamiquePage = () => {

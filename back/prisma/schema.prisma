@@ -77,25 +77,25 @@ model Verification {
 }
 
 model Comment {
-  id        String    @id @default(uuid())
-  content   String
+  id                  String             @id @default(uuid())
+  content             String
   onePieceCharacterId Int?
-  character   OnePieceCharacter? @relation(fields: [onePieceCharacterId], references: [id])
-  devilFruitId    Int?
-  devilFruit     DevilFruit?  @relation(fields: [devilFruitId], references: [id])
-  organisationId    Int?
-  organisation    Organisation? @relation(fields: [organisationId], references: [id])
-  equipageId    Int?
-  equipage     Equipages?   @relation(fields: [equipageId], references: [id])
-  arcId     Int?
-  arc      Arcs?      @relation(fields: [arcId],  references: [id])
-  authorId  String
-  author    User      @relation(fields: [authorId], references: [id])
-  parentId  String?
-  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
-  replies   Comment[] @relation("CommentReplies")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  onePieceCharacter   OnePieceCharacter? @relation(fields: [onePieceCharacterId], references: [id])
+  devilFruitId        Int?
+  devilFruit          DevilFruit?        @relation(fields: [devilFruitId], references: [id])
+  organisationId      Int?
+  organisation        Organisation?      @relation(fields: [organisationId], references: [id])
+  crewId              Int?
+  crew                Crews?             @relation(fields: [crewId], references: [id])
+  arcId               Int?
+  arc                 Arcs?              @relation(fields: [arcId], references: [id])
+  authorId            String
+  author              User               @relation(fields: [authorId], references: [id])
+  parentId            String?
+  parent              Comment?           @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies             Comment[]          @relation("CommentReplies")
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
 
   @@map("comment")
 }
@@ -105,8 +105,9 @@ model Arcs {
   name              String
   image             Image[]
   onePieceCharacter OnePieceCharacter[]
-  comment         Comment[]
-  content       String     
+  comment           Comment[]
+  content           String
+  slug              String              @unique
 
   @@map("arcs")
 }
@@ -116,16 +117,17 @@ model OnePieceCharacter {
   name           String
   image          Image[]
   isAlive        Boolean
-  devilFruit_id  Int?
-  devilFruit     DevilFruit?   @relation(fields: [devilFruit_id], references: [id])
+  slug           String        @unique
+  devilFruitId   Int?
+  devilFruit     DevilFruit?   @relation(fields: [devilFruitId], references: [id])
   organisationId Int?
   organisation   Organisation? @relation(fields: [organisationId], references: [id])
-  equipageId     Int?
-  equipage       Equipages?    @relation(fields: [equipageId], references: [id])
+  crewId         Int?
+  crew           Crews?        @relation(fields: [crewId], references: [id])
   profession     Profession
   arcs           Arcs[]
-  comment         Comment[]
-  content       String   
+  comment        Comment[]
+  content        String
 
   @@map("onePieceCharacter")
 }
@@ -134,11 +136,12 @@ model DevilFruit {
   id                 Int                 @id @default(autoincrement())
   name               String
   image              Image[]
+  slug               String              @unique
   onePieceCharacters OnePieceCharacter[]
   typeId             Int?
   type               Type?               @relation(fields: [typeId], references: [id])
-  comment         Comment[]
-  content       String   
+  comment            Comment[]
+  content            String
 
   @@map("devilFruit")
 }
@@ -154,23 +157,27 @@ model Type {
 model Organisation {
   id                Int                 @id @default(autoincrement())
   name              String
+  slug              String              @unique
   onePieceCharacter OnePieceCharacter[]
-  equipage          Equipages[]
+  crew              Crews[]
   image             Image[]
-  comment         Comment[]
-  content       String   
+  comment           Comment[]
+  content           String
 
-  @@map("faction")
+  @@map("organisation")
 }
 
-model Equipages {
+model Crews {
   id                Int                 @id @default(autoincrement())
   name              String
+  slug              String              @unique
   onePieceCharacter OnePieceCharacter[]
   organisation      Organisation[]
   image             Image[]
-  comment         Comment[]
-  content       String   
+  comment           Comment[]
+  content           String
+
+  @@map("crew")
 }
 
 model Image {
@@ -179,15 +186,15 @@ model Image {
   publicId            String
   createdAt           DateTime           @default(now())
   devilFruitId        Int?
-  fruit               DevilFruit?        @relation(fields: [devilFruitId], references: [id])
+  devilFruit          DevilFruit?        @relation(fields: [devilFruitId], references: [id])
   onePieceCharacterId Int?
   onePieceCharacter   OnePieceCharacter? @relation(fields: [onePieceCharacterId], references: [id])
   arcId               Int?
   arc                 Arcs?              @relation(fields: [arcId], references: [id])
   organisationId      Int?
   organisation        Organisation?      @relation(fields: [organisationId], references: [id])
-  equipageId          Int?
-  equipage            Equipages?         @relation(fields: [equipageId], references: [id])
+  crewId              Int?
+  crew                Crews?             @relation(fields: [crewId], references: [id])
 
   @@map("images")
 }

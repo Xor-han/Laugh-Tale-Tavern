@@ -6,7 +6,6 @@ import {
   getFruits,
   createFruit,
   deleteFruit,
-  updateFruit,
 } from "../api/devilFruits.api";
 
 // Interfaces
@@ -17,21 +16,11 @@ import type {
 import { FruitForm } from "../components/form/FruitForm";
 import { getTypes } from "../api/type.api";
 import type { Type } from "../interfaces/type.interface";
-import { EditFruitForm } from "./editForm/EditFruitForm";
-import { createPage } from "../api/page.api";
-import { PageForm } from "./form/PageForm";
 
 export const DevilFruitDB = () => {
   const [fruits, setFruits] = useState<DevilFruit[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
-  const [editingFruit, setEditingFruit] = useState<DevilFruit | null>(null);
-  const [isModalPageOpen, setIsModalPageOpen] = useState(false);
-  const [selectedEntity, setSelectedEntity] = useState<{
-    id: number;
-    name: string;
-  } | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);;
 
   const fetchFruits = async () => {
     const data = await getFruits();
@@ -61,29 +50,6 @@ export const DevilFruitDB = () => {
     if (!confirm("Supprimer ce fruit du démon ?")) return;
     await deleteFruit(id);
     await fetchFruits();
-  };
-
-  const handleEditFruit = async (
-    id: number,
-    data: { name: string; typeId: number | null; imageId: number | null },
-  ) => {
-    await updateFruit(id, { ...data });
-    setEditingFruit(null);
-    await fetchFruits();
-  };
-  const handleOpenPageModal = (fruit: any) => {
-    setSelectedEntity({ id: fruit.id, name: fruit.name });
-    setIsModalPageOpen(true);
-  };
-  const handleFinalSubmit = async (formData: any) => {
-    try {
-      await createPage(formData);
-      alert("L'article One Piece a été publié !");
-      setIsModalOpen(false);
-      fetchFruits();
-    } catch (error) {
-      alert("Erreur : " + error);
-    }
   };
 
   return (
@@ -138,14 +104,6 @@ export const DevilFruitDB = () => {
                 </div>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => handleOpenPageModal(fruit)}
-                    className={
-                      fruit.hasPage ? "text-green-500" : "text-blue-500"
-                    }
-                  >
-                    {fruit.hasPage ? "Ce fruit du démon à déjà une page" : "Rédiger"}
-                  </button>
-                  <button
                     onClick={() => handleDeleteFruit(fruit.id)}
                     className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all"
                   >
@@ -173,59 +131,6 @@ export const DevilFruitDB = () => {
               types={types}
               onSubmit={handleCreateFruit}
               onCancel={() => setIsModalOpen(false)}
-            />
-          </div>
-        </div>
-      )}
-      {isModalEditOpen && editingFruit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-black italic">Modification</h2>
-              <button
-                onClick={() => setIsModalEditOpen(false)}
-                className="p-2 bg-gray-100 rounded-full hover:bg-red-50 transition-colors"
-              >
-                <X size={20} />
-              </button>
-            </div>
-            <EditFruitForm
-              devilFruit={editingFruit}
-              types={types}
-              onSubmit={handleEditFruit}
-              onClose={() => setEditingFruit(null)}
-            />
-          </div>
-        </div>
-      )}
-      {isModalPageOpen && selectedEntity && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
-          {/* L'arrière-plan sombre (Overlay) */}
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setIsModalOpen(false)}
-          />
-
-          {/* La boîte de la modale */}
-          <div className="relative bg-white w-full max-w-2xl rounded-4xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-black uppercase tracking-tight">
-                Nouvel article :{" "}
-                <span className="text-blue-600">{selectedEntity.name}</span>
-              </h2>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-black"
-              >
-                Fermer
-              </button>
-            </div>
-            <PageForm
-              entityId={selectedEntity.id}
-              entityType="FRUIT"
-              initialTitle={selectedEntity.name}
-              onSubmit={handleFinalSubmit}
-              onCancel={() => setIsModalPageOpen(false)}
             />
           </div>
         </div>

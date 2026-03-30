@@ -21,7 +21,7 @@ import { getArcs } from "../api/arc.api";
 import type { DevilFruit } from "../interfaces/devilFruit.interface";
 import type { Organisation } from "../interfaces/organisation.interface";
 import type { Arc } from "../interfaces/arc.interface";
-import type { Equipage } from "../interfaces/equipage.interface";
+import type { Crew } from "../interfaces/equipage.interface";
 
 export const CharacterDB = () => {
   const [characters, setCharacters] = useState<OnePieceCharacter[]>([]);
@@ -29,7 +29,7 @@ export const CharacterDB = () => {
   const [fruits, setFruits] = useState<DevilFruit[]>([]);
   const [organisation, setOrganisation] = useState<Organisation[]>([]);
   const [arcs, setArcs] = useState<Arc[]>([]);
-  const [equipage, setEquipage] = useState<Equipage[]>([]);
+  const [equipage, setEquipage] = useState<Crew[]>([]);
   const [isModalPageOpen, setIsModalPageOpen] = useState(false);
   const [selectedEntity, setSelectedEntity] = useState<{
     id: number;
@@ -69,10 +69,6 @@ export const CharacterDB = () => {
     if (!confirm("Supprimer ce personnage ?")) return;
     await deleteCharacter(id);
     await fetchCharacters();
-  };
-  const handleOpenPageModal = (char: any) => {
-    setSelectedEntity({ id: char.id, name: char.name });
-    setIsModalPageOpen(true);
   };
   const handleFinalSubmit = async (formData: any) => {
     try {
@@ -136,14 +132,6 @@ export const CharacterDB = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => handleOpenPageModal(character)}
-                    className={
-                      character.hasPage ? "text-green-500" : "text-blue-500"
-                    }
-                  >
-                    {character.hasPage ? "Ce personnage à déjà une page" : "Rédiger"}
-                  </button>
                   <button
                     onClick={() => handleDeleteCharacter(character.id)}
                     className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all"

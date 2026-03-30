@@ -1,8 +1,7 @@
 import type { OnePieceCharacter } from "./onePieceCharacter.interface";
 import type { Organisation } from "./organisation.interface";
 
-export interface Equipage {
-  hasPage: any;
+export interface Crew {
   id: number;
   name: string;
   image?: {
@@ -14,16 +13,19 @@ export interface Equipage {
     onePieceCharacter: number;
   };
   organisation?: Organisation[];
+  content: string;
 }
 
-export interface CreateEquipage {
+export interface CreateCrew {
   name: string;
   imageId?: number | null;
   organisationIds?: number[];
+  content: string;
 }
 
-export interface EquipageUpdate {
+export interface CrewUpdate {
   name?: string;
   imageId?: number | null;
   organisationIds?: number[];
+  content: string;
 }

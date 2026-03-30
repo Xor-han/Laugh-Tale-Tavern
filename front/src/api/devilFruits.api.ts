@@ -7,13 +7,13 @@ import type {
 const API_URL = "http://localhost:3000";
 
 export const getFruits = async (): Promise<DevilFruit[]> => {
-  const res = await fetch(`${API_URL}/fruits`, { credentials: "include" });
+  const res = await fetch(`${API_URL}/devilFruits`, { credentials: "include" });
   if (!res.ok) throw new Error("Erreur lors de la récupération des fruits");
   return res.json();
 };
 
 export const getFruitById = async (id: number): Promise<DevilFruit> => {
-  const res = await fetch(`${API_URL}/fruits/${id}`, {
+  const res = await fetch(`${API_URL}/devilFruits/${id}`, {
     credentials: "include",
   });
   if (!res.ok) throw new Error("Erreur lors de la récupération du fruit");
@@ -21,7 +21,7 @@ export const getFruitById = async (id: number): Promise<DevilFruit> => {
 };
 
 export const createFruit = async (fruit: CreateFruit): Promise<DevilFruit> => {
-  const res = await fetch(`${API_URL}/fruits`, {
+  const res = await fetch(`${API_URL}/devilFruits`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -35,7 +35,7 @@ export const putFruit = async (
   id: number,
   fruit: CreateFruit,
 ): Promise<DevilFruit> => {
-  const res = await fetch(`${API_URL}/fruits/${id}`, {
+  const res = await fetch(`${API_URL}/devilFruits/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -50,7 +50,7 @@ export const updateFruit = async (
   id: number,
   fruit: FruitUpdate,
 ): Promise<DevilFruit> => {
-  const res = await fetch(`${API_URL}/fruits/${id}`, {
+  const res = await fetch(`${API_URL}/devilFruits/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -61,7 +61,7 @@ export const updateFruit = async (
 };
 
 export const deleteFruit = async (id: number): Promise<void> => {
-  const res = await fetch(`${API_URL}/fruits/${id}`, {
+  const res = await fetch(`${API_URL}/devilFruits/${id}`, {
     method: "DELETE",
     credentials: "include",
   });

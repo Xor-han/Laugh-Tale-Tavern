@@ -33,9 +33,9 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/characters", characterRouter);
 app.use("/comments", commentRouter);
-app.use("/fruits", devilFruitRouter);
+app.use("/devilFruits", devilFruitRouter);
 app.use("/organisations", organisationRouter);
-app.use("/equipages", equipageRouter);
+app.use("/crews", equipageRouter);
 app.use("/types", typeRouter);
 app.use("/arcs", arcRouter);
 app.use("/images", imageRouter);

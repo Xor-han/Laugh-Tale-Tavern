@@ -5,7 +5,6 @@ export interface Comment {
   content: string;
   createdAt: string;
   authorId: string;
-  pageId: number;
   parentId?: string;
   updatedAt: string;
   author: User;
@@ -14,7 +13,6 @@ export interface Comment {
 
 export interface CreateComment {
   content: string;
-  pageId: number;
   parentId?: string; 
 }
 

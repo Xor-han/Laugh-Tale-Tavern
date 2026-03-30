@@ -70,7 +70,7 @@ export const createComment = async (data: CreateCommentDto, userId: string) => {
       devilFruitId: data.devilFruitId,
       arcId: data.arcId,
       organisationId: data.organisationId,
-      equipageId: data.equipageId,
+      crewId: data.crewId,
     },
   });
 };

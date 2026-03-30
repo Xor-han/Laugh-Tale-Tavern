@@ -19,6 +19,7 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
   const [type_id, setTypeId] = useState<number | null>(null);
   const [images, setImages] = useState<Image[]>([]);
   const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
+  const [content, setContent] = useState("");
 
   // États Techniques
   const [loading, setLoading] = useState(true);
@@ -50,7 +51,7 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
     setUploading(true);
     try {
       await uploadImage(file);
-      await fetchImages(); // On rafraîchit la liste
+      await fetchImages();
     } catch {
       setError("Échec de l'upload");
     } finally {
@@ -59,7 +60,7 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
   };
 
   const handleDelete = async (e: React.MouseEvent, id: number) => {
-    e.stopPropagation(); // Pour éviter de sélectionner l'image en la supprimant
+    e.stopPropagation();
     if (!confirm("Supprimer cette image définitivement ?")) return;
 
     setDeletingId(id);
@@ -76,16 +77,20 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !type_id || !selectedImageId) {
+    if (!name.trim() || !type_id || !selectedImageId || !content) {
       setError("Tous les champs sont obligatoires");
       return;
     }
-    onSubmit({ name: name.trim(), typeId: type_id, imageId: selectedImageId });
+    onSubmit({
+      name: name.trim(),
+      typeId: type_id,
+      imageId: selectedImageId,
+      content: content.trim(),
+    });
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      {/* NOM & TYPE (Même chose que d'habitude) */}
       <div className="flex flex-col gap-4">
         <div>
           <label className="text-xs font-black uppercase text-gray-400">
@@ -118,7 +123,6 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
         </div>
       </div>
 
-      {/* GALERIE DANS LE FORMULAIRE */}
       <div className="flex flex-col gap-3">
         <div className="flex justify-between items-end">
           <label className="text-xs font-black uppercase text-gray-400">
@@ -145,7 +149,6 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
           />
         </div>
 
-        {/* GRILLE D'IMAGES (Inspiré de ton exemple) */}
         <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto p-2 border-2 border-gray-50 rounded-2xl bg-gray-50/50">
           {loading ? (
             <div className="flex justify-center py-10">
@@ -169,7 +172,6 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
                     alt=""
                   />
 
-                  {/* Overlay de sélection */}
                   {selectedImageId === img.id && (
                     <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
                       <CheckCircle2
@@ -179,7 +181,6 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
                     </div>
                   )}
 
-                  {/* Bouton supprimer (uniquement au survol) */}
                   <button
                     type="button"
                     onClick={(e) => handleDelete(e, img.id)}
@@ -195,6 +196,23 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
               ))}
             </div>
           )}
+        </div>
+        <div>
+          <div className="flex justify-between items-center mb-2">
+            <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">
+              Contenu de la page
+            </label>
+            <span className="text-[10px] text-gray-300 font-medium italic">
+              Appuyez sur "Entrée" pour créer des paragraphes
+            </span>
+          </div>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all min-h-75 leading-relaxed text-gray-700"
+            placeholder="Racontez l'histoire, les pouvoirs, les anecdotes..."
+            required
+          />
         </div>
       </div>
 

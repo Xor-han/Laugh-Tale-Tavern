@@ -1,6 +1,7 @@
 import db from "@/lib/db";
 import type { CreateArcrDto, UpdateArcDto, PatchArcDto } from "@/dtos/arc.dto";
 import cloudinary from "@/lib/cloudinary";
+import { slugify } from "@/utils/slugify";
 
 export const getAllArc = async (search?: string) => {
   return db.arcs.findMany({
@@ -20,9 +21,9 @@ export const getAllArc = async (search?: string) => {
   });
 };
 
-export const getArcById = async (id: number) => {
+export const getArcById = async (slug: string) => {
   const arc = await db.arcs.findUnique({
-    where: { id },
+    where: { slug },
     include: {
       image: true,
       onePieceCharacter: true,
@@ -49,6 +50,7 @@ export const createArc = async (data: CreateArcrDto) => {
       image: {
         connect: { id: data.imageId! },
       },
+      slug: slugify(data.name)
     },
   });
 };

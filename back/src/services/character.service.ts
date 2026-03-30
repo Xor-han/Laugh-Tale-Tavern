@@ -5,7 +5,9 @@ import type {
   PatchCharacterDto,
 } from "@/dtos/character.dto";
 import { Profession } from "@prisma/client";
+
 import cloudinary from "@/lib/cloudinary";
+import { slugify } from "@/utils/slugify";
 
 export const getAllCharacter = async (search?: string) => {
   return db.onePieceCharacter.findMany({
@@ -13,20 +15,20 @@ export const getAllCharacter = async (search?: string) => {
       image: true,
       devilFruit: { select: { name: true } },
       organisation: { select: { name: true } },
-      equipage: { select: { name: true } },
+      crew: { select: { name: true } },
       arcs: { select: { name: true } },
     },
   });
 };
 
-export const getCharacterById = async (id: number) => {
+export const getCharacterById = async (slug: string) => {
   const character = await db.onePieceCharacter.findUnique({
-    where: { id },
+    where: {slug },
     include: {
       image: true,
       devilFruit: { select: { name: true } },
       organisation: { select: { name: true } },
-      equipage: { select: { name: true } },
+      crew: { select: { name: true } },
       arcs: { select: { name: true } },
       comment: {
         where: { parentId: null },
@@ -48,6 +50,7 @@ export const createCharacter = async (data: CreateCharacterDto) => {
     data: {
       name: data.name,
       content: data.content,
+      slug: slugify(data.name),
       isAlive: data.isAlive ?? false,
       profession: data.profession as Profession,
       image: {
@@ -56,9 +59,9 @@ export const createCharacter = async (data: CreateCharacterDto) => {
       arcs: {
         connect: Array(Number(data.arcIds)).map((id: number) => ({ id })),
       },
-      devilFruit_id: data.devilFruit_id,
+      devilFruitId: data.devilFruitId,
       organisationId: data.organisationId,
-      equipageId: data.equipageId,
+      crewId: data.crewId,
     },
   });
 };
@@ -80,9 +83,9 @@ export const updateCharacter = async (id: number, data: UpdateCharacterDto) => {
       arcs: {
         connect: Array(Number(data.arcIds)).map((id: number) => ({ id })),
       },
-      devilFruit_id: data.devilFruit_id,
+      devilFruitId: data.devilFruitId,
       organisationId: data.organisationId,
-      equipageId: data.equipageId,
+      crewId: data.crewId,
     },
   });
 };
@@ -103,9 +106,9 @@ export const patchCharacter = async (id: number, data: PatchCharacterDto) => {
       arcs: {
         connect: Array(Number(data.arcIds)).map((id: number) => ({ id })),
       },
-      devilFruit_id: data.devilFruit_id,
+      devilFruitId: data.devilFruitId,
       organisationId: data.organisationId,
-      equipageId: data.equipageId,
+      crewId: data.crewId,
     },
   });
 };

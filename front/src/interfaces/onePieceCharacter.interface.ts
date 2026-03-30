@@ -1,10 +1,9 @@
 import type { Arc } from "./arc.interface";
 import type { DevilFruit } from "./devilFruit.interface";
-import type { Equipage } from "./equipage.interface";
+import type { Crew } from "./equipage.interface";
 import type { Organisation } from "./organisation.interface";
 
 export interface OnePieceCharacter {
-  hasPage: any;
   id: number;
   name: string;
   image?: {
@@ -18,8 +17,9 @@ export interface OnePieceCharacter {
   equipageId?: number | null;
   devilFruit?: DevilFruit;
   organisation?: Organisation;
-  equipage?: Equipage;
+  crew?: Crew;
   arcs?: Arc[];
+  content: string;
 }
 
 export interface CreateCharacter {
@@ -29,8 +29,9 @@ export interface CreateCharacter {
   imageId?: number | null;
   devilFruit_id?: number | null;
   organisationId?: number | null;
-  equipageId?: number | null;
+  crewId?: number | null;
   arcIds?: number[];
+  content: string;
 }
 export interface CharacterUpdate {
   name?: string;
@@ -39,6 +40,7 @@ export interface CharacterUpdate {
   imageId?: number | null;
   devilFruit_id?: number | null;
   organisationId?: number | null;
-  equipageId?: number | null;
+  crewId?: number | null;
   arcIds?: number[];
+  content: string;
 }

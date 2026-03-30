@@ -8,6 +8,7 @@ export const createCrewShema = z.object({
     .string()
     .min(1, "Le contenu est obligatoire")
     .max(500, "le contenu doit contenir maximum 500 caractères"),
+  slug: z.string().optional(),
   imageId: z.number().int().positive().nullable().optional(),
 });
 export const updateCrewShema = z.object({

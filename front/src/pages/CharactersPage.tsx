@@ -1,23 +1,21 @@
 import { useEffect, useState } from "react";
 import { getPages } from "../api/page.api";
-import type { Page } from "../interfaces/page.interface";
 import { PagesContainer } from "../components/PageContainer";
+import type { OnePieceCharacter } from "../interfaces/onePieceCharacter.interface";
 
 export const CharacterPage = () => {
-  const [pages, setPages] = useState<Page[]>([]);
+  const [characters, setCharacters] = useState<OnePieceCharacter[]>([]);
 
-  const fetchPage = async () => {
+  const fetchCharacter = async () => {
     const data = await getPages();
-    setPages(data);
+    setCharacters(data);
   };
   useEffect(() => {
-    fetchPage();
+    fetchCharacter();
   });
-
-  const characterPages = pages.filter((page) => page.entityType === "CHARACTER")
   return (
     <>
-      <PagesContainer pages={characterPages} title="Les Personnages" />
+      <PagesContainer items={characters} title="Les Personnages" />
     </>
   );
 };

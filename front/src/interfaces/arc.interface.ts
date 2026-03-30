@@ -1,8 +1,8 @@
 import type { OnePieceCharacter } from "./onePieceCharacter.interface";
 export interface Arc {
-  hasPage: any;
   id: number;
   name: string;
+  content: string;
   image?: {
     url: string;
   }[];
@@ -13,9 +13,11 @@ export interface Arc {
 export interface CreateArc {
   name: string;
   imageId?: number | null;
+  content: string;
 }
 
 export interface ArcUpdate {
   name?: string;
   imageId?: number | null;
+  content?: string;
 }

@@ -20,7 +20,7 @@ export const getAll = async (req: Request, res: Response) => {
 export const getById = async (req: Request, res: Response) => {
   try {
     const arc = await arcService.getArcById(
-      Number(req.params.id),
+      String(req.params.slug),
     );
     if (!arc) {
       return res.status(400).json({ message: "Arc not found" });
