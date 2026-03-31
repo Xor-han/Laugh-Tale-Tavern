@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { SearchBar } from "./ui/SearchBar";
-import { User } from "lucide-react";
+import { Menu, User, X } from "lucide-react";
 import { Nav } from "./Nav";
+import { useState } from "react";
+import { ModalBurgerMenu } from "./MenuBurger";
 interface Props {
   userName?: string;
   userId?: string;
@@ -10,16 +11,20 @@ interface Props {
 }
 
 export const Navbar = ({ userId, userImage, userName, session }: Props) => {
+  const [openBurgerMenu, setOpenBurgerMenu] = useState(false);
   return (
-    <nav className="flex px-10 py-7 items-center justify-between bg-[#1D293D] text-white">
-      <div className="flex gap-14">
-        <Link to= "/">
-        <h1 className="text-xl">Laugh Tale Tavern</h1>
+    <nav className="flex px-10 py-7 items-center justify-between z-999 bg-[#1D293D] text-white fixed top-0 w-full">
+      <div className="flex gap-14 items-center">
+        <Link to="/">
+          <h1 className="text-xl ">Laugh Tale Tavern</h1>
         </Link>
-          <Nav/>
+        <div className="max-lg:hidden">
+          <ul className="flex gap-8 text-sm text-center items-center">
+            <Nav />
+          </ul>
+        </div>
       </div>
       <div className="flex justify-self-end gap-10 ">
-        <SearchBar />
         {session ? (
           <Link
             to={`/profile/${userId}`}
@@ -44,6 +49,17 @@ export const Navbar = ({ userId, userImage, userName, session }: Props) => {
             <p>Se connecter</p>
           </Link>
         )}
+        <button
+          onClick={() => setOpenBurgerMenu(!openBurgerMenu)}
+          className="lg:hidden text-slate-50 z-50 relative"
+        >
+          {openBurgerMenu ? (
+            <X className="w-7 h-7" />
+          ) : (
+            <Menu className="w-7 h-7" />
+          )}
+        </button>
+        {openBurgerMenu && <ModalBurgerMenu />}
       </div>
     </nav>
   );

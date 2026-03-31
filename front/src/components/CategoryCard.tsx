@@ -14,7 +14,7 @@ const categories = [
 
 export const CategoryCard = () => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 p-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 lg:grid-cols-4 gap-6 p-8">
       {categories.map((cat) => (
         <Link
           key={cat.title}

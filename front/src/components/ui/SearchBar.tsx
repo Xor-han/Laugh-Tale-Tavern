@@ -1,16 +1,19 @@
-import { Search } from "lucide-react";
+import { Search } from 'lucide-react';
 
-export const SearchBar = () => {
-  return (
-    <div className="flex items-center gap-2 text-slate-900 bg-slate-200 p-2 rounded-lg w-full">
-      <div className="w-8 h-8 flex items-center justify-center">
-        <Search className="w-5 text-slate-900" />
-      </div>
-      <input
-        type="text"
-        placeholder="Recherche"
-        className="flex-1 outline-none placeholder:text-slate-500 bg-transparent"
-      />
-    </div>
-  );
-};
+interface Props {
+    onSearch: (query: string) => void;
+}
+
+export const SearchBar = ({ onSearch }: Props) => {
+    return (
+        <div className='flex bg-zinc-300 rounded-full w-[70%] py-3 px-6 gap-4'>
+            <Search className='w-7 h-7'/>
+            <input
+                type="text"
+                placeholder='Search'
+                onChange={(e) => onSearch(e.target.value)}
+                className='placeholder:text-black placeholder:text-lg w-full outline-none bg-transparent'
+            />
+        </div>
+    )
+}

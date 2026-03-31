@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 export const Nav = () => {
   return (
     <>
-      <ul className="flex gap-8 text-sm text-center items-center">
         <li className="hover:text-yellow-400">
           <Link to={"/arcs"}>Arcs</Link>
         </li>
@@ -19,7 +18,6 @@ export const Nav = () => {
         <li className="hover:text-purple-400">
           <Link to={"/fruits-du-démon"}>Fruits du démon</Link>
         </li>
-      </ul>
     </>
   );
 };

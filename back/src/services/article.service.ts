@@ -54,7 +54,7 @@ export const getAllArticles = async (params: GetArticlesQuery) => {
   }
 
   articles.sort((a, b) =>
-    order === "desc"
+    order === "asc"
       ? a.name.localeCompare(b.name)
       : b.name.localeCompare(a.name),
   );
