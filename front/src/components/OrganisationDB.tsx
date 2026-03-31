@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Apple, X} from "lucide-react";
+import { Plus, Trash2, Apple, X } from "lucide-react";
 
 // APIs
 import {
@@ -15,19 +15,12 @@ import type {
   CreateOrg,
 } from "../interfaces/organisation.interface";
 import { OrganisationForm } from "./form/OrganisationForm";
-import type { Equipage } from "../interfaces/equipage.interface";
-import { PageForm } from "./form/PageForm";
-import { createPage } from "../api/page.api";
+import type { Crew } from "../interfaces/equipage.interface";
 
 export const OrganisationDB = () => {
   const [organisation, setOrganisation] = useState<Organisation[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [equipage, setEquipage] = useState<Equipage[]>([]);
-  const [isModalPageOpen, setIsModalPageOpen] = useState(false);
-  const [selectedEntity, setSelectedEntity] = useState<{
-    id: number;
-    name: string;
-  } | null>(null);
+  const [equipage, setEquipage] = useState<Crew[]>([]);
   const fetchOrganisation = async () => {
     const data = await getOrganisations();
     setOrganisation(data);
@@ -55,20 +48,6 @@ export const OrganisationDB = () => {
     if (!confirm("Supprimer cette Organisation ?")) return;
     await deleteOrganisation(id);
     await fetchOrganisation();
-  };
-  const handleOpenPageModal = (organisation: any) => {
-    setSelectedEntity({ id: organisation.id, name: organisation.name });
-    setIsModalPageOpen(true);
-  };
-  const handleFinalSubmit = async (formData: any) => {
-    try {
-      await createPage(formData);
-      alert("L'article One Piece a été publié !");
-      setIsModalOpen(false);
-      fetchOrganisation();
-    } catch (error) {
-      alert("Erreur : " + error);
-    }
   };
 
   return (
@@ -120,14 +99,6 @@ export const OrganisationDB = () => {
                 </div>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => handleOpenPageModal(o)}
-                    className={
-                      o.hasPage ? "text-green-500" : "text-blue-500"
-                    }
-                  >
-                    {o.hasPage ? "l'organisation à déjà une page": "Rédiger"}
-                  </button>
-                  <button
                     onClick={() => handleDeleteOrganisation(o.id)}
                     className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all"
                   >
@@ -143,7 +114,7 @@ export const OrganisationDB = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-black italic">NOUVEAU ARC</h2>
+              <h2 className="text-2xl font-black italic">NOUVELLE ORGANISATION</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="p-2 bg-gray-100 rounded-full hover:bg-red-50 transition-colors"
@@ -151,43 +122,13 @@ export const OrganisationDB = () => {
                 <X size={20} />
               </button>
             </div>
-            <OrganisationForm
-              onSubmit={handleCreateOrganisation}
-              onCancel={() => setIsModalOpen(false)}
-              equipages={equipage}
-            />
-          </div>
-        </div>
-      )}
-      {isModalPageOpen && selectedEntity && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
-          {/* L'arrière-plan sombre (Overlay) */}
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setIsModalOpen(false)}
-          />
-
-          {/* La boîte de la modale */}
-          <div className="relative bg-white w-full max-w-2xl rounded-4xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-black uppercase tracking-tight">
-                Nouvel article :{" "}
-                <span className="text-blue-600">{selectedEntity.name}</span>
-              </h2>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-black"
-              >
-                Fermer
-              </button>
+            <div className="max-h-150 overflow-y-auto custom-scrollbar">
+              <OrganisationForm
+                onSubmit={handleCreateOrganisation}
+                onCancel={() => setIsModalOpen(false)}
+                equipages={equipage}
+              />
             </div>
-            <PageForm
-              entityId={selectedEntity.id}
-              entityType="ORGANISATION"
-              initialTitle={selectedEntity.name}
-              onSubmit={handleFinalSubmit}
-              onCancel={() => setIsModalPageOpen(false)}
-            />
           </div>
         </div>
       )}

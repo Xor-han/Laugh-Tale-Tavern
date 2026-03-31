@@ -1,23 +1,21 @@
 import { useEffect, useState } from "react";
-import { getPages } from "../api/page.api";
-import type { Page } from "../interfaces/page.interface";
 import { PagesContainer } from "../components/PageContainer";
+import type { DevilFruit } from "../interfaces/devilFruit.interface";
+import { getFruits } from "../api/devilFruits.api";
 
 export const FruitsPage = () => {
-  const [pages, setPages] = useState<Page[]>([]);
+  const [devilFruits, setFruits] = useState<DevilFruit[]>([]);
 
-  const fetchPage = async () => {
-    const data = await getPages();
-    setPages(data);
+  const fetchFruits = async () => {
+    const data = await getFruits();
+    setFruits(data);
   };
   useEffect(() => {
-    fetchPage();
+    fetchFruits();
   });
-
-  const fruitPages = pages.filter((page) => page.entityType === "FRUIT")
   return (
     <>
-      <PagesContainer pages={fruitPages} title="Les Fruits du Démon" />
+      <PagesContainer items={devilFruits} title="Les Fruits du Démon" type="devilFruits"/>
     </>
   );
 };

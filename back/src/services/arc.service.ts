@@ -47,10 +47,8 @@ export const createArc = async (data: CreateArcrDto) => {
     data: {
       name: data.name,
       content: data.content,
-      image: {
-        connect: { id: data.imageId! },
-      },
-      slug: slugify(data.name)
+      slug: slugify(data.name),
+      ...(data.imageId ? { image: { connect: { id: data.imageId } } } : {}),
     },
   });
 };
@@ -64,9 +62,7 @@ export const updateArc = async (id: number, data: UpdateArcDto) => {
     data: {
       name: data.name,
       content: data.content,
-      image: {
-        connect: { id: data.imageId! },
-      },
+      ...(data.imageId ? { image: { connect: { id: data.imageId } } } : {}),
     },
   });
 };
@@ -79,9 +75,7 @@ export const PatchArc = async (id: number, data: PatchArcDto) => {
     where: { id },
     data: {
       name: data.name,
-      image: {
-        connect: { id: data.imageId! },
-      },
+      ...(data.imageId ? { image: { connect: { id: data.imageId } } } : {}),
     },
   });
 };

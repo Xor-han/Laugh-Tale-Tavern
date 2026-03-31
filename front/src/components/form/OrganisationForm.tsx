@@ -2,11 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { Upload, Trash2, Loader2, CheckCircle2, X } from "lucide-react";
 import { getImages, uploadImage, deleteImage } from "../../api/image.api";
 import type { Image } from "../../interfaces/image.interface";
-import type { Equipage } from "../../interfaces/equipage.interface";
+import type { Crew } from "../../interfaces/equipage.interface";
 
 interface Props {
-  equipages: Equipage[];
-  onSubmit: (data: { name: string; imageId: number; equipageIds: number[] }) => void;
+  equipages: Crew[];
+  onSubmit: (data: { name: string; imageId: number; equipageIds: number[], content: string }) => void;
   onCancel: () => void;
 }
 
@@ -15,6 +15,7 @@ export const OrganisationForm = ({ equipages, onSubmit, onCancel }: Props) => {
 
   // --- ÉTATS ---
   const [name, setName] = useState("");
+  const [content, setContent] = useState("");
   const [selectedEquipageIds, setSelectedEquipageIds] = useState<number[]>([]);
   const [images, setImages] = useState<Image[]>([]);
   const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
@@ -81,19 +82,20 @@ export const OrganisationForm = ({ equipages, onSubmit, onCancel }: Props) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !selectedImageId) {
+    if (!name.trim() || !selectedImageId || !content.trim()) {
       setError("Tous les champs sont obligatoires");
       return;
     }
     onSubmit({ 
       name: name.trim(), 
       imageId: selectedImageId, 
-      equipageIds: selectedEquipageIds 
+      equipageIds: selectedEquipageIds,
+      content: content
     });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 h-100 ">
       {/* NOM */}
       <div className="flex flex-col gap-4">
         <div>
@@ -209,7 +211,23 @@ export const OrganisationForm = ({ equipages, onSubmit, onCancel }: Props) => {
           ))}
         </div>
       </div>
-
+      <div>
+          <div className="flex justify-between items-center mb-2">
+            <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">
+              Contenu de la page
+            </label>
+            <span className="text-[10px] text-gray-300 font-medium italic">
+              Appuyez sur "Entrée" pour créer des paragraphes
+            </span>
+          </div>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all min-h-75 leading-relaxed text-gray-700"
+            placeholder="Racontez l'histoire, les pouvoirs, les anecdotes..."
+            required
+          />
+        </div>
       {error && (
         <p className="text-[10px] font-bold text-red-500 uppercase">{error}</p>
       )}

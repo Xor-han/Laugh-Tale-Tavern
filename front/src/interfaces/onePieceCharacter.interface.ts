@@ -14,7 +14,7 @@ export interface OnePieceCharacter {
   profession: string;
   devilFruit_id?: number | null;
   organisationId?: number | null;
-  equipageId?: number | null;
+  crewId?: number | null;
   devilFruit?: DevilFruit;
   organisation?: Organisation;
   crew?: Crew;

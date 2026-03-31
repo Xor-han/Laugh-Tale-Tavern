@@ -5,14 +5,14 @@ import type { Image } from "../../interfaces/image.interface";
 import type { DevilFruit } from "../../interfaces/devilFruit.interface";
 import type { Organisation } from "../../interfaces/organisation.interface";
 import type { Arc } from "../../interfaces/arc.interface";
-import type { Equipage } from "../../interfaces/equipage.interface";
+import type { Crew } from "../../interfaces/equipage.interface";
 import type { CreateCharacter } from "../../interfaces/onePieceCharacter.interface";
 import { PROFESSION_OPTIONS } from "../../data/Profession";
 
 interface Props {
   organisation: Organisation[];
   arcs: Arc[];
-  equipage: Equipage[];
+  crews: Crew[];
   devilFruit: DevilFruit[];
   onSubmit: (data: CreateCharacter) => void;
   onCancel: () => void;
@@ -21,7 +21,7 @@ interface Props {
 export const CharacterForm = ({
   organisation,
   arcs,
-  equipage,
+  crews,
   devilFruit,
   onSubmit,
   onCancel,
@@ -30,10 +30,11 @@ export const CharacterForm = ({
 
   // --- ÉTATS ---
   const [name, setName] = useState("");
+  const [content, setContent] = useState("")
   const [isAlive, setIsAlive] = useState(false);
   const [profession, setProfession] = useState("");
   const [organisationId, setOrganisationId] = useState<number | null>(null);
-  const [equipageId, setEquipageId] = useState<number | null>(null);
+  const [crewId, setCrewId] = useState<number | null>(null);
   const [devilFruitId, setDevilFruitId] = useState<number | null>(null);
   const [images, setImages] = useState<Image[]>([]);
   const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
@@ -100,7 +101,9 @@ export const CharacterForm = ({
       !profession ||
       !selectedImageId ||
       !selectedArcIds ||
-      !organisationId
+      !organisationId ||
+      !crewId ||
+      !content.trim()
     ) {
       setError("Tous les champs sont obligatoires");
       return;
@@ -113,11 +116,10 @@ export const CharacterForm = ({
       devilFruit_id: devilFruitId,
       arcIds: selectedArcIds,
       organisationId: organisationId,
-      equipageId: equipageId,
+      crewId: crewId,
+      content: content
     });
   };
-  // const selectedOrg = organisation.find((o) => o.id === organisationId);
-  // const isPirate = selectedOrg?.name.toLowerCase().includes("pirate");
 
   const handleAddArc = (id: number) => {
     if (!id) return;
@@ -132,7 +134,7 @@ export const CharacterForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6 ">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 h-100 ">
       <div className="flex flex-col gap-4">
         <div>
           <label className="text-xs font-black uppercase text-gray-400">
@@ -293,14 +295,14 @@ export const CharacterForm = ({
             Equipage du personnage
           </label>
           <select
-            value={equipageId ?? ""}
-            onChange={(e) => setEquipageId(Number(e.target.value))}
+            value={crewId ?? ""}
+            onChange={(e) => setCrewId(Number(e.target.value))}
             className="w-full p-3 border-2 border-gray-100 rounded-xl bg-white outline-none"
           >
             <option value="">Sélectionner...</option>
-            {equipage.map((e) => (
-              <option key={e.id} value={e.id}>
-                {e.name}
+            {crews.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
               </option>
             ))}
           </select>
@@ -378,11 +380,28 @@ export const CharacterForm = ({
           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
         </label>
       </div>
+       <div>
+          <div className="flex justify-between items-center mb-2">
+            <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">
+              Contenu de la page
+            </label>
+            <span className="text-[10px] text-gray-300 font-medium italic">
+              Appuyez sur "Entrée" pour créer des paragraphes
+            </span>
+          </div>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all min-h-75 leading-relaxed text-gray-700"
+            placeholder="Racontez l'histoire, les pouvoirs, les anecdotes..."
+            required
+          />
+        </div>
       {error && (
         <p className="text-sm font-bold text-red-500 uppercase">{error}</p>
       )}
 
-      <div className="flex gap-3 pt-2">
+      <div className="flex gap-3 p-2">
         <button
           type="button"
           onClick={onCancel}

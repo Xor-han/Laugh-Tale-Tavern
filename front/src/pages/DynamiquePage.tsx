@@ -1,15 +1,23 @@
-import { getPageBySlug } from "../api/page.api";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { authClient } from "../lib/auth-client";
 import { createComment } from "../api/comment.api";
-import type { Comment, CreateComment } from "../interfaces/comment.interface";
+import type { CreateComment } from "../interfaces/comment.interface";
 import { User } from "lucide-react";
 
+const API_URL = "http://localhost:3000";
+
+const typeToEndpoint: Record<string, string> = {
+  characters: "characters",
+  devilFruits: "devilFruits",
+  arcs: "arcs",
+  crews: "crews",
+  organisations: "organisations",
+};
+
 export const DynamiquePage = () => {
-  const { slug } = useParams<{ slug: string }>();
-  const [page, setPage] = useState<DynamicPageData>();
-  const [comment, setComment] = useState<Comment[]>([]);
+  const { type, slug } = useParams<{ type: string; slug: string }>();
+  const [page, setPage] = useState<any>();
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const { data: session } = authClient.useSession();
@@ -18,14 +26,15 @@ export const DynamiquePage = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      if (!slug) return;
+      if (!slug || !type) return;
+      const endpoint = typeToEndpoint[type];
+      if (!endpoint) return;
       setLoading(true);
       try {
-        const data = await getPageBySlug(slug);
+        const res = await fetch(`${API_URL}/${endpoint}/${slug}`, { credentials: "include" });
+        if (!res.ok) throw new Error("Erreur lors de la récupération");
+        const data = await res.json();
         setPage(data);
-        if (data.comments) {
-          setComment(data.comments);
-        }
       } catch (error) {
         console.error("Erreur :", error);
       } finally {
@@ -33,7 +42,7 @@ export const DynamiquePage = () => {
       }
     };
     loadData();
-  }, [slug]);
+  }, [type, slug]);
 
   const handleCreateComment = async (content: string, parentId?: string) => {
     if (!slug) return;
@@ -41,11 +50,19 @@ export const DynamiquePage = () => {
       console.error("Impossible d'envoyer : page non chargée ou contenu vide");
       return;
     }
+    const typeToCommentField: Record<string, string> = {
+      characters: "onePieceCharacterId",
+      devilFruits: "devilFruitId",
+      arcs: "arcId",
+      crews: "crewId",
+      organisations: "organisationId",
+    };
+
     try {
       const data: CreateComment = {
         content: content,
         parentId: parentId,
-        pageId: page.id,
+        ...(type ? { [typeToCommentField[type]]: page.id } : {}),
       };
       await createComment(data);
       const commentWithAuthor = {
@@ -63,7 +80,7 @@ export const DynamiquePage = () => {
         if (parentId) {
           return {
             ...prevPage,
-            comments: prevPage.comments.map((c: any) =>
+            comments: prevPage.comment.map((c: any) =>
               c.id === parentId
                 ? { ...c, replies: [...(c.replies || []), commentWithAuthor] }
                 : c,
@@ -73,7 +90,7 @@ export const DynamiquePage = () => {
 
         return {
           ...prevPage,
-          comments: [commentWithAuthor, ...prevPage.comments],
+          comment: [commentWithAuthor, ...prevPage.comment],
         };
       });
 
@@ -87,100 +104,49 @@ export const DynamiquePage = () => {
 
   if (loading) return <div>Chargement...</div>;
   if (!page) return <div>404 - Cette page n'existe pas dans Grand Line.</div>;
-  const haveDevilFruit = page.character?.devilFruit?.name;
-  console.log(page)
+
   return (
     <>
       <main className="mx-24 my-10 flex flex-col gap-5">
         <div className="flex gap-10">
-          <div className="w-4/5 ">
-            <h1 className="text-4xl font-black uppercase">{page.title}</h1>
+          <div className="w-4/5">
+            <h1 className="text-4xl font-black uppercase">{page.name}</h1>
             <div className="mt-6 whitespace-pre-line leading-relaxed w-full">
               {page.content}
             </div>
           </div>
-          {page.entityType === "CHARACTER" && (
-            <div className="w-1/2 flex flex-col items-center">
-              {page?.character?.image?.[0] ? (
-                <img
-                  src={page.character.image[0].url}
-                  alt={page.character.name}
-                  className="rounded-2xl "
-                />
-              ) : (
-                <div className="bg-gray-200 h-64 w-full rounded-2xl" />
+          <div className="w-1/2 flex flex-col items-center">
+            {page?.image?.[0] ? (
+              <img
+                src={page.image[0].url}
+                alt={page.name}
+                className="rounded-2xl"
+              />
+            ) : (
+              <div className="bg-gray-200 h-64 w-full rounded-2xl" />
+            )}
+            <div className="w-full mt-4">
+              {type === "characters" && (
+                <>
+                  <p>Nom: {page.name}</p>
+                  <p>Fruit du démon: {page.devilFruit?.name || "Aucun Fruit"}</p>
+                  <p>Equipage: {page.crew?.name}</p>
+                  <p>Profession: {page.profession}</p>
+                  <p>Organisation: {page.organisation?.name}</p>
+                </>
               )}
-              <div className="w-full">
-                <p>Nom: {page.character?.name}</p>
-                {haveDevilFruit ? (
-                  <p>Fruit du démon: {page.character?.devilFruit?.name}</p>
-                ) : (
-                  <p>Fruit du démon: Aucun Fruit</p>
-                )}
-                <p>Equipage: {page.character?.equipage?.name}</p>
-                <p>Profession: {page.character?.profession}</p>
-                <p>Organisation: {page.character?.organisation?.name}</p>
-              </div>
-            </div>
-          )}
-          {page.entityType === "FRUIT" && (
-            <div className="w-1/2 flex flex-col items-center">
-              {page?.devilFruit?.image?.[0] ? (
-                <img
-                  src={page.devilFruit.image[0].url}
-                  alt={page.devilFruit.name}
-                  className="rounded-2xl "
-                />
-              ) : (
-                <div className="bg-gray-200 h-64 w-full rounded-2xl" />
-              )}
-              <p>Type: {page.devilFruit?.type?.name}</p>
-              <p>Détenteur du fruit: {page.devilFruit?.onePieceCharacters?.[0].name}</p>
-            </div>
-          )}
-          {page.entityType === "EQUIPAGE" && (
-            <div className="w-1/2 flex flex-col items-center">
-              {page?.equipage?.image?.[0] ? (
-                <img
-                  src={page.equipage.image[0].url}
-                  alt={page.equipage.name}
-                  className="rounded-2xl "
-                />
-              ) : (
-                <div className="bg-gray-200 h-64 w-full rounded-2xl" />
+              {type === "devilFruits" && (
+                <>
+                  <p>Type: {page.type?.name}</p>
+                  <p>Détenteur du fruit: {page.onePieceCharacters?.[0]?.name}</p>
+                </>
               )}
             </div>
-          )}
-          {page.entityType === "ARC" && (
-            <div className="w-1/2 flex flex-col items-center">
-              {page?.arc?.image?.[0] ? (
-                <img
-                  src={page.arc.image[0].url}
-                  alt={page.arc.name}
-                  className="rounded-2xl "
-                />
-              ) : (
-                <div className="bg-gray-200 h-64 w-full rounded-2xl" />
-              )}
-            </div>
-          )}
-          {page.entityType === "ORGANISATION" && (
-            <div className="w-1/2 flex flex-col items-center">
-              {page?.organisation?.image?.[0] ? (
-                <img
-                  src={page.organisation.image[0].url}
-                  alt={page.organisation.name}
-                  className="rounded-2xl "
-                />
-              ) : (
-                <div className="bg-gray-200 h-64 w-full rounded-2xl" />
-              )}
-            </div>
-          )}
+          </div>
         </div>
         <div className="space-y-6">
           <h3 className="text-xl font-black uppercase">
-            Commentaires ({comment.length || 0})
+            Commentaires ({page?.comment?.length || 0})
           </h3>
           <h3 className="text-2xl font-bold mb-6">Laisser un message</h3>
 
@@ -200,7 +166,7 @@ export const DynamiquePage = () => {
           </button>
 
           <div className="space-y-8">
-            {page?.comments?.map((c) => (
+            {page?.comment?.map((c: any) => (
               <div key={c.id}>
                 <div className="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm">
                   <div className="flex justify-between mb-2">
@@ -260,7 +226,7 @@ export const DynamiquePage = () => {
 
                 {/* LES RÉPONSES (Si elles existent) */}
                 {c.replies &&
-                  c.replies.map((r) => (
+                  c.replies.map((r : any) => (
                     <div
                       key={r.id}
                       className="ml-10 mt-2 bg-gray-50 p-3 rounded-xl border-l-4 border-blue-200"

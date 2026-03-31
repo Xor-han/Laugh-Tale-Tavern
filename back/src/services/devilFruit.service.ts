@@ -50,9 +50,7 @@ export const createDevilFruit = async (data: CreateDevilFruitDto) => {
       name: data.name,
       content: data.content,
       slug: slugify(data.name),
-      image: {
-        connect: { id: data.imageId! },
-      },
+      ...(data.imageId ? { image: { connect: { id: data.imageId } } } : {}),
       typeId: data.typeId
     },
   });

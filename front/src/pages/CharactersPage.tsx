@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { getPages } from "../api/page.api";
 import { PagesContainer } from "../components/PageContainer";
 import type { OnePieceCharacter } from "../interfaces/onePieceCharacter.interface";
+import { getCharacters } from "../api/onePieceCharacter.api";
 
 export const CharacterPage = () => {
   const [characters, setCharacters] = useState<OnePieceCharacter[]>([]);
 
   const fetchCharacter = async () => {
-    const data = await getPages();
+    const data = await getCharacters();
     setCharacters(data);
   };
   useEffect(() => {
@@ -15,7 +15,7 @@ export const CharacterPage = () => {
   });
   return (
     <>
-      <PagesContainer items={characters} title="Les Personnages" />
+      <PagesContainer items={characters} title="Les Personnages" type="characters"/>
     </>
   );
 };

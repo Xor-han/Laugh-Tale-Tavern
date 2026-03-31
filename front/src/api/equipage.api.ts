@@ -15,7 +15,7 @@ export const getEquipages = async (): Promise<Crew[]> => {
 export const createEquipage = async (
   equipage: CreateCrew,
 ): Promise<Crew> => {
-  const res = await fetch(`${API_URL}/crew`, {
+  const res = await fetch(`${API_URL}/crews`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -29,7 +29,7 @@ export const putEquipage = async (
   id: number,
   equipage: CreateCrew,
 ): Promise<Crew> => {
-  const res = await fetch(`${API_URL}/crew/${id}`, {
+  const res = await fetch(`${API_URL}/crews/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -43,7 +43,7 @@ export const updateEquipage = async (
   id: number,
   equipage: CrewUpdate,
 ): Promise<Crew> => {
-  const res = await fetch(`${API_URL}/crew/${id}`, {
+  const res = await fetch(`${API_URL}/crews/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -54,7 +54,7 @@ export const updateEquipage = async (
 };
 
 export const deleteEquipage = async (id: number): Promise<void> => {
-  const res = await fetch(`${API_URL}/crew/${id}`, {
+  const res = await fetch(`${API_URL}/crews/${id}`, {
     method: "DELETE",
     credentials: "include",
   });

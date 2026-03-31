@@ -23,8 +23,9 @@ export const getById = async (req: Request, res: Response) => {
        String(req.params.slug),
     );
     if (!crew) {
-      return res.status(400).json({ message: "Crew not found" });
+      return res.status(404).json({ message: "Crew not found" });
     }
+    res.json(crew);
   } catch (error) {
     res.status(500).json({ message: "Erreur server", error });
   }

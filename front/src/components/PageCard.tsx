@@ -2,16 +2,17 @@ import { Link } from "react-router-dom";
 import type { BaseItem } from "../interfaces/item.interface";
 
 interface PageCardProps {
-  item: BaseItem; 
-  type: "characters" | "fruits" | "arcs" | "crews" | "organisations"; 
+  item: BaseItem & { type?: string };
+  type?: "characters" | "devilFruits" | "arcs" | "crews" | "organisations";
 }
 
 export const PageCard = ({ item, type }: PageCardProps) => {
+  const resolvedType = type || (item as { type?: string }).type || "characters";
   const imageUrl = item.image?.[0]?.url || "/placeholder-one-piece.png";
 
   return (
     <Link
-      to={`/${type}/${item.slug}`}
+      to={`/${resolvedType}/${item.slug}`}
       className="group block h-full bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100"
     >
       {/* SECTION IMAGE */}
@@ -27,7 +28,7 @@ export const PageCard = ({ item, type }: PageCardProps) => {
       <div className="p-5">
 
         <span className="inline-block bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-3">
-          {type.replace('s', '')}
+          {resolvedType}
         </span>
 
         <h2 className="text-xl font-extrabold text-gray-950 uppercase tracking-tight group-hover:text-blue-600 transition-colors">

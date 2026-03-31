@@ -13,7 +13,12 @@ export interface Comment {
 
 export interface CreateComment {
   content: string;
-  parentId?: string; 
+  parentId?: string;
+  onePieceCharacterId?: number;
+  devilFruitId?: number;
+  arcId?: number;
+  organisationId?: number;
+  crewId?: number;
 }
 
 export interface CommentUpdate {

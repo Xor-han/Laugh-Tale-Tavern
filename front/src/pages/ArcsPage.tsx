@@ -1,23 +1,21 @@
 import { useEffect, useState } from "react";
-import { getPages } from "../api/page.api";
-import type { Page } from "../interfaces/page.interface";
 import { PagesContainer } from "../components/PageContainer";
+import type { Arc } from "../interfaces/arc.interface";
+import { getArcs } from "../api/arc.api";
 
 export const ArcsPage = () => {
-  const [pages, setPages] = useState<Page[]>([]);
+  const [arcs, setArcs] = useState<Arc[]>([]);
 
-  const fetchPage = async () => {
-    const data = await getPages();
-    setPages(data);
+  const fetchArcs= async () => {
+    const data = await getArcs();
+    setArcs(data);
   };
   useEffect(() => {
-    fetchPage();
+    fetchArcs();
   });
-
-  const arcPages = pages.filter((page) => page.entityType === "ARC")
   return (
     <>
-      <PagesContainer pages={arcPages} title="Les Arcs" />
+      <PagesContainer items={arcs} title="Les Arcs" type="arcs"/>
     </>
   );
 };

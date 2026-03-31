@@ -23,8 +23,9 @@ export const getById = async (req: Request, res: Response) => {
      String(req.params.slug),
     );
     if (!character) {
-      return res.status(400).json({ message: "Character not found" });
+      return res.status(404).json({ message: "Character not found" });
     }
+    res.json(character);
   } catch (error) {
     res.status(500).json({ message: "Erreur server", error });
   }

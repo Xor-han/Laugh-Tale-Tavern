@@ -127,11 +127,13 @@ export const DevilFruitDB = () => {
                 <X size={20} />
               </button>
             </div>
+            <div className="max-h-150 overflow-y-auto custom-scrollbar">
             <FruitForm
               types={types}
               onSubmit={handleCreateFruit}
               onCancel={() => setIsModalOpen(false)}
-            />
+              />
+              </div>
           </div>
         </div>
       )}

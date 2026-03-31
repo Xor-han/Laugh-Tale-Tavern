@@ -11,6 +11,7 @@ import equipageRouter from "@/routes/equipage.route";
 import typeRouter from "@/routes/type.route";
 import arcRouter from "@/routes/arc.route";
 import imageRouter from "@/routes/image.route";
+import articleRouter from "@/routes/article.route";
 
 const app = express();
 const port = 3000;
@@ -39,6 +40,7 @@ app.use("/crews", equipageRouter);
 app.use("/types", typeRouter);
 app.use("/arcs", arcRouter);
 app.use("/images", imageRouter);
+app.use("/articles", articleRouter);
 
 // ========== DÉMARRAGE DU SERVEUR ==========
 app.listen(port, async () => {

@@ -1,23 +1,21 @@
 import { useEffect, useState } from "react";
-import { getPages } from "../api/page.api";
-import type { Page } from "../interfaces/page.interface";
 import { PagesContainer } from "../components/PageContainer";
+import type { Crew } from "../interfaces/equipage.interface";
+import { getEquipages } from "../api/equipage.api";
 
 export const CrewsPage = () => {
-  const [pages, setPages] = useState<Page[]>([]);
+  const [crews, setCrews] = useState<Crew[]>([]);
 
-  const fetchPage = async () => {
-    const data = await getPages();
-    setPages(data);
+  const fetchCrews = async () => {
+    const data = await getEquipages();
+    setCrews(data);
   };
   useEffect(() => {
-    fetchPage();
+    fetchCrews();
   });
-
-  const crewPages = pages.filter((page) => page.entityType === "EQUIPAGE")
   return (
     <>
-      <PagesContainer pages={crewPages} title="Les Equipages" />
+      <PagesContainer items={crews} title="Les Equipages" type="crews"/>
     </>
   );
 };

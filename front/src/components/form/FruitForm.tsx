@@ -77,7 +77,7 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !type_id || !selectedImageId || !content) {
+    if (!name.trim() || !type_id || !selectedImageId || !content.trim()) {
       setError("Tous les champs sont obligatoires");
       return;
     }
@@ -90,11 +90,11 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 h-100 ">
       <div className="flex flex-col gap-4">
         <div>
           <label className="text-xs font-black uppercase text-gray-400">
-            Nom du Fruit
+            Nom du Fruit du Démon
           </label>
           <input
             value={name}
@@ -121,8 +121,8 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
             ))}
           </select>
         </div>
-      </div>
-
+              </div>
+                {/* GALERIE DANS LE FORMULAIRE */}
       <div className="flex flex-col gap-3">
         <div className="flex justify-between items-end">
           <label className="text-xs font-black uppercase text-gray-400">
@@ -148,14 +148,13 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
             accept="image/*"
           />
         </div>
-
-        <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto p-2 border-2 border-gray-50 rounded-2xl bg-gray-50/50">
+         <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto p-2 border-2 border-gray-50 rounded-2xl bg-gray-50/50">
           {loading ? (
             <div className="flex justify-center py-10">
               <Loader2 className="animate-spin text-gray-300" />
             </div>
           ) : (
-            <div className="grid grid-cols-3 ...">
+            <div className="grid grid-cols-2">
               {images.map((img) => (
                 <div
                   key={img.id}
@@ -197,7 +196,8 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
             </div>
           )}
         </div>
-        <div>
+      </div>
+       <div>
           <div className="flex justify-between items-center mb-2">
             <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">
               Contenu de la page
@@ -214,13 +214,10 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
             required
           />
         </div>
-      </div>
-
       {error && (
-        <p className="text-[10px] font-bold text-red-500 uppercase">{error}</p>
+        <p className="text-sm font-bold text-red-500 uppercase">{error}</p>
       )}
-
-      <div className="flex gap-3 pt-2">
+      <div className="flex gap-3 p-2">
         <button
           type="button"
           onClick={onCancel}
@@ -237,5 +234,6 @@ export const FruitForm = ({ types, onSubmit, onCancel }: Props) => {
         </button>
       </div>
     </form>
+
   );
 };

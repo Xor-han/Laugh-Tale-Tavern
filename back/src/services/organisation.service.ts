@@ -49,9 +49,7 @@ export const createOrganisation = async (data: CreateOrganisationDto) => {
     data: {
       name: data.name,
       content: data.content,
-      image: {
-        connect: { id: data.imageId! },
-      },
+      ...(data.imageId ? { image: { connect: { id: data.imageId } } } : {}),
       slug: slugify(data.name)
     },
   });

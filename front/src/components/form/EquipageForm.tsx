@@ -6,7 +6,7 @@ import type { Organisation } from "../../interfaces/organisation.interface";
 
 interface Props {
   organisations: Organisation[];
-  onSubmit: (data: { name: string; imageId: number; organisationIds?: number[] }) => void;
+  onSubmit: (data: { name: string; imageId: number; organisationIds?: number[], content: string }) => void;
   onCancel: () => void;
 }
 
@@ -18,6 +18,7 @@ export const EquipageForm = ({ organisations, onSubmit, onCancel }: Props) => {
   const [selectedOrgIds, setSelectedOrgIds] = useState<number[]>([]);
   const [images, setImages] = useState<Image[]>([]);
   const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
+  const [content, setContent] = useState("");
 
   // États Techniques
   const [loading, setLoading] = useState(true);
@@ -81,19 +82,20 @@ export const EquipageForm = ({ organisations, onSubmit, onCancel }: Props) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !selectedImageId) {
+    if (!name.trim() || !selectedImageId || !content.trim()) {
       setError("Le nom et l'image sont obligatoires");
       return;
     }
     onSubmit({ 
       name: name.trim(), 
       imageId: selectedImageId,
-      organisationIds: selectedOrgIds
+      organisationIds: selectedOrgIds,
+      content: content
     });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 h-100 ">
       {/* NOM & ORGANISATION */}
       <div className="flex flex-col gap-4">
         <div>
@@ -210,7 +212,23 @@ export const EquipageForm = ({ organisations, onSubmit, onCancel }: Props) => {
           )}
         </div>
       </div>
-
+       <div>
+          <div className="flex justify-between items-center mb-2">
+            <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">
+              Contenu de la page
+            </label>
+            <span className="text-[10px] text-gray-300 font-medium italic">
+              Appuyez sur "Entrée" pour créer des paragraphes
+            </span>
+          </div>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all min-h-75 leading-relaxed text-gray-700"
+            placeholder="Racontez l'histoire, les pouvoirs, les anecdotes..."
+            required
+          />
+        </div>
       {error && (
         <p className="text-[10px] font-bold text-red-500 uppercase">{error}</p>
       )}

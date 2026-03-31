@@ -5,7 +5,7 @@ import * as organisationController from "@/controller/organisation.controller";
 const router: express.Router = express.Router();
 
 router.get("/", organisationController.getAll);
-router.get("/:id", organisationController.getById);
+router.get("/:slug", organisationController.getById);
 router.post("/", authMiddleware, adminMiddleware, organisationController.create);
 router.put("/:id", authMiddleware, adminMiddleware, organisationController.update);
 router.patch("/:id",authMiddleware,adminMiddleware,organisationController.patch,);

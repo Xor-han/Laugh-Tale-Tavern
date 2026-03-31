@@ -46,7 +46,7 @@ export const Router = createBrowserRouter([
         element: <OrganisationsPage />,
       },
       {
-        path: "/:slug",
+        path: "/:type/:slug",
         element: <DynamiquePage />,
       },
     ],

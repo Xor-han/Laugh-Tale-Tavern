@@ -7,17 +7,11 @@ import { getArcs, createArc, deleteArc } from "../api/arc.api";
 // Interfaces
 import type { Arc, CreateArc } from "../interfaces/arc.interface";
 import { ArcForm } from "../components/form/ArcForm";
-import { createPage } from "../api/page.api";
-import { PageForm } from "./form/PageForm";
 
 export const ArcDB = () => {
   const [arcs, setArcs] = useState<Arc[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalPageOpen, setIsModalPageOpen] = useState(false);
-  const [selectedEntity, setSelectedEntity] = useState<{
-    id: number;
-    name: string;
-  } | null>(null);
+
 
   const fetchArcs = async () => {
     const data = await getArcs();
@@ -46,20 +40,6 @@ export const ArcDB = () => {
     await fetchArcs();
   };
 
-  const handleOpenPageModal = (arc: any) => {
-    setSelectedEntity({ id: arc.id, name: arc.name });
-    setIsModalPageOpen(true);
-  };
-  const handleFinalSubmit = async (formData: any) => {
-    try {
-      await createPage(formData);
-      alert("L'article One Piece a été publié !");
-      setIsModalOpen(false);
-      fetchArcs();
-    } catch (error) {
-      alert("Erreur : " + error);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 md:p-12">
@@ -107,13 +87,7 @@ export const ArcDB = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => handleOpenPageModal(arc)}
-                    className={arc.hasPage ? "text-green-500" : "text-blue-500"}
-                  >
-                    {arc.hasPage ? "L'arc à déjà une page" : "Rédiger"}
-                  </button>
-
+                
                   <button
                     onClick={() => handleDeleteArc(arc.id)}
                     className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all"
@@ -138,45 +112,16 @@ export const ArcDB = () => {
                 <X size={20} />
               </button>
             </div>
+            <div className="max-h-150 overflow-y-auto custom-scrollbar">
             <ArcForm
               onSubmit={handleCreateArc}
               onCancel={() => setIsModalOpen(false)}
-            />
+              />
+              </div>
           </div>
         </div>
       )}
-      {isModalPageOpen && selectedEntity && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
-          {/* L'arrière-plan sombre (Overlay) */}
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setIsModalPageOpen(false)}
-          />
-
-          {/* La boîte de la modale */}
-          <div className="relative bg-white w-full max-w-2xl rounded-4xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-black uppercase tracking-tight">
-                Nouvel article :{" "}
-                <span className="text-blue-600">{selectedEntity.name}</span>
-              </h2>
-              <button
-                onClick={() => setIsModalPageOpen(false)}
-                className="text-gray-400 hover:text-black"
-              >
-                Fermer
-              </button>
-            </div>
-            <PageForm
-              entityId={selectedEntity.id}
-              entityType="ARC"
-              initialTitle={selectedEntity.name}
-              onSubmit={handleFinalSubmit}
-              onCancel={() => setIsModalPageOpen(false)}
-            />
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 };

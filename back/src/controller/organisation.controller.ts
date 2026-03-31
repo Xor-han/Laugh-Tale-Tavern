@@ -20,11 +20,12 @@ export const getAll = async (req: Request, res: Response) => {
 export const getById = async (req: Request, res: Response) => {
   try {
     const organisation = await organisationService.getOrganisationById(
-      Number(req.params.id),
+      String(req.params.slug),
     );
     if (!organisation) {
-      return res.status(400).json({ message: "Organisation not found" });
+      return res.status(404).json({ message: "Organisation not found" });
     }
+    res.json(organisation);
   } catch (error) {
     res.status(500).json({ message: "Erreur server", error });
   }

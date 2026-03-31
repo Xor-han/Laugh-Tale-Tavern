@@ -53,9 +53,7 @@ export const createCharacter = async (data: CreateCharacterDto) => {
       slug: slugify(data.name),
       isAlive: data.isAlive ?? false,
       profession: data.profession as Profession,
-      image: {
-        connect: { id: data.imageId! },
-      },
+      ...(data.imageId ? { image: { connect: { id: data.imageId } } } : {}),
       arcs: {
         connect: Array(Number(data.arcIds)).map((id: number) => ({ id })),
       },

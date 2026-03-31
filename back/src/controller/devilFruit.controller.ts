@@ -23,8 +23,9 @@ export const getById = async (req: Request, res: Response) => {
       String(req.params.slug),
     );
     if (!devilFruit) {
-      return res.status(400).json({ message: "Devil Fruit not found" });
+      return res.status(404).json({ message: "Devil Fruit not found" });
     }
+    res.json(devilFruit);
   } catch (error) {
     res.status(500).json({ message: "Erreur server", error });
   }

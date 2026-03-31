@@ -66,9 +66,7 @@ export const updateCrew = async (id: number, data: UpdateCrewDto) => {
     data: {
       name: data.name,
       content: data.content,
-      image: {
-        connect: { id: data.imageId! },
-      },
+      ...(data.imageId ? { image: { connect: { id: data.imageId } } } : {}),
     },
   });
 };

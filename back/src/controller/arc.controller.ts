@@ -23,8 +23,9 @@ export const getById = async (req: Request, res: Response) => {
       String(req.params.slug),
     );
     if (!arc) {
-      return res.status(400).json({ message: "Arc not found" });
+      return res.status(404).json({ message: "Arc not found" });
     }
+    res.json(arc);
   } catch (error) {
     res.status(500).json({ message: "Erreur server", error });
   }
