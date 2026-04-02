@@ -1,39 +1,53 @@
-import { Loader2, Upload, CheckCircle2, Trash2, X, Laugh, Skull } from "lucide-react";
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import {
+  Upload,
+  Trash2,
+  Loader2,
+  CheckCircle2,
+  X,
+  Skull,
+  Laugh,
+} from "lucide-react";
 import { getImages, uploadImage, deleteImage } from "../../api/image.api";
-import { PROFESSION_OPTIONS } from "../../data/Profession";
-import type { Arc } from "../../interfaces/arc.interface";
+import type { Image } from "../../interfaces/image.interface";
 import type { DevilFruit } from "../../interfaces/devilFruit.interface";
-import type { Equipage } from "../../interfaces/equipage.interface";
-import type { CreateCharacter, OnePieceCharacter } from "../../interfaces/onePieceCharacter.interface";
 import type { Organisation } from "../../interfaces/organisation.interface";
+import type { Arc } from "../../interfaces/arc.interface";
+import type { Crew } from "../../interfaces/equipage.interface";
+import type {
+  CreateCharacter,
+  OnePieceCharacter,
+} from "../../interfaces/onePieceCharacter.interface";
+import { PROFESSION_OPTIONS } from "../../data/Profession";
 
 interface Props {
-character: OnePieceCharacter;
+  character: OnePieceCharacter;
   organisation: Organisation[];
   arcs: Arc[];
-  equipage: Equipage[];
+  crews: Crew[];
   devilFruit: DevilFruit[];
-  onSubmit: (id: number, data: CreateCharacter) => void;
+  onEditSubmit: (id: number, data: CreateCharacter) => void;
   onCancel: () => void;
 }
 
 export const EditCharacterForm = ({
+  character,
   organisation,
   arcs,
-  equipage,
+  crews,
   devilFruit,
-  onSubmit,
   onCancel,
+  onEditSubmit,
 }: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // --- ÉTATS ---
   const [name, setName] = useState("");
+  const [content, setContent] = useState("");
   const [isAlive, setIsAlive] = useState(false);
   const [profession, setProfession] = useState("");
   const [organisationId, setOrganisationId] = useState<number | null>(null);
-  const [equipageId, setEquipageId] = useState<number | null>(null);
+  const [crewId, setCrewId] = useState<number | null>(null);
   const [devilFruitId, setDevilFruitId] = useState<number | null>(null);
   const [images, setImages] = useState<Image[]>([]);
   const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
@@ -45,6 +59,24 @@ export const EditCharacterForm = ({
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (character) {
+      setName(character.name || "");
+      setContent(character.content || "");
+      setIsAlive(character.isAlive ?? true);
+      setProfession(character.profession || "");
+      setOrganisationId(character.organisationId || null);
+      setCrewId(character.crewId || null);
+      if (character.devilFruit) {
+        setDevilFruitId(character.devilFruit.id);
+      } else {
+        setDevilFruitId(null);
+      }
+      if (character.arcs) {
+        setSelectedArcIds(character.arcs.map((arc: any) => arc.id));
+      }
+    }
+  }, [character]);
   // --- CHARGEMENT ---
   const fetchImages = async () => {
     try {
@@ -93,31 +125,26 @@ export const EditCharacterForm = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      !name.trim() ||
-      !profession ||
-      !selectedImageId ||
-      !selectedArcIds ||
-      !organisationId
-    ) {
-      setError("Tous les champs sont obligatoires");
+    if (!name.trim() || !profession || !selectedImageId || !content.trim()) {
+      setError(
+        "Le nom, la profession, l'image et le contenu sont obligatoires",
+      );
       return;
     }
-    onSubmit({
+    onEditSubmit(character.id, {
       name: name.trim(),
       isAlive,
       profession: profession.trim(),
       imageId: selectedImageId,
-      devilFruit_id: devilFruitId,
+      devilFruitId: devilFruitId,
       arcIds: selectedArcIds,
       organisationId: organisationId,
-      equipageId: equipageId,
+      crewId: crewId,
+      content: content.trim(),
     });
   };
-  // const selectedOrg = organisation.find((o) => o.id === organisationId);
-  // const isPirate = selectedOrg?.name.toLowerCase().includes("pirate");
 
   const handleAddArc = (id: number) => {
     if (!id) return;
@@ -132,7 +159,7 @@ export const EditCharacterForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6 ">
+    <form onSubmit={handleEditSubmit} className="flex flex-col gap-4 h-100 ">
       <div className="flex flex-col gap-4">
         <div>
           <label className="text-xs font-black uppercase text-gray-400">
@@ -288,23 +315,23 @@ export const EditCharacterForm = ({
           ))}
         </select>
       </div>
-        <div>
-          <label className="text-xs font-black uppercase text-gray-400">
-            Equipage du personnage
-          </label>
-          <select
-            value={equipageId ?? ""}
-            onChange={(e) => setEquipageId(Number(e.target.value))}
-            className="w-full p-3 border-2 border-gray-100 rounded-xl bg-white outline-none"
-          >
-            <option value="">Sélectionner...</option>
-            {equipage.map((e) => (
-              <option key={e.id} value={e.id}>
-                {e.name}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div>
+        <label className="text-xs font-black uppercase text-gray-400">
+          Equipage du personnage
+        </label>
+        <select
+          value={crewId ?? ""}
+          onChange={(e) => setCrewId(Number(e.target.value))}
+          className="w-full p-3 border-2 border-gray-100 rounded-xl bg-white outline-none"
+        >
+          <option value="">Sélectionner...</option>
+          {crews.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div>
         <label className="text-xs font-black uppercase text-gray-400">
@@ -354,17 +381,17 @@ export const EditCharacterForm = ({
             Statut vital
           </label>
           <span className="text-sm font-bold text-gray-700">
-            {isAlive ? 
-            <div>
-            <Laugh/>
-            <p>En vie</p> 
-            </div>
-            :
-            <div>
-            <Skull/>
-            <p>Décédé</p>
-            </div> 
-            }
+            {isAlive ? (
+              <div>
+                <Laugh />
+                <p>En vie</p>
+              </div>
+            ) : (
+              <div>
+                <Skull />
+                <p>Décédé</p>
+              </div>
+            )}
           </span>
         </div>
 
@@ -378,11 +405,28 @@ export const EditCharacterForm = ({
           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
         </label>
       </div>
+      <div>
+        <div className="flex justify-between items-center mb-2">
+          <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">
+            Contenu de la page
+          </label>
+          <span className="text-[10px] text-gray-300 font-medium italic">
+            Appuyez sur "Entrée" pour créer des paragraphes
+          </span>
+        </div>
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          className="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all min-h-75 leading-relaxed text-gray-700"
+          placeholder="Racontez l'histoire, les pouvoirs, les anecdotes..."
+          required
+        />
+      </div>
       {error && (
         <p className="text-sm font-bold text-red-500 uppercase">{error}</p>
       )}
 
-      <div className="flex gap-3 pt-2">
+      <div className="flex gap-3 p-2">
         <button
           type="button"
           onClick={onCancel}
@@ -395,7 +439,7 @@ export const EditCharacterForm = ({
           disabled={uploading}
           className="flex-1 p-3 bg-black text-white rounded-xl text-sm font-black uppercase shadow-lg shadow-black/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
         >
-          Créer le personnage
+          Modifier le personnage
         </button>
       </div>
     </form>

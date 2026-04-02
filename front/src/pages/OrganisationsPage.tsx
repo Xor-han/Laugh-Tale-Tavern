@@ -15,7 +15,7 @@ export const OrganisationsPage = () => {
   });
   return (
     <>
-      <PagesContainer items={organisation} title="Les Organisations" type="organisations"/>
+      <PagesContainer items={organisation} title="Les Organisations" entityType="organisations"/>
     </>
   );
 };

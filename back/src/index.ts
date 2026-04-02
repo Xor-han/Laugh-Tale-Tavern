@@ -7,7 +7,7 @@ import characterRouter from "@/routes/character.route";
 import commentRouter from "@/routes/comment.route";
 import devilFruitRouter from "@/routes/devilFruit.route";
 import organisationRouter from "@/routes/organisation.route";
-import equipageRouter from "@/routes/equipage.route";
+import equipageRouter from "@/routes/crew.route";
 import typeRouter from "@/routes/type.route";
 import arcRouter from "@/routes/arc.route";
 import imageRouter from "@/routes/image.route";

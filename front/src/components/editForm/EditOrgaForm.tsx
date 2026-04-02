@@ -1,24 +1,34 @@
 import { useState, useEffect, useRef } from "react";
 import { Upload, Trash2, Loader2, CheckCircle2, X } from "lucide-react";
 import { getImages, uploadImage, deleteImage } from "../../api/image.api";
-import type { Image } from "../../interfaces/image.interface";
 import type { Crew } from "../../interfaces/equipage.interface";
+import type { Image } from "../../interfaces/image.interface";
+import type {
+  CreateOrg,
+  Organisation,
+} from "../../interfaces/organisation.interface";
 
 interface Props {
-  equipages: Crew[];
-  onSubmit: (data: { name: string; imageId: number; equipageIds: number[], content: string }) => void;
+  organisation: Organisation;
+  crews: Crew[];
+  onEditSubmit: (id: number, data: CreateOrg) => void;
   onCancel: () => void;
 }
 
-export const OrganisationForm = ({ equipages, onSubmit, onCancel }: Props) => {
+export const EditOrgaForm = ({
+  organisation,
+  crews,
+  onEditSubmit,
+  onCancel,
+}: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // --- ÉTATS ---
   const [name, setName] = useState("");
-  const [content, setContent] = useState("");
-  const [selectedEquipageIds, setSelectedEquipageIds] = useState<number[]>([]);
   const [images, setImages] = useState<Image[]>([]);
   const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
+  const [selectedCrewIds, setSelectedCrewIds] = useState<number[]>([]);
+  const [content, setContent] = useState("");
 
   // États Techniques
   const [loading, setLoading] = useState(true);
@@ -27,6 +37,17 @@ export const OrganisationForm = ({ equipages, onSubmit, onCancel }: Props) => {
   const [error, setError] = useState("");
 
   // --- CHARGEMENT ---
+
+  useEffect(() => {
+    if (organisation) {
+      setName(organisation.name || "");
+      setContent(organisation.content || "");
+      if (organisation.crew) {
+        setSelectedCrewIds(organisation.crew.map((c: any) => c.id));
+      }
+    }
+  }, [organisation]);
+
   const fetchImages = async () => {
     try {
       const data = await getImages();
@@ -74,28 +95,28 @@ export const OrganisationForm = ({ equipages, onSubmit, onCancel }: Props) => {
     }
   };
 
-  const handleAddEquipage = (id: number) => {
-    if (id && !selectedEquipageIds.includes(id)) {
-      setSelectedEquipageIds([...selectedEquipageIds, id]);
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !selectedImageId || !content.trim()) {
-      setError("Tous les champs sont obligatoires");
+      setError("Le nom, l'image et le contenu sont obligatoires");
       return;
     }
-    onSubmit({ 
-      name: name.trim(), 
-      imageId: selectedImageId, 
-      equipageIds: selectedEquipageIds,
-      content: content
+    onEditSubmit(organisation.id, {
+      name: name.trim(),
+      crewIds: selectedCrewIds,
+      imageId: selectedImageId,
+      content: content.trim(),
     });
   };
 
+  const handleAddCrew = (id: number) => {
+    if (id && !selectedCrewIds.includes(id)) {
+      setSelectedCrewIds([...selectedCrewIds, id]);
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 h-100 ">
+    <form onSubmit={handleEditSubmit} className="flex flex-col gap-4 h-100 ">
       {/* NOM */}
       <div className="flex flex-col gap-4">
         <div>
@@ -112,7 +133,7 @@ export const OrganisationForm = ({ equipages, onSubmit, onCancel }: Props) => {
       </div>
 
       {/* GALERIE D'IMAGES */}
-     <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3">
         <div className="flex justify-between items-end">
           <label className="text-xs font-black uppercase text-gray-400">
             Choisir une image
@@ -195,12 +216,12 @@ export const OrganisationForm = ({ equipages, onSubmit, onCancel }: Props) => {
         </label>
         <select
           value=""
-          onChange={(e) => handleAddEquipage(Number(e.target.value))}
+          onChange={(e) => handleAddCrew(Number(e.target.value))}
           className="w-full p-3 border-2 border-gray-100 rounded-xl bg-white outline-none focus:border-black transition-all"
         >
           <option value="">Sélectionner un équipage...</option>
-          {equipages
-            .filter((eq) => !selectedEquipageIds.includes(eq.id))
+          {crews
+            .filter((eq) => !selectedCrewIds.includes(eq.id))
             .map((eq) => (
               <option key={eq.id} value={eq.id}>
                 {eq.name}
@@ -209,15 +230,19 @@ export const OrganisationForm = ({ equipages, onSubmit, onCancel }: Props) => {
         </select>
 
         <div className="flex flex-wrap gap-2">
-          {selectedEquipageIds.map((id) => (
+          {selectedCrewIds.map((id) => (
             <span
               key={id}
               className="flex items-center gap-2 px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold border border-gray-200"
             >
-              {equipages.find((e) => e.id === id)?.name}
+              {crews.find((c) => c.id === id)?.name}
               <button
                 type="button"
-                onClick={() => setSelectedEquipageIds(selectedEquipageIds.filter((eId) => eId !== id))}
+                onClick={() =>
+                  setSelectedCrewIds(
+                    selectedCrewIds.filter((cId) => cId !== id),
+                  )
+                }
                 className="hover:text-red-500"
               >
                 <X size={14} />
@@ -227,22 +252,22 @@ export const OrganisationForm = ({ equipages, onSubmit, onCancel }: Props) => {
         </div>
       </div>
       <div>
-          <div className="flex justify-between items-center mb-2">
-            <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">
-              Contenu de la page
-            </label>
-            <span className="text-[10px] text-gray-300 font-medium italic">
-              Appuyez sur "Entrée" pour créer des paragraphes
-            </span>
-          </div>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all min-h-75 leading-relaxed text-gray-700"
-            placeholder="Racontez l'histoire, les pouvoirs, les anecdotes..."
-            required
-          />
+        <div className="flex justify-between items-center mb-2">
+          <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">
+            Contenu de la page
+          </label>
+          <span className="text-[10px] text-gray-300 font-medium italic">
+            Appuyez sur "Entrée" pour créer des paragraphes
+          </span>
         </div>
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          className="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all min-h-75 leading-relaxed text-gray-700"
+          placeholder="Racontez l'histoire, les pouvoirs, les anecdotes..."
+          required
+        />
+      </div>
       {error && (
         <p className="text-[10px] font-bold text-red-500 uppercase">{error}</p>
       )}

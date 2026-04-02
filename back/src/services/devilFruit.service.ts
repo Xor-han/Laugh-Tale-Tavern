@@ -22,7 +22,28 @@ export const getAllDevilFruit = async (search?: string) => {
   });
 };
 
-export const getDevilFruitById = async (slug: string) => {
+export const getDevilFruitById = async (id: number) => {
+  const devilFruit = await db.devilFruit.findUnique({
+    where: { id },
+    include: {
+      image: true,
+      onePieceCharacters: true,
+      type: true,
+      comment: {
+        where: { parentId: null },
+        include: {
+          author: true,
+          replies: {
+            include: { author: true },
+          },
+        },
+      },
+    },
+  });
+  if (!devilFruit) return null;
+  return devilFruit;
+};
+export const getDevilFruitBySlug = async (slug: string) => {
   const devilFruit = await db.devilFruit.findUnique({
     where: { slug },
     include: {
@@ -81,6 +102,7 @@ export const PatchDevilFruit = async (id: number, data: PatchDevilFruitDto) => {
     where: { id },
     data: {
       name: data.name,
+      content: data.content,
       image: {
         connect: { id: data.imageId! },
       },

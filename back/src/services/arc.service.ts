@@ -21,7 +21,27 @@ export const getAllArc = async (search?: string) => {
   });
 };
 
-export const getArcById = async (slug: string) => {
+export const getArcById = async (id: number) => {
+  const arc = await db.arcs.findUnique({
+    where: { id },
+    include: {
+      image: true,
+      onePieceCharacter: true,
+      comment: {
+        where: { parentId: null },
+        include: {
+          author: true,
+          replies: {
+            include: { author: true },
+          },
+        },
+      },
+    },
+  });
+  if (!arc) return null;
+  return arc;
+};
+export const getArcBySlug = async (slug: string) => {
   const arc = await db.arcs.findUnique({
     where: { slug },
     include: {
@@ -75,6 +95,7 @@ export const PatchArc = async (id: number, data: PatchArcDto) => {
     where: { id },
     data: {
       name: data.name,
+      content: data.content,
       ...(data.imageId ? { image: { connect: { id: data.imageId } } } : {}),
     },
   });

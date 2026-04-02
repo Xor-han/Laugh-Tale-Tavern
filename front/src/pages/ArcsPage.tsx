@@ -15,7 +15,7 @@ export const ArcsPage = () => {
   });
   return (
     <>
-      <PagesContainer items={arcs} title="Les Arcs" type="arcs"/>
+      <PagesContainer items={arcs} title="Les Arcs" entityType="arcs"/>
     </>
   );
 };

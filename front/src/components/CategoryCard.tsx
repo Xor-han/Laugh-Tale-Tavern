@@ -14,23 +14,26 @@ const categories = [
 
 export const CategoryCard = () => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 lg:grid-cols-4 gap-6 p-8">
-      {categories.map((cat) => (
-        <Link
-          key={cat.title}
-          to={`/${cat.title.toLowerCase().replace(/\s/g, "-")}`}
-          className="group overflow-hidden rounded-2xl shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-        >
-          <div
-            className="h-64 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-            style={{ backgroundImage: `url(${cat.image})` }}
-          />
+    <>
+      <p className="text-6xl font-bold m-8">Explorer l'univers</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 lg:grid-cols-4 gap-6 p-8">
+        {categories.map((cat) => (
+          <Link
+            key={cat.title}
+            to={`/${cat.title.toLowerCase().replace(/\s/g, "-")}`}
+            className="group overflow-hidden rounded-2xl shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+          >
+            <div
+              className="h-64 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+              style={{ backgroundImage: `url(${cat.image})` }}
+            />
 
-          <div className="bg-black p-4 text-white text-center font-bold tracking-wide">
-            {cat.title}
-          </div>
-        </Link>
-      ))}
-    </div>
+            <div className="bg-black p-4 text-white text-center font-bold tracking-wide">
+              {cat.title}
+            </div>
+          </Link>
+        ))}
+      </div>
+    </>
   );
 };

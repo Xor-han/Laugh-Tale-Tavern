@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Apple, X } from "lucide-react";
+import { Plus, Trash2, Apple, X, Upload } from "lucide-react";
 
 // APIs
 import {
   getOrganisations,
+  getOrganisationById,
   createOrganisation,
   deleteOrganisation,
+  updateOrganisation,
 } from "../api/organisation.api";
-import { getEquipages } from "../api/equipage.api";
+import { getCrews } from "../api/crew.api";
 
 // Interfaces
 import type {
@@ -16,11 +18,15 @@ import type {
 } from "../interfaces/organisation.interface";
 import { OrganisationForm } from "./form/OrganisationForm";
 import type { Crew } from "../interfaces/equipage.interface";
+import { EditOrgaForm } from "./editForm/EditOrgaForm";
 
 export const OrganisationDB = () => {
+  const [selectedOrganisation, setSelectedOrganisation] =
+    useState<Organisation>();
   const [organisation, setOrganisation] = useState<Organisation[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [equipage, setEquipage] = useState<Crew[]>([]);
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
   const fetchOrganisation = async () => {
     const data = await getOrganisations();
     setOrganisation(data);
@@ -29,7 +35,7 @@ export const OrganisationDB = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const equipageData = await getEquipages();
+      const equipageData = await getCrews();
       setEquipage(equipageData);
       await fetchOrganisation();
     };
@@ -41,6 +47,22 @@ export const OrganisationDB = () => {
   const handleCreateOrganisation = async (data: CreateOrg) => {
     await createOrganisation(data);
     setIsModalOpen(false);
+    await fetchOrganisation();
+  };
+
+  const handleEditClick = async (id: number) => {
+    try {
+      const fullData = await getOrganisationById(id);
+      setSelectedOrganisation(fullData);
+      setIsModalEditOpen(true);
+    } catch (error) {
+      console.error("Impossible de charger les détails de l'organisation");
+    }
+  };
+
+  const handleUpdateOrganisation = async (id: number, data: CreateOrg) => {
+    await updateOrganisation(id, data);
+    setIsModalEditOpen(false);
     await fetchOrganisation();
   };
 
@@ -99,6 +121,16 @@ export const OrganisationDB = () => {
                 </div>
                 <div className="flex gap-2">
                   <button
+                    onClick={() => {
+                      (handleEditClick(o.id),
+                        setSelectedOrganisation(o),
+                        setIsModalEditOpen(true));
+                    }}
+                    className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-blue-500 hover:text-white transition-all"
+                  >
+                    <Upload size={20} />
+                  </button>
+                  <button
                     onClick={() => handleDeleteOrganisation(o.id)}
                     className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all"
                   >
@@ -114,7 +146,9 @@ export const OrganisationDB = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-black italic">NOUVELLE ORGANISATION</h2>
+              <h2 className="text-2xl font-black italic">
+                NOUVELLE ORGANISATION
+              </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="p-2 bg-gray-100 rounded-full hover:bg-red-50 transition-colors"
@@ -132,6 +166,31 @@ export const OrganisationDB = () => {
           </div>
         </div>
       )}
+          {isModalEditOpen && selectedOrganisation && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+                      <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+                        <div className="flex justify-between items-center mb-6">
+                          <h2 className="text-2xl font-black italic">
+                            MODIFICATION DE L'ORGANISATION
+                          </h2>
+                          <button
+                            onClick={() => setIsModalEditOpen(false)}
+                            className="p-2 bg-gray-100 rounded-full hover:bg-red-50 transition-colors"
+                          >
+                            <X size={20} />
+                          </button>
+                        </div>
+                        <div className="max-h-150 overflow-y-auto custom-scrollbar">
+                          <EditOrgaForm
+                            organisation={selectedOrganisation}
+                            onEditSubmit={handleUpdateOrganisation}
+                            onCancel={() => setIsModalEditOpen(false)}
+                            crews={equipage}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
     </div>
   );
 };

@@ -1,17 +1,25 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Apple, X } from "lucide-react";
+import { Plus, Trash2, Apple, X, Upload } from "lucide-react";
 
 // APIs
-import { getArcs, createArc, deleteArc } from "../api/arc.api";
+import {
+  getArcs,
+  getArcById,
+  createArc,
+  deleteArc,
+  updateArc,
+} from "../api/arc.api";
 
 // Interfaces
 import type { Arc, CreateArc } from "../interfaces/arc.interface";
 import { ArcForm } from "../components/form/ArcForm";
+import { EditArcForm } from "./editForm/EditArcForm";
 
 export const ArcDB = () => {
   const [arcs, setArcs] = useState<Arc[]>([]);
+  const [selectedArc, setSelectedArc] = useState<Arc>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
 
   const fetchArcs = async () => {
     const data = await getArcs();
@@ -39,7 +47,21 @@ export const ArcDB = () => {
     await deleteArc(id);
     await fetchArcs();
   };
+  const handleEditClick = async (id: number) => {
+    try {
+      const fullData = await getArcById(id);
+      setSelectedArc(fullData);
+      setIsModalEditOpen(true);
+    } catch (error) {
+      console.error("Impossible de charger les détails du personnage");
+    }
+  };
 
+  const handleUpdateArc = async (id: number, data: CreateArc) => {
+    await updateArc(id, data);
+    setIsModalEditOpen(false);
+    await fetchArcs();
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 md:p-12">
@@ -87,7 +109,16 @@ export const ArcDB = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                
+                  <button
+                    onClick={() => {
+                      (handleEditClick(arc.id),
+                        setSelectedArc(arc),
+                        setIsModalEditOpen(true));
+                    }}
+                    className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-blue-500 hover:text-white transition-all"
+                  >
+                    <Upload size={20} />
+                  </button>
                   <button
                     onClick={() => handleDeleteArc(arc.id)}
                     className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all"
@@ -113,15 +144,38 @@ export const ArcDB = () => {
               </button>
             </div>
             <div className="max-h-150 overflow-y-auto custom-scrollbar">
-            <ArcForm
-              onSubmit={handleCreateArc}
-              onCancel={() => setIsModalOpen(false)}
+              <ArcForm
+                onSubmit={handleCreateArc}
+                onCancel={() => setIsModalOpen(false)}
               />
-              </div>
+            </div>
           </div>
         </div>
       )}
-      
+      {isModalEditOpen && selectedArc && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-black italic">
+                MODIFICATION DE L'ARC
+              </h2>
+              <button
+                onClick={() => setIsModalEditOpen(false)}
+                className="p-2 bg-gray-100 rounded-full hover:bg-red-50 transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="max-h-150 overflow-y-auto custom-scrollbar">
+              <EditArcForm
+                arc={selectedArc}
+                onEditSubmit={handleUpdateArc}
+                onCancel={() => setIsModalEditOpen(false)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -15,7 +15,7 @@ export const CharacterPage = () => {
   });
   return (
     <>
-      <PagesContainer items={characters} title="Les Personnages" type="characters"/>
+      <PagesContainer items={characters} title="Les Personnages" entityType="characters"/>
     </>
   );
 };

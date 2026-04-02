@@ -21,15 +21,29 @@ export const getAllCharacter = async (search?: string) => {
   });
 };
 
-export const getCharacterById = async (slug: string) => {
+export const getCharacterById = async (id: number) => {
   const character = await db.onePieceCharacter.findUnique({
-    where: {slug },
+    where: { id },
     include: {
       image: true,
-      devilFruit: { select: { name: true } },
+      devilFruit: { select: { id: true, name: true } },
       organisation: { select: { name: true } },
       crew: { select: { name: true } },
-      arcs: { select: { name: true } },
+      arcs: { select: { id: true, name: true } }
+}});
+  if (!character) return null;
+  return character;
+};
+
+export const getCharacterBySlug = async (slug: string) => {
+  const character = await db.onePieceCharacter.findUnique({
+    where: { slug },
+    include: {
+      image: true,
+      devilFruit: { select: {id: true, name: true } },
+      organisation: { select: { name: true } },
+      crew: { select: { name: true } },
+      arcs: { select: {id: true, name: true } },
       comment: {
         where: { parentId: null },
         include: {
@@ -52,10 +66,10 @@ export const createCharacter = async (data: CreateCharacterDto) => {
       content: data.content,
       slug: slugify(data.name),
       isAlive: data.isAlive ?? false,
-      profession: data.profession as Profession,
+      profession: data.profession,
       ...(data.imageId ? { image: { connect: { id: data.imageId } } } : {}),
       arcs: {
-        connect: Array(Number(data.arcIds)).map((id: number) => ({ id })),
+        connect: data.arcIds?.map((id: number) => ({ id })),
       },
       devilFruitId: data.devilFruitId,
       organisationId: data.organisationId,
@@ -73,13 +87,11 @@ export const updateCharacter = async (id: number, data: UpdateCharacterDto) => {
     data: {
       name: data.name,
       content: data.content,
-      image: {
-        connect: { id: data.imageId! },
-      },
+      ...(data.imageId ? { image: { connect: { id: data.imageId } } } : {}),
       isAlive: data.isAlive ?? false,
       profession: data.profession as Profession,
       arcs: {
-        connect: Array(Number(data.arcIds)).map((id: number) => ({ id })),
+        set: data.arcIds?.map((id: number) => ({ id })),
       },
       devilFruitId: data.devilFruitId,
       organisationId: data.organisationId,
@@ -96,13 +108,12 @@ export const patchCharacter = async (id: number, data: PatchCharacterDto) => {
     where: { id },
     data: {
       name: data.name,
-      image: {
-        connect: { id: data.imageId! },
-      },
+      content: data.content,
+      ...(data.imageId ? { image: { connect: { id: data.imageId } } } : {}),
       isAlive: data.isAlive ?? false,
       profession: data.profession as Profession,
       arcs: {
-        connect: Array(Number(data.arcIds)).map((id: number) => ({ id })),
+        set: data.arcIds?.map((id: number) => ({ id })),
       },
       devilFruitId: data.devilFruitId,
       organisationId: data.organisationId,

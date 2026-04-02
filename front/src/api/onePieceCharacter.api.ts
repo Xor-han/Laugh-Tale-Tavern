@@ -16,7 +16,16 @@ export const getCharacters = async (): Promise<OnePieceCharacter[]> => {
 export const getCharacterById = async (
   id: number,
 ): Promise<OnePieceCharacter> => {
-  const res = await fetch(`${API_URL}/characters/${id}`, {
+  const res = await fetch(`${API_URL}/characters/id/${id}`, {
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("Erreur lors de la récupération du personnage");
+  return res.json();
+};
+export const getCharacterBySlug = async (
+  slug: string,
+): Promise<OnePieceCharacter> => {
+  const res = await fetch(`${API_URL}/characters/${slug}`, {
     credentials: "include",
   });
   if (!res.ok) throw new Error("Erreur lors de la récupération du personnage");
@@ -40,7 +49,7 @@ export const putCharacter = async (
   id: number,
   character: CreateCharacter,
 ): Promise<OnePieceCharacter> => {
-  const res = await fetch(`${API_URL}/characters/${id}`, {
+  const res = await fetch(`${API_URL}/characters/id/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -61,7 +70,7 @@ export const updateCharacter = async (
   id: number,
   character: CharacterUpdate,
 ): Promise<OnePieceCharacter> => {
-  const res = await fetch(`${API_URL}/characters/${id}`, {
+  const res = await fetch(`${API_URL}/characters/id/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -72,7 +81,7 @@ export const updateCharacter = async (
 };
 
 export const deleteCharacter = async (id: number): Promise<void> => {
-  const res = await fetch(`${API_URL}/characters/${id}`, {
+  const res = await fetch(`${API_URL}/characters/id/${id}`, {
     method: "DELETE",
     credentials: "include",
   });

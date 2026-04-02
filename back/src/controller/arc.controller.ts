@@ -20,6 +20,19 @@ export const getAll = async (req: Request, res: Response) => {
 export const getById = async (req: Request, res: Response) => {
   try {
     const arc = await arcService.getArcById(
+      Number(req.params.id),
+    );
+    if (!arc) {
+      return res.status(404).json({ message: "Arc not found" });
+    }
+    res.json(arc);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur server", error });
+  }
+};
+export const getBySlug = async (req: Request, res: Response) => {
+  try {
+    const arc = await arcService.getArcBySlug(
       String(req.params.slug),
     );
     if (!arc) {

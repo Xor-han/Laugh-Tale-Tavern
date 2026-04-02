@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { PagesContainer } from "../components/PageContainer";
 import type { Crew } from "../interfaces/equipage.interface";
-import { getEquipages } from "../api/equipage.api";
+import { getCrews } from "../api/crew.api";
 
 export const CrewsPage = () => {
   const [crews, setCrews] = useState<Crew[]>([]);
 
   const fetchCrews = async () => {
-    const data = await getEquipages();
+    const data = await getCrews();
     setCrews(data);
   };
   useEffect(() => {
@@ -15,7 +15,7 @@ export const CrewsPage = () => {
   });
   return (
     <>
-      <PagesContainer items={crews} title="Les Equipages" type="crews"/>
+      <PagesContainer items={crews} title="Les Equipages" entityType="crews"/>
     </>
   );
 };

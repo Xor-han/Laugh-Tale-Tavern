@@ -5,10 +5,11 @@ import * as devilFruitController from "@/controller/devilFruit.controller";
 const router: express.Router = express.Router();
 
 router.get("/", devilFruitController.getAll);
-router.get("/:slug", devilFruitController.getById);
+router.get("/id/:id", devilFruitController.getById);
+router.get("/:slug", devilFruitController.getBySlug);
 router.post("/", authMiddleware, adminMiddleware, devilFruitController.create);
-router.put("/:id", authMiddleware, adminMiddleware, devilFruitController.update);
-router.patch("/:id",authMiddleware,adminMiddleware,devilFruitController.patch,);
-router.delete("/:id",authMiddleware,adminMiddleware,devilFruitController.remove,);
+router.put("/id/:id", authMiddleware, adminMiddleware, devilFruitController.update);
+router.patch("/id/:id",authMiddleware,adminMiddleware,devilFruitController.patch,);
+router.delete("/id/:id",authMiddleware,adminMiddleware,devilFruitController.remove,);
 
 export default router;

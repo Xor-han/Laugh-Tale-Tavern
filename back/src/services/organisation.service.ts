@@ -22,7 +22,28 @@ export const getAllOrganisation = async (search?: string) => {
   });
 };
 
-export const getOrganisationById = async (slug: string) => {
+export const getOrganisationById = async (id: number) => {
+  const organisation = await db.organisation.findUnique({
+    where: { id },
+    include: {
+      image: true,
+      onePieceCharacter: true,
+      crew: true,
+      comment: {
+        where: { parentId: null },
+        include: {
+          author: true,
+          replies: {
+            include: { author: true },
+          },
+        },
+      },
+    },
+  });
+  if (!organisation) return null;
+  return organisation;
+};
+export const getOrganisationBySlug = async (slug: string) => {
   const organisation = await db.organisation.findUnique({
     where: { slug },
     include: {

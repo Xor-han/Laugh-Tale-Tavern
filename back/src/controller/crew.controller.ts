@@ -20,6 +20,19 @@ export const getAll = async (req: Request, res: Response) => {
 export const getById = async (req: Request, res: Response) => {
   try {
     const crew = await crewService.getCrewById(
+       Number(req.params.id),
+    );
+    if (!crew) {
+      return res.status(404).json({ message: "Crew not found" });
+    }
+    res.json(crew);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur server", error });
+  }
+};
+export const getBySlug = async (req: Request, res: Response) => {
+  try {
+    const crew = await crewService.getCrewBySlug(
        String(req.params.slug),
     );
     if (!crew) {

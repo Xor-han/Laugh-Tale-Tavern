@@ -97,7 +97,7 @@ export const ArcForm = ({ onSubmit, onCancel }: Props) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3">
+         <div className="flex flex-col gap-3">
         <div className="flex justify-between items-end">
           <label className="text-xs font-black uppercase text-gray-400">
             Choisir une image
@@ -125,11 +125,11 @@ export const ArcForm = ({ onSubmit, onCancel }: Props) => {
 
         <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto p-2 border-2 border-gray-50 rounded-2xl bg-gray-50/50">
           {loading ? (
-            <div className="col-span-3 flex justify-center py-10">
+            <div className="flex justify-center py-10">
               <Loader2 className="animate-spin text-gray-300" />
             </div>
           ) : (
-            <>
+            <div className="grid grid-cols-2">
               {images.map((img) => (
                 <div
                   key={img.id}
@@ -145,6 +145,7 @@ export const ArcForm = ({ onSubmit, onCancel }: Props) => {
                     className="w-full h-full object-cover"
                     alt=""
                   />
+
                   {selectedImageId === img.id && (
                     <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
                       <CheckCircle2
@@ -153,6 +154,7 @@ export const ArcForm = ({ onSubmit, onCancel }: Props) => {
                       />
                     </div>
                   )}
+
                   <button
                     type="button"
                     onClick={(e) => handleDelete(e, img.id)}
@@ -166,7 +168,7 @@ export const ArcForm = ({ onSubmit, onCancel }: Props) => {
                   </button>
                 </div>
               ))}
-            </>
+            </div>
           )}
         </div>
       </div>

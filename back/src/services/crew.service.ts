@@ -22,7 +22,28 @@ export const getAllCrew = async (search?: string) => {
   });
 };
 
-export const getCrewById = async (slug: string) => {
+export const getCrewById = async (id: number) => {
+  const crew = await db.crews.findUnique({
+    where: { id },
+    include: {
+      image: true,
+      onePieceCharacter: true,
+      organisation: true,
+      comment: {
+        where: { parentId: null },
+        include: {
+          author: true,
+          replies: {
+            include: { author: true },
+          },
+        },
+      },
+    },
+  });
+  if (!crew) return null;
+  return crew;
+};
+export const getCrewBySlug = async (slug: string) => {
   const crew = await db.crews.findUnique({
     where: { slug },
     include: {

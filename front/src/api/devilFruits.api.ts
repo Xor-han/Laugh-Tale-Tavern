@@ -12,8 +12,19 @@ export const getFruits = async (): Promise<DevilFruit[]> => {
   return res.json();
 };
 
-export const getFruitById = async (id: number): Promise<DevilFruit> => {
-  const res = await fetch(`${API_URL}/devilFruits/${id}`, {
+export const getDevilFruitById = async (
+  id: number,
+): Promise<DevilFruit> => {
+  const res = await fetch(`${API_URL}/devilFruits/id/${id}`, {
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("Erreur lors de la récupération du fruit");
+  return res.json();
+};
+export const getDevilFruitBySlug = async (
+  slug: string,
+): Promise<DevilFruit> => {
+  const res = await fetch(`${API_URL}/devilFruits/${slug}`, {
     credentials: "include",
   });
   if (!res.ok) throw new Error("Erreur lors de la récupération du fruit");
@@ -35,7 +46,7 @@ export const putFruit = async (
   id: number,
   fruit: CreateFruit,
 ): Promise<DevilFruit> => {
-  const res = await fetch(`${API_URL}/devilFruits/${id}`, {
+  const res = await fetch(`${API_URL}/devilFruits/id/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -50,7 +61,7 @@ export const updateFruit = async (
   id: number,
   fruit: FruitUpdate,
 ): Promise<DevilFruit> => {
-  const res = await fetch(`${API_URL}/devilFruits/${id}`, {
+  const res = await fetch(`${API_URL}/devilFruits/id/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -61,7 +72,7 @@ export const updateFruit = async (
 };
 
 export const deleteFruit = async (id: number): Promise<void> => {
-  const res = await fetch(`${API_URL}/devilFruits/${id}`, {
+  const res = await fetch(`${API_URL}/devilFruits/id/${id}`, {
     method: "DELETE",
     credentials: "include",
   });

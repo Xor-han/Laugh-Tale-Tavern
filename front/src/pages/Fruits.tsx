@@ -15,7 +15,7 @@ export const FruitsPage = () => {
   });
   return (
     <>
-      <PagesContainer items={devilFruits} title="Les Fruits du Démon" type="devilFruits"/>
+      <PagesContainer items={devilFruits} title="Les Fruits du Démon" entityType="devilFruits"/>
     </>
   );
 };

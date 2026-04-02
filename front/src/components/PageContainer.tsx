@@ -5,12 +5,12 @@ import { getArticles } from "../api/article.api";
 import { PageCard } from "./PageCard";
 
 interface Props {
-    items?: (BaseItem & { type?: string })[];
-    type?: "characters" | "devilFruits" | "arcs" | "crews" | "organisations";
+    items?: BaseItem[];
+    entityType?: "characters" | "devilFruits" | "arcs" | "crews" | "organisations";
     title: string;
 }
 
-export const PagesContainer = ({ items, title, type }: Props) => {
+export const PagesContainer = ({ items, title, entityType }: Props) => {
     const [articles, setArticles] = useState<Article[]>([]);
     const [loading, setLoading] = useState(!items);
 
@@ -34,9 +34,9 @@ export const PagesContainer = ({ items, title, type }: Props) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 lg:grid-cols-4 gap-8">
                     {data.map((item) => (
                         <PageCard
-                            key={item.id}
+                            key={`${entityType}-${item.id}`}
                             item={item}
-                            type={type}
+                            type={entityType}
                         />
                     ))}
                 </div>

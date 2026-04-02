@@ -6,7 +6,7 @@ import type { DevilFruit } from "../../interfaces/devilFruit.interface";
 import type { Organisation } from "../../interfaces/organisation.interface";
 import type { Arc } from "../../interfaces/arc.interface";
 import type { Crew } from "../../interfaces/equipage.interface";
-import type { CreateCharacter } from "../../interfaces/onePieceCharacter.interface";
+import type { CreateCharacter} from "../../interfaces/onePieceCharacter.interface";
 import { PROFESSION_OPTIONS } from "../../data/Profession";
 
 interface Props {
@@ -113,13 +113,14 @@ export const CharacterForm = ({
       isAlive,
       profession: profession.trim(),
       imageId: selectedImageId,
-      devilFruit_id: devilFruitId,
+      devilFruitId: devilFruitId,
       arcIds: selectedArcIds,
       organisationId: organisationId,
       crewId: crewId,
       content: content
     });
   };
+
 
   const handleAddArc = (id: number) => {
     if (!id) return;

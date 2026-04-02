@@ -20,6 +20,19 @@ export const getAll = async (req: Request, res: Response) => {
 export const getById = async (req: Request, res: Response) => {
   try {
     const devilFruit = await devilFruitService.getDevilFruitById(
+      Number(req.params.id),
+    );
+    if (!devilFruit) {
+      return res.status(404).json({ message: "Devil Fruit not found" });
+    }
+    res.json(devilFruit);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur server", error });
+  }
+};
+export const getBySlug = async (req: Request, res: Response) => {
+  try {
+    const devilFruit = await devilFruitService.getDevilFruitBySlug(
       String(req.params.slug),
     );
     if (!devilFruit) {

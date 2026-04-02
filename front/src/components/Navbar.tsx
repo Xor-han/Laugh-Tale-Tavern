@@ -13,7 +13,7 @@ interface Props {
 export const Navbar = ({ userId, userImage, userName, session }: Props) => {
   const [openBurgerMenu, setOpenBurgerMenu] = useState(false);
   return (
-    <nav className="flex px-10 py-7 items-center justify-between z-999 bg-[#1D293D] text-white fixed top-0 w-full">
+    <nav className="flex px-10 py-7 items-center justify-between z-999 bg-[#1D293D] relative text-white w-full">
       <div className="flex gap-14 items-center">
         <Link to="/">
           <h1 className="text-xl ">Laugh Tale Tavern</h1>

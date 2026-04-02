@@ -12,7 +12,7 @@ export interface OnePieceCharacter {
   imageId?: number | null;
   isAlive: boolean;
   profession: string;
-  devilFruit_id?: number | null;
+  devilFruitId?: number | null;
   organisationId?: number | null;
   crewId?: number | null;
   devilFruit?: DevilFruit;
@@ -27,7 +27,7 @@ export interface CreateCharacter {
   isAlive: boolean;
   profession: string;
   imageId?: number | null;
-  devilFruit_id?: number | null;
+  devilFruitId?: number | null;
   organisationId?: number | null;
   crewId?: number | null;
   arcIds?: number[];
@@ -38,7 +38,7 @@ export interface CharacterUpdate {
   isAlive?: boolean;
   profession?: string;
   imageId?: number | null;
-  devilFruit_id?: number | null;
+  devilFruitId?: number | null;
   organisationId?: number | null;
   crewId?: number | null;
   arcIds?: number[];

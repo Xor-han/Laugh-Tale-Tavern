@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Apple, X} from "lucide-react";
+import { Plus, Trash2, Apple, X, Upload } from "lucide-react";
 
 // APIs
 import {
   getCharacters,
+  getCharacterById,
   deleteCharacter,
   createCharacter,
+  updateCharacter,
 } from "../api/onePieceCharacter.api";
 import type {
   CreateCharacter,
@@ -14,16 +16,19 @@ import type {
 import { CharacterForm } from "./form/CharacterForm";
 import { getFruits } from "../api/devilFruits.api";
 import { getOrganisations } from "../api/organisation.api";
-import { getEquipages } from "../api/equipage.api";
+import { getCrews } from "../api/crew.api";
 import { getArcs } from "../api/arc.api";
 import type { DevilFruit } from "../interfaces/devilFruit.interface";
 import type { Organisation } from "../interfaces/organisation.interface";
 import type { Arc } from "../interfaces/arc.interface";
 import type { Crew } from "../interfaces/equipage.interface";
+import { EditCharacterForm } from "./editForm/EditCharForm";
 
 export const CharacterDB = () => {
+  const [selectedCharacter, setSelectedCharacter] = useState<OnePieceCharacter>();
   const [characters, setCharacters] = useState<OnePieceCharacter[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
   const [fruits, setFruits] = useState<DevilFruit[]>([]);
   const [organisation, setOrganisation] = useState<Organisation[]>([]);
   const [arcs, setArcs] = useState<Arc[]>([]);
@@ -32,7 +37,6 @@ export const CharacterDB = () => {
   const fetchCharacters = async () => {
     const data = await getCharacters();
     setCharacters(data);
-    console.log(data);
   };
   useEffect(() => {
     const loadData = async () => {
@@ -42,7 +46,7 @@ export const CharacterDB = () => {
       setOrganisation(organisationData);
       const arcData = await getArcs();
       setArcs(arcData);
-      const equipageData = await getEquipages();
+      const equipageData = await getCrews();
       setEquipage(equipageData);
 
       await fetchCharacters();
@@ -55,6 +59,21 @@ export const CharacterDB = () => {
   const handleCreateCharacter = async (data: CreateCharacter) => {
     await createCharacter(data);
     setIsModalOpen(false);
+    await fetchCharacters();
+  };
+  const handleEditClick = async (id: number) => {
+  try {
+    const fullData = await getCharacterById(id);
+    setSelectedCharacter(fullData);
+    setIsModalEditOpen(true);
+  } catch (error) {
+    console.error("Impossible de charger les détails du personnage");
+  }
+};
+
+  const handleUpdateCharacter = async (id: number, data: CreateCharacter) => {
+    await updateCharacter(id, data);
+    setIsModalEditOpen(false);
     await fetchCharacters();
   };
 
@@ -116,6 +135,16 @@ export const CharacterDB = () => {
                 </div>
                 <div className="flex gap-2">
                   <button
+                    onClick={() => {
+                      handleEditClick(character.id),
+                      setSelectedCharacter(character),
+                      setIsModalEditOpen(true)
+                    }}
+                    className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-blue-500 hover:text-white transition-all"
+                  >
+                    <Upload size={20} />
+                  </button>
+                  <button
                     onClick={() => handleDeleteCharacter(character.id)}
                     className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all"
                   >
@@ -152,7 +181,34 @@ export const CharacterDB = () => {
           </div>
         </div>
       )}
-    
+    {isModalEditOpen && selectedCharacter && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-black italic">
+                MODIFICATION DU PERSONNAGE
+              </h2>
+              <button
+                onClick={() => setIsModalEditOpen(false)}
+                className="p-2 bg-gray-100 rounded-full hover:bg-red-50 transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="max-h-150 overflow-y-auto custom-scrollbar">
+              <EditCharacterForm
+                character={selectedCharacter}
+                onEditSubmit={handleUpdateCharacter}
+                onCancel={() => setIsModalEditOpen(false)}
+                organisation={organisation}
+                arcs={arcs}
+                crews={equipage}
+                devilFruit={fruits}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

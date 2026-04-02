@@ -6,13 +6,32 @@ import type {
 
 const API_URL = "http://localhost:3000";
 
-export const getEquipages = async (): Promise<Crew[]> => {
+export const getCrews = async (): Promise<Crew[]> => {
   const res = await fetch(`${API_URL}/crews`, { credentials: "include" });
   if (!res.ok) throw new Error("Erreur lors de la récupération des équipages");
   return res.json();
 };
 
-export const createEquipage = async (
+export const getCrewById = async (
+  id: number,
+): Promise<Crew> => {
+  const res = await fetch(`${API_URL}/crews/id/${id}`, {
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("Erreur lors de la récupération du fruit");
+  return res.json();
+};
+export const getCrewBySlug = async (
+  slug: string,
+): Promise<Crew> => {
+  const res = await fetch(`${API_URL}/crews/${slug}`, {
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("Erreur lors de la récupération du fruit");
+  return res.json();
+};
+
+export const createCrew = async (
   equipage: CreateCrew,
 ): Promise<Crew> => {
   const res = await fetch(`${API_URL}/crews`, {
@@ -25,11 +44,11 @@ export const createEquipage = async (
   return res.json();
 };
 
-export const putEquipage = async (
+export const putCrew = async (
   id: number,
   equipage: CreateCrew,
 ): Promise<Crew> => {
-  const res = await fetch(`${API_URL}/crews/${id}`, {
+  const res = await fetch(`${API_URL}/crews/id/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -39,11 +58,11 @@ export const putEquipage = async (
   return res.json();
 };
 
-export const updateEquipage = async (
+export const updateCrew = async (
   id: number,
   equipage: CrewUpdate,
 ): Promise<Crew> => {
-  const res = await fetch(`${API_URL}/crews/${id}`, {
+  const res = await fetch(`${API_URL}/crews/id/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -53,8 +72,8 @@ export const updateEquipage = async (
   return res.json();
 };
 
-export const deleteEquipage = async (id: number): Promise<void> => {
-  const res = await fetch(`${API_URL}/crews/${id}`, {
+export const deleteCrew = async (id: number): Promise<void> => {
+  const res = await fetch(`${API_URL}/crews/id/${id}`, {
     method: "DELETE",
     credentials: "include",
   });

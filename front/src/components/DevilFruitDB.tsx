@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Apple, X} from "lucide-react";
+import { Plus, Trash2, Apple, X, Upload } from "lucide-react";
 
 // APIs
 import {
   getFruits,
+  getDevilFruitById,
   createFruit,
   deleteFruit,
+  updateFruit,
 } from "../api/devilFruits.api";
 
 // Interfaces
@@ -16,11 +18,14 @@ import type {
 import { FruitForm } from "../components/form/FruitForm";
 import { getTypes } from "../api/type.api";
 import type { Type } from "../interfaces/type.interface";
+import { EditFruitForm } from "./editForm/EditFruitForm";
 
 export const DevilFruitDB = () => {
+  const [selectedFruit, setSelectedFruit] = useState<DevilFruit>();
   const [fruits, setFruits] = useState<DevilFruit[]>([]);
   const [types, setTypes] = useState<Type[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
 
   const fetchFruits = async () => {
     const data = await getFruits();
@@ -43,6 +48,22 @@ export const DevilFruitDB = () => {
   const handleCreateFruit = async (data: CreateFruit) => {
     await createFruit(data);
     setIsModalOpen(false);
+    await fetchFruits();
+  };
+
+  const handleEditClick = async (id: number) => {
+    try {
+      const fullData = await getDevilFruitById(id);
+      setSelectedFruit(fullData);
+      setIsModalEditOpen(true);
+    } catch (error) {
+      console.error("Impossible de charger les détails du fruit");
+    }
+  };
+
+  const handleUpdateFruit = async (id: number, data: CreateFruit) => {
+    await updateFruit(id, data);
+    setIsModalEditOpen(false);
     await fetchFruits();
   };
 
@@ -103,6 +124,16 @@ export const DevilFruitDB = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
+                    <button
+                    onClick={() => {
+                      handleEditClick(fruit.id),
+                      setSelectedFruit(fruit),
+                      setIsModalEditOpen(true)
+                    }}
+                    className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-blue-500 hover:text-white transition-all"
+                  >
+                    <Upload size={20} />
+                  </button>
                   <button
                     onClick={() => handleDeleteFruit(fruit.id)}
                     className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all"
@@ -128,15 +159,40 @@ export const DevilFruitDB = () => {
               </button>
             </div>
             <div className="max-h-150 overflow-y-auto custom-scrollbar">
-            <FruitForm
-              types={types}
-              onSubmit={handleCreateFruit}
-              onCancel={() => setIsModalOpen(false)}
+              <FruitForm
+                types={types}
+                onSubmit={handleCreateFruit}
+                onCancel={() => setIsModalOpen(false)}
               />
-              </div>
+            </div>
           </div>
         </div>
       )}
+       {isModalEditOpen && selectedFruit && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+                <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl p-8 animate-in fade-in zoom-in duration-200">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-black italic">
+                      MODIFICATION DU FRUIT
+                    </h2>
+                    <button
+                      onClick={() => setIsModalEditOpen(false)}
+                      className="p-2 bg-gray-100 rounded-full hover:bg-red-50 transition-colors"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+                  <div className="max-h-150 overflow-y-auto custom-scrollbar">
+                    <EditFruitForm
+                      devilFruit={selectedFruit}
+                      onEditSubmit={handleUpdateFruit}
+                      onCancel={() => setIsModalEditOpen(false)}
+                      types={types}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
     </div>
   );
 };
