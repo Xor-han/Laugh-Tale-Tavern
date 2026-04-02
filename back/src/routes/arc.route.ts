@@ -6,7 +6,7 @@ const router: express.Router = express.Router();
 
 router.get("/", arcController.getAll);
 router.get("/id/:id", arcController.getById);
-router.get("/:slug", arcController.getById);
+router.get("/:slug", arcController.getBySlug);
 router.post("/", arcController.create);
 router.put("/id/:id", authMiddleware, adminMiddleware, arcController.update);
 router.patch("/id/:id",authMiddleware,adminMiddleware,arcController.patch,);

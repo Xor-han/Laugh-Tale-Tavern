@@ -14,8 +14,8 @@ const categories = [
 
 export const CategoryCard = () => {
   return (
-    <>
-      <p className="text-6xl font-bold m-8">Explorer l'univers</p>
+    <div className="border-bs-indigo-300">
+      <p className="text-6xl font-bold p-8">Explorer l'univers</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 lg:grid-cols-4 gap-6 p-8">
         {categories.map((cat) => (
           <Link
@@ -34,6 +34,6 @@ export const CategoryCard = () => {
           </Link>
         ))}
       </div>
-    </>
+    </div>
   );
 };

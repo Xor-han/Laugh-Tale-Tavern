@@ -24,7 +24,7 @@ export const PagesContainer = ({ items, title, entityType }: Props) => {
 
     const data = items || articles;
 
-    if (loading) return <div>Chargement des nouveautés...</div>;
+    if (loading) return <div>Chargement des articles...</div>;
     return (
         <div className="py-14 px-10 grid gap-10">
             <h2 className="text-6xl font-bold mb-8">{title}</h2>

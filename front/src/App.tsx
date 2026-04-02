@@ -7,7 +7,7 @@ function App() {
     <>
       <Header/>
       <CategoryCard/>
-      <PagesContainer title="Articles récents" />
+      <PagesContainer title="Articles par ordre alphabétique" />
     </>
   );
 }
