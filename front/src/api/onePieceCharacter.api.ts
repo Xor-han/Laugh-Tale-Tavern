@@ -4,7 +4,7 @@ import type {
   CreateCharacter,
 } from "../interfaces/onePieceCharacter.interface";
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export const getCharacters = async (): Promise<OnePieceCharacter[]> => {
   const res = await fetch(`${API_URL}/characters`, { credentials: "include" });

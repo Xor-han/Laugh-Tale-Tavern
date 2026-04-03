@@ -26,8 +26,8 @@ export const PagesContainer = ({ items, title, entityType }: Props) => {
 
     if (loading) return <div>Chargement des articles...</div>;
     return (
-        <div className="py-14 px-10 grid gap-10">
-            <h2 className="text-6xl font-bold mb-8">{title}</h2>
+        <div className="py-14 px-10 grid gap-10 bg-[#D4C4A8]">
+            <h2 className="text-6xl font-bold mb-8 max-md:text-4xl">{title}</h2>
             {data.length === 0 ? (
                 <p className="text-gray-500 italic">Aucun élément trouvé dans cette catégorie.</p>
             ) : (

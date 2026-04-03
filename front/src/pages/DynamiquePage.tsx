@@ -31,7 +31,9 @@ export const DynamiquePage = () => {
       if (!endpoint) return;
       setLoading(true);
       try {
-        const res = await fetch(`${API_URL}/${endpoint}/${slug}`, { credentials: "include" });
+        const res = await fetch(`${API_URL}/${endpoint}/${slug}`, {
+          credentials: "include",
+        });
         if (!res.ok) throw new Error("Erreur lors de la récupération");
         const data = await res.json();
         setPage(data);
@@ -64,9 +66,11 @@ export const DynamiquePage = () => {
         parentId: parentId,
         ...(type ? { [typeToCommentField[type]]: page.id } : {}),
       };
-      await createComment(data);
+
+      const savedComment = await createComment(data);
+
       const commentWithAuthor = {
-        ...data,
+        ...savedComment,
         author: {
           name: session.user.name,
           image: session.user.image,
@@ -76,11 +80,10 @@ export const DynamiquePage = () => {
 
       setPage((prevPage: any) => {
         if (!prevPage) return prevPage;
-
         if (parentId) {
           return {
             ...prevPage,
-            comments: prevPage.comment.map((c: any) =>
+            comment: prevPage.comment.map((c: any) =>
               c.id === parentId
                 ? { ...c, replies: [...(c.replies || []), commentWithAuthor] }
                 : c,
@@ -93,12 +96,11 @@ export const DynamiquePage = () => {
           comment: [commentWithAuthor, ...prevPage.comment],
         };
       });
-
       setNewComment("");
       setReplyContent("");
       setActiveReplyId(null);
     } catch (err) {
-      console.error("Erreur :", err);
+      console.error("Erreur lors de la création :", err);
     }
   };
 
@@ -129,7 +131,9 @@ export const DynamiquePage = () => {
               {type === "characters" && (
                 <>
                   <p>Nom: {page.name}</p>
-                  <p>Fruit du démon: {page.devilFruit?.name || "Aucun Fruit"}</p>
+                  <p>
+                    Fruit du démon: {page.devilFruit?.name || "Aucun Fruit"}
+                  </p>
                   <p>Equipage: {page.crew?.name}</p>
                   <p>Profession: {page.profession}</p>
                   <p>Organisation: {page.organisation?.name}</p>
@@ -138,7 +142,9 @@ export const DynamiquePage = () => {
               {type === "devilFruits" && (
                 <>
                   <p>Type: {page.type?.name}</p>
-                  <p>Détenteur du fruit: {page.onePieceCharacters?.[0]?.name}</p>
+                  <p>
+                    Détenteur du fruit: {page.onePieceCharacters?.[0]?.name}
+                  </p>
                 </>
               )}
             </div>
@@ -226,7 +232,7 @@ export const DynamiquePage = () => {
 
                 {/* LES RÉPONSES (Si elles existent) */}
                 {c.replies &&
-                  c.replies.map((r : any) => (
+                  c.replies.map((r: any) => (
                     <div
                       key={r.id}
                       className="ml-10 mt-2 bg-gray-50 p-3 rounded-xl border-l-4 border-blue-200"

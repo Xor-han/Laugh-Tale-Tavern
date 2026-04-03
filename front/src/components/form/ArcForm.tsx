@@ -41,7 +41,7 @@ export const ArcForm = ({ onSubmit, onCancel }: Props) => {
   }, []);
 
   // --- ACTIONS ---
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>, ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 

@@ -4,7 +4,7 @@ import type {
   CreateFruit,
 } from "../interfaces/devilFruit.interface";
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export const getFruits = async (): Promise<DevilFruit[]> => {
   const res = await fetch(`${API_URL}/devilFruits`, { credentials: "include" });

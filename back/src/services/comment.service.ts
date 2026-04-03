@@ -71,6 +71,7 @@ export const createComment = async (data: CreateCommentDto, userId: string) => {
       arcId: data.arcId,
       organisationId: data.organisationId,
       crewId: data.crewId,
+      parentId: data.parentId,
     },
   });
 };

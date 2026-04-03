@@ -4,7 +4,7 @@ import type {
   CrewUpdate,
 } from "../interfaces/equipage.interface";
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export const getCrews = async (): Promise<Crew[]> => {
   const res = await fetch(`${API_URL}/crews`, { credentials: "include" });

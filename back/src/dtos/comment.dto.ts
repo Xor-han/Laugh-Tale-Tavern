@@ -7,7 +7,7 @@ content: z.string().min(1, "Le commentaire doit contenir au moins 1 caractère")
   arcId:  z.number().int().optional(),
   organisationId: z.number().int().optional(),
   crewId: z.number().int().optional(),
-  parentId: z.number().int().optional().nullable(),
+  parentId: z.string().optional().nullable(),
 });
 export const updateCommentShema = z.object({
 content: z.string().min(1),
@@ -16,7 +16,7 @@ content: z.string().min(1),
   arcId:  z.number().int().optional(),
   organisationId: z.number().int().optional(),
   crewId: z.number().int().optional(),
-  parentId: z.number().int().optional().nullable(),
+  parentId: z.string().optional().nullable(),
 });
 export const patchCommentShema = z.object({
 content: z.string().min(1),
@@ -25,7 +25,7 @@ content: z.string().min(1),
   arcId:  z.number().int().optional(),
   organisationId: z.number().int().optional(),
   crewId: z.number().int().optional(),
-  parentId: z.number().int().optional().nullable(),
+  parentId: z.string().optional().nullable(),
 });
 
 export type CreateCommentDto = z.infer<typeof createCommentShema>;

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { authClient } from "../lib/auth-client";
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
 interface Props {
   onAuth: () => void;
@@ -15,7 +14,6 @@ export const AuthPage = ({ onAuth }: Props) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +45,7 @@ export const AuthPage = ({ onAuth }: Props) => {
 
     setLoading(false);
     onAuth();
-    navigate("/");
+    window.location.href = "/"
   };
 
   return (

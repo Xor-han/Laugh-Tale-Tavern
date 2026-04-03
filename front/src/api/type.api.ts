@@ -4,7 +4,7 @@ import type {
   CreateType,
 } from "../interfaces/type.interface";
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export const getTypes = async (): Promise<Type[]> => {
   const res = await fetch(`${API_URL}/types`);
