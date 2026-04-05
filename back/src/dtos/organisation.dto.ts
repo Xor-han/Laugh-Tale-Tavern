@@ -2,7 +2,7 @@ import { z } from "zod/v4";
 export const createOrganisationShema = z.object({
   name: z
     .string()
-    .min(1, "le nom du personnage est obligatoire")
+    .min(1, "le nom de l'organisation est obligatoire")
     .max(50, "le nom doit contenir un maximum de 50 caractères"),
   content: z
     .string()
@@ -14,7 +14,7 @@ export const createOrganisationShema = z.object({
 export const updateOrganisationShema = z.object({
   name: z
     .string()
-    .min(1, "le nom du personnage est obligatoire")
+    .min(1, "le nom de l'organisation est obligatoire")
     .max(50, "le nom doit contenir un maximum de 50 caractères"),
   content: z
     .string()
@@ -25,7 +25,7 @@ export const updateOrganisationShema = z.object({
 export const patchOrganisationShema = z.object({
   name: z
     .string()
-    .min(1, "le nom du personnage est obligatoire")
+    .min(1, "le nom de l'organisation est obligatoire")
     .max(50, "le nom doit contenir un maximum de 50 caractères"),
   content: z
     .string()

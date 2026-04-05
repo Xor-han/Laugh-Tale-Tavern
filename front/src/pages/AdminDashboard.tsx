@@ -5,6 +5,7 @@ import { DevilFruitDB } from "../components/DevilFruitDB";
 import { OrganisationDB } from "../components/OrganisationDB";
 import { EquipageDB } from "../components/EquipageDB";
 import { useState } from "react";
+import { Logo } from "../components/Logo";
 
 type TabType = "characters" | "fruits" | "arcs" | "crews" | "organisations" | null;
 
@@ -16,7 +17,7 @@ const [activeTab, setActiveTab] = useState<TabType>("characters");
         {/* HEADER */}
         <div className="flex justify-between items-center mb-10">
           <Link to="/" className="text-2xl font-black italic uppercase">
-            Laugh Tale Tavern
+            <Logo/>
           </Link>
           <div>
             <h1 className="text-4xl font-black italic uppercase">Dashboard</h1>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Apple, X, Upload } from "lucide-react";
 
@@ -46,7 +47,7 @@ export const EquipageDB = () => {
       setSelectedCrew(fullData);
       setIsModalEditOpen(true);
     } catch (error) {
-      console.error("Impossible de charger les détails du personnage");
+      console.error("Impossible de charger les détails de l'équipage", error);
     }
   };
 

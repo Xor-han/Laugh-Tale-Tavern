@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { authClient } from "../lib/auth-client";
@@ -109,20 +110,20 @@ export const DynamiquePage = () => {
 
   return (
     <>
-      <main className="mx-24 my-10 flex flex-col gap-5">
+      <div className="px-10 py-15 flex flex-col gap-5 bg-slate-400">
         <div className="flex gap-10">
           <div className="w-4/5">
             <h1 className="text-4xl font-black uppercase">{page.name}</h1>
-            <div className="mt-6 whitespace-pre-line leading-relaxed w-full">
+            <div className="mt-6 whitespace-pre-line leading-relaxed text-xl">
               {page.content}
             </div>
           </div>
-          <div className="w-1/2 flex flex-col items-center">
+          <div className="flex flex-col items-center">
             {page?.image?.[0] ? (
               <img
                 src={page.image[0].url}
                 alt={page.name}
-                className="rounded-2xl"
+                className="rounded-2xl w-full "
               />
             ) : (
               <div className="bg-gray-200 h-64 w-full rounded-2xl" />
@@ -130,13 +131,13 @@ export const DynamiquePage = () => {
             <div className="w-full mt-4">
               {type === "characters" && (
                 <>
-                  <p>Nom: {page.name}</p>
+                  <p><span className="font-bold">Nom :</span> {page.name}</p>
                   <p>
-                    Fruit du démon: {page.devilFruit?.name || "Aucun Fruit"}
+                    <span className="font-bold">Fruit du démon :</span> {page.devilFruit?.name || "Aucun Fruit"}
                   </p>
-                  <p>Equipage: {page.crew?.name}</p>
-                  <p>Profession: {page.profession}</p>
-                  <p>Organisation: {page.organisation?.name}</p>
+                  <p><span className="font-bold">Equipage :</span> {page.crew?.name}</p>
+                  <p><span className="font-bold">Profession :</span> {page.profession}</p>
+                  <p><span className="font-bold">Organisation :</span> {page.organisation?.name}</p>
                 </>
               )}
               {type === "devilFruits" && (
@@ -265,7 +266,7 @@ export const DynamiquePage = () => {
             ))}
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 };

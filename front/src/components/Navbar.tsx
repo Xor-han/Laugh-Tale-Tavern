@@ -3,6 +3,7 @@ import { Menu, User, X } from "lucide-react";
 import { Nav } from "./Nav";
 import { useState } from "react";
 import { ModalBurgerMenu } from "./MenuBurger";
+import {Logo} from "./Logo"
 interface Props {
   userName?: string;
   userId?: string;
@@ -14,9 +15,9 @@ export const Navbar = ({ userId, userImage, userName, session }: Props) => {
   const [openBurgerMenu, setOpenBurgerMenu] = useState(false);
   return (
     <nav className="flex px-10 py-7 items-center justify-between z-999 bg-[#1D293D] relative text-white w-full">
-      <div className="flex gap-14 items-center">
+      <div className="flex gap-14 items-center w-full">
         <Link to="/">
-          <h1 className="text-xl ">Laugh Tale Tavern</h1>
+          <Logo/>
         </Link>
         <div className="max-lg:hidden">
           <ul className="flex gap-8 text-sm text-center items-center">

@@ -2,13 +2,13 @@ import { z } from "zod/v4";
 export const createTypeShema = z.object({
   name: z
     .string()
-    .min(1, "le nom du personnage est obligatoire")
+    .min(1, "le nom du type est obligatoire")
     .max(50, "le nom doit contenir un maximum de 50 caractères")
 });
 export const updateTypeShema = z.object({
   name: z
     .string()
-    .min(1, "le nom du personnage est obligatoire")
+    .min(1, "le nom du type est obligatoire")
     .max(50, "le nom doit contenir un maximum de 50 caractères")
 });
 

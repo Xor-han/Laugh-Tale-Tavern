@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Apple, X, Upload } from "lucide-react";
 
@@ -57,7 +58,7 @@ export const DevilFruitDB = () => {
       setSelectedFruit(fullData);
       setIsModalEditOpen(true);
     } catch (error) {
-      console.error("Impossible de charger les détails du fruit");
+      console.error("Impossible de charger les détails du fruit", error);
     }
   };
 

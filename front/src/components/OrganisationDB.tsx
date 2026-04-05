@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Apple, X, Upload } from "lucide-react";
 
@@ -56,7 +57,7 @@ export const OrganisationDB = () => {
       setSelectedOrganisation(fullData);
       setIsModalEditOpen(true);
     } catch (error) {
-      console.error("Impossible de charger les détails de l'organisation");
+      console.error("Impossible de charger les détails de l'organisation", error);
     }
   };
 

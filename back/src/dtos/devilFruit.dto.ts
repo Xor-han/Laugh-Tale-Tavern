@@ -2,7 +2,7 @@ import { z } from "zod/v4";
 export const createDevilFruitShema = z.object({
   name: z
     .string()
-    .min(1, "le nom du personnage est obligatoire")
+    .min(1, "le nom du fruit est obligatoire")
     .max(50, "le nom doit contenir un maximum de 50 caractères"),
   content: z
     .string()
@@ -15,7 +15,7 @@ export const createDevilFruitShema = z.object({
 export const updateDevilFruitShema = z.object({
   name: z
     .string()
-    .min(1, "le nom du personnage est obligatoire")
+    .min(1, "le nom du fruit est obligatoire")
     .max(50, "le nom doit contenir un maximum de 50 caractères"),
   content: z
     .string()
@@ -27,7 +27,7 @@ export const updateDevilFruitShema = z.object({
 export const patchDevilFruitShema = z.object({
   name: z
     .string()
-    .min(1, "le nom du personnage est obligatoire")
+    .min(1, "le nom du fruit est obligatoire")
     .max(50, "le nom doit contenir un maximum de 50 caractères"),
   content: z
     .string()

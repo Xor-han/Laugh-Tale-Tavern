@@ -2,7 +2,7 @@ import { z } from "zod/v4";
 export const createArcShema = z.object({
   name: z
     .string()
-    .min(1, "le nom du personnage est obligatoire")
+    .min(1, "le nom de l'arc est obligatoire")
     .max(50, "le nom doit contenir un maximum de 50 caractères"),
   content: z
     .string()
@@ -14,7 +14,7 @@ export const createArcShema = z.object({
 export const updateArcShema = z.object({
   name: z
     .string()
-    .min(1, "le nom du personnage est obligatoire")
+    .min(1, "le nom de l'arc  est obligatoire")
     .max(50, "le nom doit contenir un maximum de 50 caractères"),
   content: z
     .string()
@@ -25,7 +25,7 @@ export const updateArcShema = z.object({
 export const patchArcShema = z.object({
   name: z
     .string()
-    .min(1, "le nom du personnage est obligatoire")
+    .min(1, "le nom de l'arc est obligatoire")
     .max(50, "le nom doit contenir un maximum de 50 caractères"),
   content: z
     .string()

@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import type { SessionUser } from "../middleware/middleware";
+import { Logo } from "../components/Logo";
 
 export const ProfilePage = () => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ export const ProfilePage = () => {
   return (
     <div className="min-h-screen bg-[#f8f9fa] py-12 px-4">
       <div className="max-w-3xl mx-auto space-y-6 flex gap-5 flex-col">
-      <Link to="/" className="text-2xl font-bold text-gray-900">Laugh Tale Taverne</Link>
+      <Link to="/" className="text-2xl font-bold text-gray-900"><Logo/></Link>
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-6">
           <div className="h-20 w-20 bg-black rounded-2xl flex items-center justify-center overflow-hidden shadow-inner">
             {session?.user?.image || image ? (
