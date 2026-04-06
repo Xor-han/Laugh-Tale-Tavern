@@ -1,11 +1,11 @@
 import app from "@/app"
 import db from "@/lib/db";
 
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
 // ========== DÉMARRAGE DU SERVEUR ==========
-app.listen(port, async () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(PORT, async () => {
+  console.log(`Server is running on port ${PORT}`);
   try {
     await db.$connect();
     console.log("Databe connected successfull");

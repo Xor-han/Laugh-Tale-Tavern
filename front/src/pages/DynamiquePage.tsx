@@ -6,7 +6,7 @@ import { createComment } from "../api/comment.api";
 import type { CreateComment } from "../interfaces/comment.interface";
 import { User } from "lucide-react";
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL ||"http://localhost:3000";
 
 const typeToEndpoint: Record<string, string> = {
   characters: "characters",
