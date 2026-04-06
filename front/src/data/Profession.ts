@@ -7,13 +7,6 @@ export interface ProfessionOption {
   category: string;
 }
 
-const formatLabel = (slug: string): string => {
-  return slug
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-};
-
 export const PROFESSION_OPTIONS: ProfessionOption[] = [
   // --- ÉQUIPAGE PIRATE ---
   { value: Profession.roi_des_pirates, label: "👑 Roi des Pirates", category: "Pirate" },
