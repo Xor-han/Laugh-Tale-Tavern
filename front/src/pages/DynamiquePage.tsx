@@ -6,7 +6,7 @@ import { createComment } from "../api/comment.api";
 import type { CreateComment } from "../interfaces/comment.interface";
 import { User } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL ||"http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 const typeToEndpoint: Record<string, string> = {
   characters: "characters",
@@ -110,34 +110,53 @@ export const DynamiquePage = () => {
 
   return (
     <>
-      <div className="px-10 py-15 flex flex-col gap-5 bg-slate-400">
-        <div className="flex gap-10">
+      <div className="px-10 py-15 flex flex-col gap-5 bg-slate-400 ">
+        <div className="flex gap-10 max-lg:flex-col">
           <div className="w-4/5">
-            <h1 className="text-4xl font-black uppercase">{page.name}</h1>
-            <div className="mt-6 whitespace-pre-line leading-relaxed text-xl">
+            <h1 className="text-4xl font-black uppercase max-md:text-2xl">{page.name}</h1>
+            <div className="mt-6 whitespace-pre-line leading-relaxed text-xl max-md:text-lg">
               {page.content}
             </div>
           </div>
-          <div className="flex flex-col items-center">
-            {page?.image?.[0] ? (
-              <img
-                src={page.image[0].url}
-                alt={page.name}
-                className="rounded-2xl w-full "
-              />
-            ) : (
-              <div className="bg-gray-200 h-64 w-full rounded-2xl" />
-            )}
-            <div className="w-full mt-4">
+          <div className="flex flex-col items-center w-full max-w-md mx-auto rounded-3xl overflow-hidden shadow-xl bg-slate-900">
+            <div className="w-full aspect-video bg-slate-800 flex items-center justify-center p-2">
+              {page?.image?.[0] ? (
+                <img
+                  src={page.image[0].url}
+                  alt={page.name}
+                  className="w-full h-full object-contain rounded-xl shadow-md"
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center space-y-2 p-6">
+                  <div className="w-16 h-16 bg-slate-700 rounded-full animate-pulse" />
+                  <p className="text-slate-400 font-medium">
+                    Image non disponible
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="w-full mt-4 p-2 text-white">
               {type === "characters" && (
                 <>
-                  <p><span className="font-bold">Nom :</span> {page.name}</p>
                   <p>
-                    <span className="font-bold">Fruit du démon :</span> {page.devilFruit?.name || "Aucun Fruit"}
+                    <span className="font-bold">Nom :</span> {page.name}
                   </p>
-                  <p><span className="font-bold">Equipage :</span> {page.crew?.name}</p>
-                  <p><span className="font-bold">Profession :</span> {page.profession}</p>
-                  <p><span className="font-bold">Organisation :</span> {page.organisation?.name}</p>
+                  <p>
+                    <span className="font-bold">Fruit du démon :</span>{" "}
+                    {page.devilFruit?.name || "Aucun Fruit"}
+                  </p>
+                  <p>
+                    <span className="font-bold">Equipage :</span>{" "}
+                    {page.crew?.name}
+                  </p>
+                  <p>
+                    <span className="font-bold">Profession :</span>{" "}
+                    {page.profession}
+                  </p>
+                  <p>
+                    <span className="font-bold">Organisation :</span>{" "}
+                    {page.organisation?.name}
+                  </p>
                 </>
               )}
               {type === "devilFruits" && (
