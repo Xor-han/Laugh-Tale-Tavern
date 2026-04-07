@@ -20,7 +20,7 @@ export const PageCard = ({ item, type }: PageCardProps) => {
         <img
           src={imageUrl}
           alt={item.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
         />
       </div>
 
